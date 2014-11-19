@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android" >
+    	<View 
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/minStdPadding" />
+        <RelativeLayout
+            android:background="#d8d8d8"
+            android:layout_width="match_parent"
+        	android:layout_height="wrap_content" >
+        		<TextView
+        		    android:layout_width ="wrap_content"
+        		    android:layout_height="wrap_content"
+        		    
+        		    android:layout_alignParentLeft="true"
+        		    
+        		    android:textColor="#606080"
+		        	android:textStyle="bold"
+		        	android:padding="@dimen/minStdPadding"
+		        	android:text="Реквизиты карты" />
+        		<ImageView
+        		    android:id="@+id/payimageCard"
+        		    
+        		    android:layout_width ="wrap_content"
+        		    android:layout_height="@dimen/largerText"
+        		    
+        		    android:src="@drawable/pk_default_card"
+        		    android:contentDescription="Тип карты"
+        		    
+        		    android:layout_alignParentRight="true"
+		        	android:layout_centerVertical="true"
+		        	
+		        	android:layout_margin="@dimen/minStdPadding" />
+        	</RelativeLayout>
+            
+        <TextView
+            android:layout_width="wrap_content"
+        	android:layout_height="wrap_content"
+        	
+            style="@style/payCaptionCard"
+        	android:text="НОМЕР КАРТЫ" >
+        </TextView>
+        <EditText
+            android:id="@+id/payfieldPEN"
+            
+            android:layout_width="match_parent"
+        	android:layout_height="wrap_content"
+        	
+            android:hint="1111 2222 3333 4444"
+            android:maxLength="20"
+            
+		    android:digits="0123456789"
+		    android:inputType="number"
+		    
+		    android:imeOptions="actionDone"
+			android:singleLine="true"
+            
+            style="@style/payEdit"
+            />
+        <View 
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/minStdPadding" />
+        <RelativeLayout 
+            android:layout_width="match_parent"
+        	android:layout_height="wrap_content" >
+	        <TextView
+	            android:layout_width="wrap_content"
+	        	android:layout_height="wrap_content"
+	        	
+	        	android:layout_alignParentLeft="true"
+	        	
+	            style="@style/payCaptionCard"
+	        	android:text="ДАТА ОКОНЧАНИЯ" >
+	        </TextView>
+	        
+	        <TextView
+	            android:layout_width="wrap_content"
+	        	android:layout_height="wrap_content"
+	        	
+	        	android:layout_alignParentRight="true"
+	        	
+	            style="@style/payCaptionCard"
+	        	android:text="CSC КОД" >
+	        </TextView>
+        </RelativeLayout>
+        
+        <RelativeLayout 
+            android:layout_width="match_parent"
+        	android:layout_height="wrap_content" >
+	        <EditText
+	            android:id="@+id/payfieldMonth"
+	            
+	            android:layout_width="wrap_content"
+	        	android:layout_height="wrap_content"
+	        	
+	        	android:hint="05"
+	        	
+			    android:digits="0123456789"
+			    android:inputType="number"
+			    android:maxLength="2"
+	        	
+	        	android:layout_alignParentLeft="true"
+	        	
+	        	android:imeOptions="actionDone"
+				android:singleLine="true"
+	        	
+	            style="@style/payEdit" >
+	        </EditText>
+	        
+	        <TextView
+	            android:id="@+id/paytextSlash"
+	            android:layout_width="wrap_content"
+	        	android:layout_height="wrap_content"
+	        	
+	        	android:text="/"
+	        	
+	        	android:layout_marginTop="@dimen/halfStdPadding"
+	        	android:layout_toRightOf="@id/payfieldMonth" />
+	        
+	        <EditText
+	            android:id="@+id/payfieldYear"
+	            
+	            android:layout_width="wrap_content"
+	        	android:layout_height="wrap_content"
+	        	
+	        	android:hint="18"
+	        	
+	        	android:digits="0123456789"
+			    android:inputType="number"
+			    android:maxLength="2"
+			    
+			    android:imeOptions="actionDone"
+				android:singleLine="true"
+	        	
+	        	android:layout_toRightOf="@id/paytextSlash"
+	        	
+	            style="@style/payEdit">
+	        </EditText>
+	        
+	        <EditText
+	            android:id="@+id/payfieldCV"
+	            
+	            android:layout_width="wrap_content"
+	        	android:layout_height="wrap_content"
+	        	
+	        	android:hint="777"
+	        	android:digits="0123456789"
+			    android:inputType="number"
+			    android:maxLength="4"
+			    
+			    android:imeOptions="actionDone"
+				android:singleLine="true"
+	        	
+	        	android:layout_alignParentRight="true"
+	        	
+	            style="@style/payEdit" >
+	        </EditText>
+        </RelativeLayout>
+</merge>

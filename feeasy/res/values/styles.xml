@@ -1,0 +1,58 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--
+        Base application theme, dependent on API level. This theme is replaced
+        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+    -->
+    <style name="AppBaseTheme" parent="android:style/Theme.Holo.Light">
+        <!--
+            Theme customizations available in newer API levels can go in
+            res/values-vXX/styles.xml, while customizations related to
+            backward-compatibility can go here.
+        -->
+    </style>
+
+    <!-- Application theme. -->
+    <style name="AppTheme" parent="AppBaseTheme">
+        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+        <item name="android:textSize">@dimen/stdText</item>
+    </style>
+    
+    <style name="pay_box">
+        <item name="android:background">@drawable/box_bg</item>
+        <item name="android:layout_margin">@dimen/minStdPadding</item>
+        
+        <item name="android:paddingTop">@dimen/minStdPadding</item>
+        <item name="android:paddingBottom">@dimen/minStdPadding</item>
+        
+        <item name="android:paddingLeft">@dimen/borderWidth</item>
+        <item name="android:paddingRight">@dimen/borderWidth</item>
+    </style>
+    
+    <style name="payCaption">
+        <item name="android:layout_marginTop">@dimen/minStdPadding</item>
+        <item name="android:layout_marginLeft">@dimen/minStdPadding</item>
+        <item name="android:layout_marginRight">@dimen/minStdPadding</item>
+        <item name="android:textColor">@color/lightText</item>
+    </style>
+    
+    <style name="payCaptionCard">
+        <item name="android:layout_marginTop">@dimen/minStdPadding</item>
+        <item name="android:layout_marginLeft">@dimen/minStdPadding</item>
+        <item name="android:layout_marginRight">@dimen/minStdPadding</item>
+        
+        <item name="android:textSize">@dimen/smallText</item>
+        
+        <item name="android:textColor">@color/lightText</item>
+    </style>
+    
+    <style name="payEdit">
+        <item name="android:layout_marginLeft">@dimen/halfStdPadding</item>
+        <item name="android:layout_marginRight">@dimen/halfStdPadding</item>
+        <item name="android:paddingTop">@dimen/halfStdPadding</item>
+        <item name="android:paddingBottom">@dimen/halfStdPadding</item>
+        <item name="android:paddingLeft">@dimen/minStdPadding</item>
+        <item name="android:paddingRight">@dimen/minStdPadding</item>
+        <item name="android:background">@drawable/text_bg</item>
+    </style>
+</resources>

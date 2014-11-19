@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="lightText" type="color">#A0A0A0</item>
+    
+    <item name="bgColor" type="color">#e3f4d7</item>
+    
+    <item name="bgInner" type="color">#f0f9ea</item>
+    <item name="strokeInner" type="color">#addf8d</item>
+    
+    <item name="bgInner2"             type="color">#ffffff</item>
+    <item name="strokeInner2"         type="color">#e3f4d7</item>
+    <item name="strokeInner2selected" type="color">#b7f4d7</item>
+    <item name="strokeInner2error"    type="color">#c8a0a0</item>
+</resources>

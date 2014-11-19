@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="stdText">16sp</dimen>
+    <dimen name="largerText">21sp</dimen>
+    <dimen name="smallText">12sp</dimen>
+    
+    <dimen name="boxRadius">4dp</dimen>
+    <dimen name="minStdPadding">10dp</dimen>
+    <dimen name="halfStdPadding">5dp</dimen>
+    <dimen name="borderWidth">2dp</dimen>
+    <dimen name="borderWidth2">4dp</dimen>
+</resources>

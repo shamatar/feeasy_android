@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/payContainer"
+    
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bgColor" >
+    
+    <me.feeasy.test.CardFormView style="@style/pay_box"
+        android:id="@+id/pay_card"
+        
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" />
+	
+    <LinearLayout
+        android:orientation="vertical"
+        
+        android:layout_width="match_parent"
+    	android:layout_height="wrap_content"
+      
+        style="@style/pay_box">
+        
+        <LinearLayout
+       		android:orientation="horizontal"
+       		
+	        android:layout_width="match_parent"
+	    	android:layout_height="wrap_content" >
+			<TextView
+			    android:layout_width ="0dp"
+			    android:layout_height="match_parent"
+			    android:layout_weight="3"
+			    
+		        style="@style/payCaption"
+			    
+			    android:text="Сумма платежа" />
+			<EditText
+			    android:id="@+id/sum_holder"
+			    
+			    android:layout_width ="0dp"
+			    android:layout_height="match_parent"
+			    android:layout_weight="1"
+			    
+			    android:hint="500.00"
+			    
+			    android:digits="0123456789."
+			    android:inputType="number"
+			    
+			    android:maxLength="6" 
+			    
+			    android:imeOptions="actionDone"
+				android:singleLine="true"
+			    
+			    style="@style/payEdit"
+			    />
+		</LinearLayout>
+		
+        <LinearLayout
+       		android:orientation="horizontal"
+       		
+	        android:layout_width="match_parent"
+	    	android:layout_height="wrap_content" >
+			<TextView
+			    android:layout_width ="0dp"
+			    android:layout_height="match_parent"
+			    android:layout_weight="3"
+			    
+		        style="@style/payCaption"
+			    
+			    android:text="Согласен с правилами" />
+			<RelativeLayout
+			    android:layout_width ="0dp"
+			    android:layout_height="match_parent"
+			    android:layout_weight="1"
+			    android:layout_marginTop="@dimen/minStdPadding"
+			    >
+			    <include layout="@layout/compound_button_accept" />
+			</RelativeLayout>
+		</LinearLayout>
+    </LinearLayout>
+    
+    <Button 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_bg"
+        
+        android:layout_margin="@dimen/minStdPadding"
+        
+        android:textColor="#FFFFFF"
+        android:text="Оплатить"
+        />
+</LinearLayout>
