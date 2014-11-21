@@ -1,4 +1,4 @@
-package me.feeasy.test;
+package me.feeasy.test.cardview;
 
 public class MonthValidator extends EditValidator {
 	String text = "";

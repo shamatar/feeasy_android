@@ -11,7 +11,7 @@ public class CardNumber {
 	}
 	
 	public CardNumber(String val) {
-		set(val);
+		set(val == null ? "0" : val);
 	}
 	
 	public CardNumber() {}

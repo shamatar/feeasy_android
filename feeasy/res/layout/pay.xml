@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:background="@color/bgColor" >
     
-    <me.feeasy.test.CardFormView style="@style/pay_box"
+    <me.feeasy.test.cardview.CardFormView style="@style/pay_box"
         android:id="@+id/pay_card"
         
         android:layout_width="match_parent"
@@ -89,5 +89,7 @@
         
         android:textColor="#FFFFFF"
         android:text="Оплатить"
+        
+        android:id="@+id/paybtn_commit"
         />
 </LinearLayout>

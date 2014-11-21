@@ -2,4 +2,9 @@
 
     <string name="app_name">feeasy</string>
 
+    <string name="error_not_valid">Данные не верны. Проверьте ваши данные</string>
+	<string name="error_timeout">Истекло время ожидания отклика сети. Проверьте подключение</string>
+	<string name="error_page_not_loaded">Не удалось загрузить страницу операции</string>
+	<string name="error_service_error">Ошибка сервиса перевода</string>
+	<string name="error_not_verified">Транзакция не одобрена</string>
 </resources>

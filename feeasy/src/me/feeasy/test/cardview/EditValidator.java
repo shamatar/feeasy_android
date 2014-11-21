@@ -1,5 +1,8 @@
-package me.feeasy.test;
+package me.feeasy.test.cardview;
 
+import java.util.HashSet;
+
+import me.feeasy.test.R;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
@@ -133,8 +136,8 @@ public abstract class EditValidator {
 	public void textEdited() {
 		setError(false);
 		
-		if( editListener!=null )
-			editListener.onTextEdited();
+		for(EditListener listener : editListeners)
+			listener.onTextEdited();
 		
         if( isComplete() ) {
         	done();
@@ -189,8 +192,8 @@ public abstract class EditValidator {
 		next.prevView = this.thisView;
 	}
 	
-	public void setEditListener(EditListener editListener) {
-		this.editListener = editListener;
+	public void addEditListener(EditListener editListener) {
+		this.editListeners.add(editListener);
 	}
 	
 	private View nextView = null;
@@ -198,5 +201,25 @@ public abstract class EditValidator {
 	
 	private EditText thisView = null;
 	private boolean errorState = false;
-	private EditListener editListener = null;
+	private HashSet<EditListener> editListeners = new HashSet<EditListener>();
+	
+	public AbstractValidator validator = new AbstractValidator() {
+		@Override public boolean isValid() {
+			return EditValidator.this.isValid();
+		}
+		
+		@Override
+		public void highlightError() {
+			// TODO Auto-generated method stub
+			
+		}
+	};
+	
+	EditValidator() {
+		addEditListener(new EditListener() {
+			@Override public void onTextEdited() {
+				validator.onChange();
+			}
+		});
+	}
 }

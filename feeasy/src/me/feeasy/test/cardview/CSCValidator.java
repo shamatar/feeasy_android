@@ -1,4 +1,6 @@
-package me.feeasy.test;
+package me.feeasy.test.cardview;
+
+import me.feeasy.test.CardNumber;
 
 public class CSCValidator extends EditValidator {
 	String text = "";

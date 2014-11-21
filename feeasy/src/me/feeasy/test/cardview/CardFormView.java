@@ -1,5 +1,7 @@
-package me.feeasy.test;
+package me.feeasy.test.cardview;
 
+import me.feeasy.test.CardType;
+import me.feeasy.test.R;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
@@ -50,7 +52,7 @@ public class CardFormView extends LinearLayout {
 		monthValidator.setNextValidator(yearValidator );
 		yearValidator .setNextValidator(cscValidator  );
 		
-		penValidator.setEditListener(new EditValidator.EditListener() {
+		penValidator.addEditListener(new EditValidator.EditListener() {
 			@Override public void onTextEdited() {
 				CardType type = penValidator.cardNumber.getType();
 				payimageCard.setImageDrawable(getResources().getDrawable(type.getCardImage()));
@@ -82,5 +84,12 @@ public class CardFormView extends LinearLayout {
 	
 	public void bindBefore(EditValidator sumValidator) {
 		cscValidator.setNextValidator(sumValidator);
+	}
+
+	public void addValidators(ButtonValidator buttonValidator) {
+		buttonValidator.addValidator(penValidator.validator);
+		buttonValidator.addValidator(monthValidator.validator);
+		buttonValidator.addValidator(yearValidator.validator);
+		buttonValidator.addValidator(cscValidator.validator);
 	}
 }
