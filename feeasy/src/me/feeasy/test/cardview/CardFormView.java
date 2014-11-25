@@ -43,11 +43,13 @@ public class CardFormView extends LinearLayout {
 		payfieldCV    = (EditText ) findViewById(R.id.payfieldCV   );
 		payfieldPEN   = (EditText ) findViewById(R.id.payfieldPEN  );
 		
+		//set up fields validators for detect and display input errors
 		penValidator.bindToView(payfieldPEN);
 		monthValidator.bindToView(payfieldMonth);
 		yearValidator.bindToView(payfieldYear);
 		cscValidator.bindToView(payfieldCV);
 		
+		//set up fields order for focus automatically movement to the next field
 		penValidator  .setNextValidator(monthValidator);
 		monthValidator.setNextValidator(yearValidator );
 		yearValidator .setNextValidator(cscValidator  );
@@ -58,17 +60,6 @@ public class CardFormView extends LinearLayout {
 				payimageCard.setImageDrawable(getResources().getDrawable(type.getCardImage()));
 			}
 		});
-		
-		//payfieldPEN.setCardEntryListener(cardEntryListener);
-		
-		/*mCardHolder = (CardNumHolder) findViewById(R.id.card_num_holder);
-		mCardIcon = (CardIcon) findViewById(R.id.card_icon);
-		mExtraFields = (LinearLayout) findViewById(R.id.extra_fields);
-		mExpirationEditText = (ExpirationEditText) findViewById(R.id.expiration);
-		mCVVEditText = (CVVEditText) findViewById(R.id.security_code);
-		mCardHolder.setCardEntryListener(mCardEntryListener);
-		
-		setupViews();*/
 	}
 
 	private ImageView payimageCard ;
@@ -91,5 +82,21 @@ public class CardFormView extends LinearLayout {
 		buttonValidator.addValidator(monthValidator.validator);
 		buttonValidator.addValidator(yearValidator.validator);
 		buttonValidator.addValidator(cscValidator.validator);
+	}
+
+	public String getPEN() {
+		return penValidator.getPEN();
+	}
+
+	public int getCSC() {
+		return cscValidator.getNumber();
+	}
+
+	public int getMonth() {
+		return monthValidator.getNumber();
+	}
+
+	public int getYear() {
+		return yearValidator.getNumber();
 	}
 }

@@ -45,7 +45,7 @@ public class ButtonValidator {
 	}; 
 	
 	public void addValidator(AbstractValidator validator) {
-		validators.push(validator);
+		validators.add(validator);
 		validator.addObserver(validatorsListener);
 		updateButton();
 	}

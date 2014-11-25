@@ -165,8 +165,15 @@ public class AlphaWebEmuilation extends PayApiBase{
 		    	Log.d("NavigateWebView", "Finish: " + url);
 		    	if( canceled ) return;
 		    	
+		    	URL urlObj;
+		    	try {
+					urlObj = new URL(url);
+				} catch (MalformedURLException e) {
+					return;
+				}
+		    	
 		    	if( backgroundPageShowed ) {
-		    		if(!verificationShowed ) {
+		    		if(!verificationShowed &&!urlObj.getHost().equals("alfabank.ru") ) {
 			    		if( observer!=null ) {
 			    			observer.onShowVerification(view);
 			    		}

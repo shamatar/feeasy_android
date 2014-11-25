@@ -19,4 +19,13 @@ public class CardNumberValidator extends EditValidator {
 		cardNumber.set(initial);
 		return cardNumber.getPretty();
 	}
+
+	@Override public String errorText() {
+		if( thisView==null ) return null;
+		return thisView.getResources().getString(cardNumber.toError().getErrorResource());
+	}
+
+	public String getPEN() {
+		return cardNumber.getString();
+	}
 }

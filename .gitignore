@@ -712,3 +712,6 @@
 /thirdparty/appcompat_v7/bin/res/crunch/drawable-xxhdpi/abc_textfield_search_selected_holo_light.9.png
 /thirdparty/appcompat_v7/gen/android/support/v7/appcompat/BuildConfig.java
 /thirdparty/appcompat_v7/gen/android/support/v7/appcompat/R.java
+bin
+gen
+.metadata

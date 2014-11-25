@@ -1,6 +1,7 @@
 package me.feeasy.test.cardview;
 
 import me.feeasy.test.CardNumber;
+import me.feeasy.test.R;
 
 public class CSCValidator extends EditValidator {
 	String text = "";
@@ -10,7 +11,7 @@ public class CSCValidator extends EditValidator {
 		this.cardNumber=cardNumber;
 	}
 	
-	int getNumber() {
+	public int getNumber() {
 		try {
 			return Integer.parseInt(text);
 		} catch (NumberFormatException e) {
@@ -31,5 +32,10 @@ public class CSCValidator extends EditValidator {
 
 	@Override public String correctString(String initial) {
 		return text = initial;
+	}
+	
+	@Override public String errorText() {
+		if( thisView==null ) return null;
+		return thisView.getResources().getString(R.string.error_csc);
 	}
 }

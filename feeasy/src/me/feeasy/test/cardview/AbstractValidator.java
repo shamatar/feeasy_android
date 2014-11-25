@@ -20,7 +20,7 @@ abstract public class AbstractValidator {
 		boolean newValid = isValid();
 		if( lastValidSet && newValid == lastValid ) return;
 		lastValidSet = true;
-		newValid = lastValid;
+		lastValid = newValid;
 		
 		for(Runnable observer:observers) {
 			observer.run();

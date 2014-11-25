@@ -2,10 +2,12 @@ package me.feeasy.test.cardview;
 
 import java.util.Calendar;
 
+import me.feeasy.test.R;
+
 public class YearValidator extends EditValidator {
 	String text = "";
 	
-	int getNumber() {
+	public int getNumber() {
 		try {
 			return Integer.parseInt(text);
 		} catch (NumberFormatException e) {
@@ -32,5 +34,10 @@ public class YearValidator extends EditValidator {
 	@Override public String correctString(String initial) {
 		text = initial;		
 		return text;
+	}
+	
+	@Override public String errorText() {
+		if( thisView==null ) return null;
+		return thisView.getResources().getString(R.string.error_year);
 	}
 }

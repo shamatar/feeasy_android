@@ -3,6 +3,7 @@ package me.feeasy.test.cardview;
 import java.util.HashSet;
 
 import me.feeasy.test.R;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
@@ -18,6 +19,8 @@ public abstract class EditValidator {
 	
 	/** must return true if input can be valid */
 	abstract public boolean isValid();
+	
+	abstract public String errorText();
 	
 	public interface EditListener {
 		void onTextEdited();
@@ -156,8 +159,8 @@ public abstract class EditValidator {
 	}
 	
 	private void focusTo(View nextView) {
-		if( nextView!=null ) {
-			if( thisView!=null ) thisView.clearFocus();
+		if( nextView!=null && !nextView.hasFocus() ) {
+			if( thisView!=null && thisView!=nextView ) thisView.clearFocus();
 			
 			nextView.requestFocus();
 			if( nextView instanceof TextView ) {
@@ -199,7 +202,7 @@ public abstract class EditValidator {
 	private View nextView = null;
 	private View prevView = null;
 	
-	private EditText thisView = null;
+	protected EditText thisView = null;
 	private boolean errorState = false;
 	private HashSet<EditListener> editListeners = new HashSet<EditListener>();
 	
@@ -210,8 +213,16 @@ public abstract class EditValidator {
 		
 		@Override
 		public void highlightError() {
-			// TODO Auto-generated method stub
-			
+			setError(!isValid());
+			if( thisView!=null ) {
+				thisView.setError(errorText());
+				if(!thisView.hasFocus() ) thisView.requestFocus();
+				new Handler().postDelayed(new Runnable() {
+					@Override public void run() {
+						thisView.setError(null);
+					}
+				}, 2000);
+			}
 		}
 	};
 	

@@ -97,8 +97,10 @@ public enum CardType {
 			return 16;
 		}
 	},
-	UNKNOWN_CARD(7, "Unknown", true, 3, "", new String[]{}) {
+	UNKNOWN_CARD(7, "Unknown", false, 3, "", new String[]{}) {
 		public CardType toLengthError(String number) {
+			if( number.length() < 9 ) return NOT_ENOUGH_DIGITS;
+			if( number.length() > 19 ) return TOO_MANY_DIGITS;
 			return this;
 		}
 		@Override public int maxLength(String number) {
@@ -112,6 +114,9 @@ public enum CardType {
 		@Override public int maxLength(String number) {
 			return 16;
 		}
+		@Override public int getErrorResource() {
+			return R.string.error_card_too_long;
+		}
 	},
 	NOT_ENOUGH_DIGITS(9, "Not Enough Digits", true, 3, "", new String[]{}) {
 		public CardType toLengthError(String number) {
@@ -119,6 +124,9 @@ public enum CardType {
 		}
 		@Override public int maxLength(String number) {
 			return 16;
+		}
+		@Override public int getErrorResource() {
+			return R.string.error_card_too_short;
 		}
 	},
 
@@ -143,6 +151,18 @@ public enum CardType {
 		
 		@Override public int getCardImage() {
 			return R.drawable.pk_card_maestro;
+		}
+	},
+	
+	ERROR_CARD(11, "Error", true, 3, "", new String[]{}) {
+		public CardType toLengthError(String number) {
+			return this;
+		}
+		@Override public int maxLength(String number) {
+			return 16;
+		}
+		@Override public int getErrorResource() {
+			return R.string.error_card_invalid;
 		}
 	},
 	;
@@ -200,18 +220,6 @@ public enum CardType {
 		return R.drawable.pk_default_card;
 	}
 
-	public static CardType fromString(String text) {
-		if (text != null) {
-			int num = Integer.parseInt(text);
-			for (CardType c : CardType.values()) {
-				if (c.mVal == num) {
-					return c;
-				}
-			}
-		}
-		return CardType.UNKNOWN_CARD;
-	}
-
 	abstract public CardType toLengthError(String number);
 	public CardType toRangeError (String number) {
 		if( mIsError ) return this;
@@ -223,7 +231,7 @@ public enum CardType {
 		if( mIsError ) return this;
 		if( luhnValid(number) ) return this;
 		
-		return UNKNOWN_CARD;
+		return ERROR_CARD;
 	}
 	
 	static boolean luhnValid(String number) {
@@ -253,6 +261,10 @@ public enum CardType {
 			result += number.substring(i,Math.min(i+4,number.length()));
 		}
 		return result;
+	}
+	
+	public int getErrorResource() {
+		return R.string.error_card_success;
 	}
 
 	abstract public int maxLength(String number);

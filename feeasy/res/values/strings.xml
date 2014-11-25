@@ -7,4 +7,16 @@
 	<string name="error_page_not_loaded">Не удалось загрузить страницу операции</string>
 	<string name="error_service_error">Ошибка сервиса перевода</string>
 	<string name="error_not_verified">Транзакция не одобрена</string>
+	
+	<string name="error_card_success">Номер введён верно</string>
+	<string name="error_card_too_long">Номер карты слишком длинный</string>
+	<string name="error_card_too_short">Введено недостаточно цифр</string>
+	<string name="error_card_invalid">Номер карты введён неверно</string>
+	
+	<string name="error_month">Ошибка ввода месяца</string>
+	<string name="error_year">Ошибка ввода года</string>
+	
+	<string name="error_csc">Ошибка ввода кода CSC</string>
+	<string name="error_sum">Введите сумму в интервале 100-500 руб.</string>
+	<string name="error_accept">Согласитесь с правилами для продолжения</string>
 </resources>

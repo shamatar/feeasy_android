@@ -1,9 +1,11 @@
 package me.feeasy.test.cardview;
 
+import me.feeasy.test.R;
+
 public class MonthValidator extends EditValidator {
 	String text = "";
 	
-	int getNumber() {
+	public int getNumber() {
 		try {
 			return Integer.parseInt(text);
 		} catch (NumberFormatException e) {
@@ -34,5 +36,10 @@ public class MonthValidator extends EditValidator {
 		}
 		
 		return text;
+	}
+	
+	@Override public String errorText() {
+		if( thisView==null ) return null;
+		return thisView.getResources().getString(R.string.error_month);
 	}
 }
