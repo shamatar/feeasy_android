@@ -10,7 +10,35 @@ mysql> GRANT ALL ON feeasy.* TO 'feeasyapp'@'localhost' IDENTIFIED BY 'feeasy129
 Скрипт для выполнения требует MySQL Python Connector. DEB пакет скачивается с сайта MySQL и устанавливается.
 Также требуется flask. Установка: pip install flask
 
-ЗАПРОС
+==ЗАПРОС (комиссия)==
+
+http://37.252.124.233:5000/payapi?recipient_card=676280388571625380&sender_card=676280388571625380&recipient_card_format=pan&sender_card_format=pan&sum=10000&method=check
+
+поля
+recipient_card - понятно
+sender_card - понятно
+recipient_card_format - должно быть 'pan', в дальнейшем для токинизации будет использоваться
+sender_card_format - 'pan'
+sum - сумма в копейках
+method - 'check'
+
+==ОТВЕТ (комиссия)==
+ответ парсишь как JSON
+
+(пример)
+{
+  "bank": {
+    "id": "alfa", 
+    "name-ru": "\u0410\u043b\u044c\u0444\u0430-\u0411\u0430\u043d\u043a", 
+    "web-site": "http://alfabank.ru/"
+  }, 
+  "error": false, 
+  "fee": 3000
+}
+
+Если error - false, то комиссия (в копейках) в fee
+
+==ЗАПРОС (транзакция)==
 
 (пример)
 http://37.252.124.233:5000/payapi?recipient_card=676280388571625380&sender_card=676280388571625380&recipient_card_format=pan&sender_card_format=pan&sender_exp_year=16&sender_exp_month=1&sender_csc=555&sum=10000&method=transfer
@@ -26,7 +54,7 @@ sender_csc - CSC (число)
 sum - сумма в копейках
 method - 'transfer'
 
-ОТВЕТ
+==ОТВЕТ (транзакция)==
 ответ парсишь как JSON
 
 (пример)
