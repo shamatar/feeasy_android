@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import flask
 import json
 import httplib
@@ -23,7 +25,7 @@ class PayData:
 
     @staticmethod
     def getCardNumber(data, method, isSender):
-        if method == 'pen' : return data
+        if method == 'pan' : return data
         if method == 'ignore' : return ''
         raise Exception("Unknown method %s" % method)
 
@@ -64,7 +66,7 @@ class AlfaWebEmulation :
         resp = con.getresponse()
         data = json.loads(resp.read())
 
-        if 'error' in data and data['error'] != 0 :
+        if 'error' in data and data['error'] != '0' :
             return {'error' : True, 'error-description' : 'Error processing request'}
 
         return {
@@ -74,6 +76,14 @@ class AlfaWebEmulation :
                 'PaReq' : data['pareq'].replace('\n',''),
                 'MD'    : data['md'],
                 'TermUrl' : 'http://feeasy.me/payprocessed' }
+        }
+
+    @staticmethod
+    def getBankData():
+        return {
+            'id': 'alfa',
+            'name-ru': u'Альфа-Банк',
+            'web-site': 'http://alfabank.ru/',
         }
 
     @staticmethod
@@ -104,12 +114,15 @@ class AlfaWebEmulation :
 
         con = httplib.HTTPSConnection('click.alfabank.ru')
         con.connect()
-        con.request('PUT', '/api/v1/fee', content, headers)
+        con.request('POST', '/api/v1/fee', content, headers)
 
         resp = con.getresponse()
-        data = resp.read()
+        data = json.loads(resp.read())
+        
+        if 'error' in data and data['error'] != '0':
+            return {'error': True, 'error-description': 'Error processing request'}
 
-        return json.loads(data)
+        return {'error': False, 'fee': int(data['fee'])}
 
 @app.route("/verification", methods=['GET'])
 def verification() :
@@ -183,8 +196,15 @@ def payapi() :
         return flask.jsonify(error = False, token=queryId.hex,
                              url=flask.url_for('verification', _external=True) + '?' +
                              urllib.urlencode({'token' : queryId.hex}))
+    elif method == 'check' :
+        bankClass = AlfaWebEmulation
+        result = bankClass.getFee(payData)
+        if result['error'] : return flask.jsonify(error = True)
 
-    return flask.Response('Ok',200)
+        return flask.jsonify(error = False,
+                             fee=result['fee'], bank=bankClass.getBankData())
+
+    return flask.Response('Bad Request',400)
 
 if __name__ == '__main__':
     app.run(debug=True)
