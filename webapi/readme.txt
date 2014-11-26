@@ -12,13 +12,11 @@ mysql> GRANT ALL ON feeasy.* TO 'feeasyapp'@'localhost' IDENTIFIED BY 'feeasy129
 
 ==ЗАПРОС (комиссия)==
 
-http://37.252.124.233:5000/payapi?recipient_card=676280388571625380&sender_card=676280388571625380&recipient_card_format=pan&sender_card_format=pan&sum=10000&method=check
+http://37.252.124.233:5000/payapi?recipient_card=676280388571625380&sender_card=676280388571625380&sum=10000&method=check
 
 поля
 recipient_card - понятно
 sender_card - понятно
-recipient_card_format - должно быть 'pan', в дальнейшем для токинизации будет использоваться
-sender_card_format - 'pan'
 sum - сумма в копейках
 method - 'check'
 
@@ -33,7 +31,9 @@ method - 'check'
     "web-site": "http://alfabank.ru/"
   }, 
   "error": false, 
-  "fee": 3000
+  "fee": 3000, 
+  "sender_card": "6762 **** 5380", 
+  "sender_card_type": "Maestro"
 }
 
 Если error - false, то комиссия (в копейках) в fee
@@ -41,13 +41,11 @@ method - 'check'
 ==ЗАПРОС (транзакция)==
 
 (пример)
-http://37.252.124.233:5000/payapi?recipient_card=676280388571625380&sender_card=676280388571625380&recipient_card_format=pan&sender_card_format=pan&sender_exp_year=16&sender_exp_month=1&sender_csc=555&sum=10000&method=transfer
+http://37.252.124.233:5000/payapi?recipient_card=676280388571625380&sender_card=676280388571625380&sender_exp_year=16&sender_exp_month=1&sender_csc=555&sum=10000&method=transfer
 
 поля
 recipient_card - понятно
 sender_card - понятно
-recipient_card_format - должно быть 'pan', в дальнейшем для токинизации будет использоваться
-sender_card_format - 'pan'
 sender_exp_year - год (2 цифры)
 sender_exp_month - месяц (номер месяца)
 sender_csc - CSC (число)
