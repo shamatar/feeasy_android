@@ -15,6 +15,7 @@ import xml.etree.ElementTree
 import flaskInit
 import feeasyMySQL
 import cardFormatter
+import bankapi
 
 from datetime import datetime
 
@@ -38,120 +39,69 @@ class PayData:
         #raise Exception("Unknown method %s" % method)
 
 
-class AlfaWebEmulation :
-    @staticmethod
-    def transfer(payData):
-        params = {
-            "sender_type":"cnm",
-            "sender_value":payData.senderCard,
-            "recipient_type":"cnm",
-            "recipient_value":payData.recipientCard,
-            "exp_date":"%d%02d%02d" % (datetime.now().year // 100, payData.senderExpYear, payData.senderExpMonth),
-            "cvv":"%03d" % payData.senderCSC,
-            "amount": str(payData.sumCents),
-            "currency":"RUR",
-            "client_ip":"127.0.0.1" }
-
-        content = json.dumps(params)
-
-        headers = {
-            "Authorization":  "Bearer bd5970b9-ba7c-4d06-a0fd-b8c5bed02e40",
-            "Origin":  "https://alfabank.ru",
-            "Accept-Encoding":  "gzip, deflate, sdch",
-            "Host":  "click.alfabank.ru",
-            "Accept-Language":  "ru-RU,ru;q=0.8,en-US;q=0.6,en;q=0.4",
-            "User-Agent":  "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.65 Safari/537.36",
-            "Content-Type":  "application/json;charset=UTF-8",
-            "Accept":  "application/json, text/plain, */*",
-            "Referer":  "https://alfabank.ru/retail/cardtocard/alfaperevod/",
-            "Connection":  "keep-alive",
-            "Content-Length":  str(len(content)),
-        }
-
-        con = httplib.HTTPSConnection('click.alfabank.ru')
-        con.connect()
-        con.request('PUT', '/api/v1/transfers', content, headers)
-
-        resp = con.getresponse()
-        data = json.loads(resp.read())
-
-        if 'error' in data and data['error'] != '0' :
-            return {'error' : True, 'error-description' : 'Error processing request'}
-
-        return {
-            'url' : data['acsURL'],
-            'error' : False,
-            'data' : {
-                'PaReq' : data['pareq'].replace('\n',''),
-                'MD'    : data['md'],
-                'TermUrl' : flask.url_for('verifycomplete', _external=True) }
-        }
-
-    @staticmethod
-    def getBankData():
-        return {
-            'id': 'alfa',
-            'name-ru': u'Альфа-Банк',
-            'web-site': 'http://alfabank.ru/',
-        }
-
-    @staticmethod
-    def getFee(payData):
-        params = {
-            "sender_type":"cnm",
-            "sender_value":payData.senderCard,
-            "recipient_type":"cnm",
-            "recipient_value":payData.recipientCard,
-            "amount": str(payData.sumCents),
-            "currency":"RUR" }
-
-        content = json.dumps(params)
-
-        headers = {
-            "Authorization":  "Bearer bd5970b9-ba7c-4d06-a0fd-b8c5bed02e40",
-            "Origin":  "https://alfabank.ru",
-            "Accept-Encoding":  "gzip, deflate, sdch",
-            "Host":  "click.alfabank.ru",
-            "Accept-Language":  "ru-RU,ru;q=0.8,en-US;q=0.6,en;q=0.4",
-            "User-Agent":  "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.65 Safari/537.36",
-            "Content-Type":  "application/json;charset=UTF-8",
-            "Accept":  "application/json, text/plain, */*",
-            "Referer":  "https://alfabank.ru/retail/cardtocard/alfaperevod/",
-            "Connection":  "keep-alive",
-            "Content-Length":  str(len(content)),
-        }
-
-        con = httplib.HTTPSConnection('click.alfabank.ru')
-        con.connect()
-        con.request('POST', '/api/v1/fee', content, headers)
-
-        resp = con.getresponse()
-        data = json.loads(resp.read())
-        
-        if 'error' in data and data['error'] != '0':
-            return {'error': True, 'error-description': 'Error processing request'}
-
-        return {'error': False, 'fee': int(data['fee'])}
-
 @app.route("/verification-result", methods=['GET'])
 def verifyres() :
     success = flask.request.args.get('success','false') == 'true'
     return flask.Response('Success' if success else 'Error',200 if success else 400)
     
-def gotoVerificationResult(result) :
-    return flask.redirect(flask.url_for('verifyres', success='true' if result else 'false'))
+def gotoVerificationResult(success, transactionid = '') :
+    return flask.redirect(flask.url_for('verifyres', success='true' if success else 'false', transactionid=transactionid))
 
 @app.route("/verification-complete", methods=['POST'])
 def verifycomplete() :
     try :
-        data = zlib.decompress(base64.b64decode(flask.request.form['PaRes'][0]))
+        data = zlib.decompress(base64.b64decode(flask.request.form['PaRes']))
         
-        root = xml.etree.ElementTree.fromstring(x)
+        root = xml.etree.ElementTree.fromstring(data)
         result = root.findall('Message')[0].findall('PARes')[0].findall('TX')[0].findall('status')[0].text
-    except :
-        result = 'N'
+        
+        token = flask.request.args.get('token','')
+        
+        cursor = feeasyMySQL.getCursor()
+        cursor.execute("SELECT termurl, postdata, url, cookies, apiclass FROM verifications WHERE token=%(token)s", {'token': token})
+        
+        sqlResult = cursor.fetchone()
+        if sqlResult is None :
+            raise Exception()
+            
+        termurl, postdata, ascurl, cookies, apiClassId = sqlResult
+        
+        content = urllib.urlencode(dict([[x,flask.request.form[x]] for x in flask.request.form]))
+
+        urlObj = urlparse.urlparse(termurl)
+
+        apiClass = bankapi.BankApi.allApiFunction[apiClassId]
+
+        headers = {
+            "Accept":"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+            "Accept-Encoding":"gzip, deflate",
+            "Accept-Language":  "ru-RU,ru;q=0.8,en-US;q=0.6,en;q=0.4",
+            "Cache-Control": "max-age=0",
+            "Connection":  "keep-alive",
+            "Content-Length":  str(len(content)),
+            "Host":  urlObj.hostname,
+            "Origin":  flask.request.headers.get('Origin') or "%s://%s" % (urlparse.urlparse(ascurl).scheme,urlparse.urlparse(ascurl).netloc),
+            "Referer":  flask.request.headers.get('Referer') or ascurl,
+            "User-Agent":  "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.65 Safari/537.36",
+            "Content-Type":  "application/x-www-form-urlencoded",
+            "Accept":  "application/json, text/plain, */*",
+            "Cookie": cookies,
+        }
+
+        con = httplib.HTTPSConnection(urlObj.hostname)
+        con.connect()
+        con.request('POST', urlObj.path, content, headers)
+
+        resp = con.getresponse()
+        data = resp.read()
+
+        error, trunsactionId = apiClass.getTransactionResult(resp)
+
+    except Exception as e:
+        
+        error = True
     
-    return gotoVerificationResult(result=='Y')
+    return gotoVerificationResult(not error, trunsactionId)
 
 @app.route("/verification", methods=['GET'])
 def verification() :
@@ -161,7 +111,7 @@ def verification() :
             return flask.Response('Bad Request',400)
 
         cursor = feeasyMySQL.getCursor()
-        cursor.execute("DELETE FROM verifications WHERE date < DATE_ADD(NOW(),INTERVAL -30 MINUTE)")
+        cursor.execute("DELETE FROM verifications WHERE date < DATE_ADD(NOW(),INTERVAL -1 DAY)")
 
         cursor = feeasyMySQL.getCursor()
         cursor.execute("SELECT url, postdata FROM verifications WHERE token=%(token)s", {'token': token})
@@ -213,24 +163,28 @@ def payapi() :
     )
 
     method = data.get('method')
+    bankClass = bankapi.apiAlfaWeb
+
     if method == 'transfer' :
-        result = AlfaWebEmulation.transfer(payData)
+        result = bankClass.transfer(payData)
         if result['error'] : return flask.jsonify(error = True)
 
-        queryId = uuid.uuid4()
+        queryId = result['queryId']
         cursor = feeasyMySQL.getCursor()
-        cursor.execute("INSERT INTO verifications (token, url, postdata, date) VALUES (%(token)s, %(url)s, %(postdata)s, NOW())",
+        cursor.execute("INSERT INTO verifications (token, url, postdata, date, termurl, cookies, apiclass) VALUES (%(token)s, %(url)s, %(postdata)s, NOW(), %(termUrl)s, %(cookies)s, %(api)s)",
             {
                 'token' : queryId.hex,
                 'url'   : result['url'],
-                'postdata'  : json.dumps(result['data'])
+                'postdata'  : json.dumps(result['data']),
+                'termUrl' : result['termUrl'],
+                'cookies' : result['cookies'],
+                'api'  : bankClass.ID
             })
 
         return flask.jsonify(error = False, token=queryId.hex,
                              url=flask.url_for('verification', _external=True) + '?' +
                              urllib.urlencode({'token' : queryId.hex}))
     elif method == 'check' :
-        bankClass = AlfaWebEmulation
         result = bankClass.getFee(payData)
         if result['error'] : return flask.jsonify(error = True)
 
