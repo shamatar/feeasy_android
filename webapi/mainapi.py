@@ -213,15 +213,20 @@ def generateToken() :
     data = flask.request.form if flask.request.method=='POST' else flask.request.args
     pan = data.get('pan', '')
 
-    if pan=='' : return flask.Response('Bad Request',400)
+    if not pan.isdigit() :
+        return flask.jsonfy(
+            error = True,
+            reason = "pan must be numeric"
+        )
 
     id, cypher, cyphertoken = createTokenCypher('receivertokens', pan)
 
     return flask.jsonify(
+        error = False,
         cyphertoken = cyphertoken,
         cypher = cypher,
-        id = makeTokenId(id),
-        forpan = decryptToken('receivertokens', cyphertoken)
+        id = str(makeTokenId(id)),
+        forpan = str(decryptToken('receivertokens', cyphertoken))
     )
 
 def decryptToken(table, cyphertoken) :
