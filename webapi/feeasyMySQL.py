@@ -40,7 +40,24 @@ def init() :
 
 
 def setup() :
-    tables = { 'verifications' : '(token CHAR(32) UNIQUE NOT NULL PRIMARY KEY, url TEXT, postdata TEXT, date DATETIME, termUrl VARCHAR(255), cookies TEXT, apiclass VARCHAR(255), INDEX(date))'}
+    tables = {
+        'verifications' : """
+            (token CHAR(32) UNIQUE NOT NULL PRIMARY KEY,
+             url TEXT,
+             postdata TEXT,
+             date DATETIME,
+             termUrl VARCHAR(255),
+             cookies TEXT,
+             apiclass VARCHAR(255),
+             INDEX(date)
+             )""",
+        'receivertokens' : """
+            (token CHAR(32) UNIQUE NOT NULL PRIMARY KEY,
+             id    INT NOT NULL AUTO_INCREMENT,
+             data  BLOB,
+             INDEX(id)
+             )""",
+        }
     for table in tables :
         if tableExists(table) : continue
 

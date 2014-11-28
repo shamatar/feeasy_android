@@ -17,10 +17,17 @@ import feeasyMySQL
 import cardFormatter
 import bankapi
 
-from datetime import datetime
+import os.path
+import sys
+sys.path.append(os.path.join(os.path.dirname(__file__),'thirdparty') )
 
+import time
+import feencryptor
+
+from datetime import datetime
 app = flaskInit.app
 
+#rncryptor = RNCryptor.RNCryptor()
 
 class PayData:
     def __init__(self, senderCard, recipientCard, senderExpYear, senderExpMonth, senderCSC, sumCents ):
@@ -33,6 +40,9 @@ class PayData:
 
     @staticmethod
     def getCardNumber(data, isSender):
+        if not isSender and data[0]=='t' :
+            return decryptToken('receivertokens', data)
+
         return data;
         #if method == 'pan' : return data
         #if method == 'ignore' : return ''
@@ -197,6 +207,90 @@ def payapi() :
                               sender_card_type=senderCard.getType().name )
 
     return flask.Response('Bad Request',400)
+
+@app.route("/tokengen", methods=['GET', 'POST'])
+def generateToken() :
+    data = flask.request.form if flask.request.method=='POST' else flask.request.args
+    pan = data.get('pan', '')
+
+    if pan=='' : return flask.Response('Bad Request',400)
+
+    id, cypher, cyphertoken = createTokenCypher('receivertokens', pan)
+
+    return flask.jsonify(
+        cyphertoken = cyphertoken,
+        cypher = cypher,
+        id = makeTokenId(id),
+        forpan = decryptToken('receivertokens', cyphertoken)
+    )
+
+def decryptToken(table, cyphertoken) :
+    if cyphertoken[0]!='t' : raise Exception('Bad token format')
+
+    token  = cyphertoken[1:32+1]
+    cypher = cyphertoken[32+1:64+1]
+
+    cursor = feeasyMySQL.getCursor()
+    cursor.execute("SELECT data FROM " + table + " WHERE token=%s", [token])
+
+    sqlResult = cursor.fetchone()
+    if sqlResult is None :
+        return None
+
+    return feencryptor.decryptPan(cypher, sqlResult[0])
+
+def createTokenCypher(table, pan) :
+    id, token = createToken(table)
+
+    startTime = time.time()
+    cypher, data  = feencryptor.encryptPan(pan)
+    print "Cypher time %s" % str(time.time() - startTime)
+
+    cursor = feeasyMySQL.getCursor()
+    cursor.execute("UPDATE " + table + " SET data=%s WHERE token=%s", [data, token.hex])
+
+    return id, str(cypher), "t%s%s" % (token.hex, cypher.hex)
+
+#tokenField in table must be CHAR(32) UNIQUE
+def createToken(table) :
+    while True:
+        try :
+            token = uuid.uuid4()
+
+            cursor = feeasyMySQL.getCursor()
+            cursor.execute("INSERT INTO " + table + " (token) VALUES (%s)" , [token.hex])
+
+            if cursor.rowcount > 0 :
+                return cursor.lastrowid, token
+        except : pass # exception if collision detected
+
+
+def luhn_checksum(card_number):
+    def digits_of(n):
+        return [int(d) for d in str(n)]
+    digits = digits_of(card_number)
+    odd_digits = digits[-1::-2]
+    even_digits = digits[-2::-2]
+    checksum = 0
+    checksum += sum(odd_digits)
+    for d in even_digits:
+        checksum += sum(digits_of(d*2))
+    return checksum % 10
+
+def makeTokenId(id):
+    if id > 999999999999:
+        return -1
+
+    token = 4687390000000000000 + 10*id;
+
+    checksum = luhn_checksum(token)
+
+    if checksum == 0:
+        token = token
+    else:
+        token = token + 10 - checksum
+
+    return token
 
 if __name__ == '__main__':
     app.run(debug=True, host='192.168.157.21')
