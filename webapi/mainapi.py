@@ -228,7 +228,7 @@ def decryptToken(table, cyphertoken) :
     if cyphertoken[0]!='t' : raise Exception('Bad token format')
 
     token  = cyphertoken[1:32+1]
-    cypher = cyphertoken[32+1:64+1]
+    cypher = cyphertoken[32+1:]
 
     cursor = feeasyMySQL.getCursor()
     cursor.execute("SELECT data FROM " + table + " WHERE token=%s", [token])
@@ -237,19 +237,19 @@ def decryptToken(table, cyphertoken) :
     if sqlResult is None :
         return None
 
-    return feencryptor.decryptPan(cypher, sqlResult[0])
+    return feencryptor.decryptPan10(cypher, sqlResult[0])
 
 def createTokenCypher(table, pan) :
     id, token = createToken(table)
 
     startTime = time.time()
-    cypher, data  = feencryptor.encryptPan(pan)
+    cypher, data = feencryptor.encryptPan10(pan)
     print "Cypher time %s" % str(time.time() - startTime)
 
     cursor = feeasyMySQL.getCursor()
     cursor.execute("UPDATE " + table + " SET data=%s WHERE token=%s", [data, token.hex])
 
-    return id, str(cypher), "t%s%s" % (token.hex, cypher.hex)
+    return id, cypher, "t%s%s" % (token.hex, cypher)
 
 #tokenField in table must be CHAR(32) UNIQUE
 def createToken(table) :

@@ -62,7 +62,24 @@ def encryptPan(pan) :
     cypher = uuid.uuid4()
     data = alignAES(intToBytes(int(pan)))
 
-    return cypher, AES.new(cypher.bytes, AES.MODE_CBC, PAN_IV_SALT).encrypt(data)
+    return str(cypher), AES.new(cypher.bytes, AES.MODE_CBC, PAN_IV_SALT).encrypt(data)
 
 def decryptPan(cypher, code) :
     return bytesToInt(dealignAES(AES.new(uuid.UUID(str(cypher)).bytes, AES.MODE_CBC, PAN_IV_SALT).decrypt(str(code))))
+
+def sxor(s1,s2):
+    return ''.join(bchr(bord(a) ^ bord(b)) for a,b in zip(s1,s2))
+
+def intTo10Bytes(pan) :
+    data = intToBytes(int(pan))
+    return bchr(0) * (10 - len(data)) + data
+
+def encryptPan10(pan) :
+    cypher = Random.new().read(10)
+
+    data = intTo10Bytes(int(pan))
+
+    return cypher.encode('hex'), sxor(cypher,data)
+
+def decryptPan10(cypher, code) :
+    return bytesToInt(sxor(cypher.decode('hex'),str(code)))
