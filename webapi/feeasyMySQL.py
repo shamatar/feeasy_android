@@ -55,8 +55,16 @@ def setup() :
             (token CHAR(32) UNIQUE NOT NULL PRIMARY KEY,
              id    INT NOT NULL AUTO_INCREMENT,
              data  BLOB,
+             mail  VARCHAR(255),
+             descr TEXT,
              INDEX(id)
              )""",
+        'payertokens' : """
+            (token CHAR(32) UNIQUE NOT NULL PRIMARY KEY,
+             id    INT NOT NULL AUTO_INCREMENT,
+             data  BLOB,
+             INDEX(id)
+             )"""
         }
     for table in tables :
         if tableExists(table) : continue

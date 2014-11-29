@@ -57,6 +57,7 @@ method - 'transfer'
 
 (пример)
 {
+"cyphertoken": "t60102b8544e541f787457ae4a61d50573c682ce1c0204fa28e36",
 "error": false, 
 "token": "fda1073f83e34dc3b3da2b38c37e91fb", 
 "url": "http://37.252.124.233:5000/verification?token=fda1073f83e34dc3b3da2b38c37e91fb"
@@ -65,7 +66,32 @@ method - 'transfer'
 Если error - false - открываешь в браузере указанный в url адрес.
 Время жизни ссылки - 30 мин
 
+Значение cyphertoken может использоваться в последующем запросе вместо sender_card.
+
 ==ОБРАБОТКА РЕЗУЛЬТАТА==
 После отображения браузера нужно дождаться редиректа на страницу вида
 .../verification-result?success=<success>&transactionid=<transactionid>
 где <success> может принимать значения "true" или "false" и обозначает успех операции, а <transactionid> - идентификатор транзакции
+
+==ЗАПРОС (генерация токена)==
+В дальнейшем будет исключён
+http://192.168.157.21:5000/tokengen?pan=1111222233334444&e-mail=test@example.com&descr=Чаевые%20для%20Васи
+
+==ОТВЕТ (генерация токена)==
+{
+  "cypher": "68337925a23ab3f0b2d7", 
+  "cyphertoken": "t0a98d0d6e4d74c06b6912d082e6d962d68337925a23ab3f0b2d7", 
+  "error": false, 
+  "forpan": "1111222233334444", 
+  "id": "4687390000000000016"
+}
+
+Где pan в запросе - произвольное число от 1 до 24 цифр.
+
+Шифртокен (cyphertoken) необходим для оплаты по этому pan. Вместо него может использоваться комбинация id/cypher.
+
+В случае ошибки возвращается подобный ответ:
+{
+  "error": true, 
+  "reason": "pan must be numeric"
+}

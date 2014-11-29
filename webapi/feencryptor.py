@@ -17,11 +17,9 @@ if PY2:
 
     to_str = to_bytes
 
-    def bchr(s):
-        return chr(s)
+    bchr = chr
 
-    def bord(s):
-        return ord(s)
+    bord = ord
 
 elif PY3:
     def to_bytes(s):
@@ -70,16 +68,23 @@ def decryptPan(cypher, code) :
 def sxor(s1,s2):
     return ''.join(bchr(bord(a) ^ bord(b)) for a,b in zip(s1,s2))
 
+def ssum(s) :
+    return bchr(sum(bord(x) for x in list(s)) % 256)
+
 def intTo10Bytes(pan) :
     data = intToBytes(int(pan))
     return bchr(0) * (10 - len(data)) + data
 
 def encryptPan10(pan) :
-    cypher = Random.new().read(10)
+    cypher = Random.new().read(11)
 
     data = intTo10Bytes(int(pan))
+    if len(data)>10 : raise Exception("Pan too big")
+    data += ssum(data)
 
     return cypher.encode('hex'), sxor(cypher,data)
 
 def decryptPan10(cypher, code) :
-    return bytesToInt(sxor(cypher.decode('hex'),str(code)))
+    result = sxor(cypher.decode('hex'),str(code))
+    if ssum(result[:-1]) != result[-1:] : return None
+    return bytesToInt(result[:-1])

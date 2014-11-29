@@ -12,6 +12,8 @@ import zlib
 import base64
 import xml.etree.ElementTree
 
+import mysql.connector
+
 import flaskInit
 import feeasyMySQL
 import cardFormatter
@@ -31,17 +33,43 @@ app = flaskInit.app
 
 class PayData:
     def __init__(self, senderCard, recipientCard, senderExpYear, senderExpMonth, senderCSC, sumCents ):
-        self.senderCard = senderCard
-        self.recipientCard = recipientCard
-        self.senderExpYear = senderExpYear
+        self.senderCard     = senderCard
+        self.recipientCard  = recipientCard
+        self.senderExpYear  = senderExpYear
         self.senderExpMonth = senderExpMonth
         self.senderCSC = senderCSC
         self.sumCents = sumCents
 
+        self.error, self.errorMessage = self.checkCorrectness()
+
+    def checkCorrectness(self):
+        if not str(self.senderCard).isdigit() : return True, "Sender card must be numeric"
+        if not str(self.recipientCard).isdigit() : return True, "Recipient card must be numeric"
+
+        if len(str(self.senderCard)) > 24 : return True, "Sender card number is too long"
+        if len(str(self.recipientCard)) > 24 : return True, "Recipient card number is too long"
+
+        if not str(self.senderExpYear).isdigit()  : return True, "Year must be a number"
+        if not str(self.senderExpMonth).isdigit() : return True, "Month must be a number"
+        if not str(self.senderCSC).isdigit()      : return True, "CSC must be a number"
+        if not str(self.sumCents).isdigit()       : return True, "Sum must be a number"
+
+        self.senderCard     = int(self.senderCard)
+        self.recipientCard  = int(self.recipientCard)
+        self.senderExpYear  = int(self.senderExpYear)
+        self.senderExpMonth = int(self.senderExpMonth)
+        self.senderCSC      = int(self.senderCSC)
+        self.sumCents       = int(self.sumCents)
+
+        return False, "Ok"
+
     @staticmethod
     def getCardNumber(data, isSender):
-        if not isSender and data[0]=='t' :
-            return decryptToken('receivertokens', data)
+        if data[0]=='t' :
+            if isSender :
+                return decryptToken('payertokens', data)
+            else :
+                return decryptToken('receivertokens', data)
 
         return data;
         #if method == 'pan' : return data
@@ -163,14 +191,21 @@ def payapi() :
     #cursor = getMySQLCursor()
     #cursor.execute('CREATE TABLE verifications (token VARCHAR(64) UNIQUE NOT NULL PRIMARY KEY, url TEXT, postdata TEXT, date DATETIME, INDEX(date))')
 
+    senderCard    = data.get('sender_card','-')
+    recipientCard = data.get('recipient_card','-')
+
     payData = PayData(
-        PayData.getCardNumber(data.get('sender_card','-')   , True),
-        PayData.getCardNumber(data.get('recipient_card','-'), False),
+        PayData.getCardNumber(senderCard   , True),
+        PayData.getCardNumber(recipientCard, False),
         int(data.get('sender_exp_year', '0')),
         int(data.get('sender_exp_month', '0')),
         int(data.get('sender_csc', '0')),
         int(data.get('sum', '0'))
     )
+
+    if payData.error :
+        return flask.jsonify(error = True,
+                             reason = payData.errorMessage )
 
     method = data.get('method')
     bankClass = bankapi.apiAlfaWeb
@@ -191,7 +226,14 @@ def payapi() :
                 'api'  : bankClass.ID
             })
 
+
+        if senderCard[0]=='t' :
+            cyphertoken = senderCard[0]
+        else :
+            id, cypher, cyphertoken = createTokenCypher('payertokens', payData.senderCard)
+
         return flask.jsonify(error = False, token=queryId.hex,
+                             cyphertoken = cyphertoken,
                              url=flask.url_for('verification', _external=True) + '?' +
                              urllib.urlencode({'token' : queryId.hex}))
     elif method == 'check' :
@@ -211,15 +253,24 @@ def payapi() :
 @app.route("/tokengen", methods=['GET', 'POST'])
 def generateToken() :
     data = flask.request.form if flask.request.method=='POST' else flask.request.args
+
     pan = data.get('pan', '')
+    mail = data.get('e-mail', '')
+    descr = data.get('descr', '')
 
     if not pan.isdigit() :
-        return flask.jsonfy(
+        return flask.jsonify(
             error = True,
             reason = "pan must be numeric"
         )
 
-    id, cypher, cyphertoken = createTokenCypher('receivertokens', pan)
+    if len(pan) > 24 :
+        return flask.jsonify(
+            error = True,
+            reason = "pan possible length up to 24 digit"
+        )
+
+    id, cypher, cyphertoken = createTokenCypher('receivertokens', pan, {'mail': mail, 'descr': descr})
 
     return flask.jsonify(
         error = False,
@@ -244,30 +295,40 @@ def decryptToken(table, cyphertoken) :
 
     return feencryptor.decryptPan10(cypher, sqlResult[0])
 
-def createTokenCypher(table, pan) :
-    id, token = createToken(table)
+def createTokenCypher(table, pan, fields = {}) :
 
     startTime = time.time()
     cypher, data = feencryptor.encryptPan10(pan)
     print "Cypher time %s" % str(time.time() - startTime)
 
-    cursor = feeasyMySQL.getCursor()
-    cursor.execute("UPDATE " + table + " SET data=%s WHERE token=%s", [data, token.hex])
+    #cursor = feeasyMySQL.getCursor()
+    #cursor.execute("UPDATE " + table + " SET data=%s WHERE token=%s", [data, token.hex])
+
+    fields = fields.copy()
+    fields['data'] = data
+
+    id, token = createToken(table, fields)
 
     return id, cypher, "t%s%s" % (token.hex, cypher)
 
 #tokenField in table must be CHAR(32) UNIQUE
-def createToken(table) :
-    while True:
+def createToken(table, fields = {}) :
+    for attempt in range(10) :
         try :
             token = uuid.uuid4()
 
             cursor = feeasyMySQL.getCursor()
-            cursor.execute("INSERT INTO " + table + " (token) VALUES (%s)" , [token.hex])
+            cursor.execute("INSERT INTO %s (%s) VALUES (%s)" % (
+                table, ','.join(['token'] + fields.keys()), ','.join(['%s'] * (1 + len(fields)))
+                                                               ) , [token.hex] + fields.values())
 
             if cursor.rowcount > 0 :
                 return cursor.lastrowid, token
-        except : pass # exception if collision detected
+        except Exception as e:
+            if e.errno!=mysql.connector.errorcode.ER_DUP_ENTRY:
+                break
+
+    raise Exception('token creation error')
 
 
 def luhn_checksum(card_number):
