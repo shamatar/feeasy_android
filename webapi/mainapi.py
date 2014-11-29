@@ -26,6 +26,8 @@ sys.path.append(os.path.join(os.path.dirname(__file__),'thirdparty') )
 import time
 import feencryptor
 
+from Crypto import Random
+
 from datetime import datetime
 app = flaskInit.app
 
@@ -228,7 +230,7 @@ def payapi() :
 
 
         if senderCard[0]=='t' :
-            cyphertoken = senderCard[0]
+            cyphertoken = senderCard
         else :
             id, cypher, cyphertoken = createTokenCypher('payertokens', payData.senderCard)
 
@@ -283,8 +285,8 @@ def generateToken() :
 def decryptToken(table, cyphertoken) :
     if cyphertoken[0]!='t' : raise Exception('Bad token format')
 
-    token  = cyphertoken[1:32+1]
-    cypher = cyphertoken[32+1:]
+    token  = cyphertoken[1:16+1]
+    cypher = cyphertoken[16+1:]
 
     cursor = feeasyMySQL.getCursor()
     cursor.execute("SELECT data FROM " + table + " WHERE token=%s", [token])
@@ -309,22 +311,23 @@ def createTokenCypher(table, pan, fields = {}) :
 
     id, token = createToken(table, fields)
 
-    return id, cypher, "t%s%s" % (token.hex, cypher)
+    return id, cypher, "t%s%s" % (token, cypher)
 
 #tokenField in table must be CHAR(32) UNIQUE
 def createToken(table, fields = {}) :
     for attempt in range(10) :
         try :
-            token = uuid.uuid4()
+            token = Random.new().read(8).encode('hex')
 
             cursor = feeasyMySQL.getCursor()
+
             cursor.execute("INSERT INTO %s (%s) VALUES (%s)" % (
                 table, ','.join(['token'] + fields.keys()), ','.join(['%s'] * (1 + len(fields)))
-                                                               ) , [token.hex] + fields.values())
+                                                               ) , [token] + fields.values())
 
             if cursor.rowcount > 0 :
                 return cursor.lastrowid, token
-        except Exception as e:
+        except mysql.connector.errors.DatabaseError as e:
             if e.errno!=mysql.connector.errorcode.ER_DUP_ENTRY:
                 break
 

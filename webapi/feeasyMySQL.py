@@ -42,7 +42,7 @@ def init() :
 def setup() :
     tables = {
         'verifications' : """
-            (token CHAR(32) UNIQUE NOT NULL PRIMARY KEY,
+            (token CHAR(16) UNIQUE NOT NULL PRIMARY KEY,
              url TEXT,
              postdata TEXT,
              date DATETIME,
@@ -52,7 +52,7 @@ def setup() :
              INDEX(date)
              )""",
         'receivertokens' : """
-            (token CHAR(32) UNIQUE NOT NULL PRIMARY KEY,
+            (token CHAR(16) UNIQUE NOT NULL PRIMARY KEY,
              id    INT NOT NULL AUTO_INCREMENT,
              data  BLOB,
              mail  VARCHAR(255),
