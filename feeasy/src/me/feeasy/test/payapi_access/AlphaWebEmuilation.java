@@ -185,10 +185,10 @@ public class AlphaWebEmuilation extends PayApiBase{
 		    	
 		    	webview.loadUrl("javascript:(function(){s=angular.element(document.querySelector('.transaction__actions')).injector().get('Progress');m=s.message;s.message = function(t,r){feeasy.err(t,r);m(t,r)}})()");
 
-		    	webview.loadUrl("javascript:(function(){$('#sender__card_number').val('" + payData.senderCard.getString() + "')})()");
+		    	webview.loadUrl("javascript:(function(){$('#sender__card_number').val('" + payData.senderCard + "')})()");
 		    	webview.loadUrl("javascript:(function(){$('#sender__card_number').triggerHandler('blur')})()");
 		    	
-		    	webview.loadUrl("javascript:(function(){$('#recipient__card_number').val('" + payData.recipientCard.getString() + "')})()");
+		    	webview.loadUrl("javascript:(function(){$('#recipient__card_number').val('" + payData.recipientCard + "')})()");
 		    	webview.loadUrl("javascript:(function(){$('#recipient__card_number').triggerHandler('blur')})()");
 		    	
 		    	webview.loadUrl("javascript:(function(){feeasy.alphaNotify(JSON.stringify([angular.element(document.querySelector('.transaction__actions')).scope().transaction.recipient__card_number_alfa,angular.element(document.querySelector('.transaction__actions')).scope().transaction.sender__card_number_alfa]))})()");

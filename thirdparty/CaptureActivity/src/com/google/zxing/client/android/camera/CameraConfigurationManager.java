@@ -132,6 +132,9 @@ final class CameraConfigurationManager {
       cameraResolution.x = afterSize.width;
       cameraResolution.y = afterSize.height;
     }
+    
+    // ADDED MANUALLY FOR FEEASY
+    camera.setDisplayOrientation(90);
   }
 
   Point getCameraResolution() {

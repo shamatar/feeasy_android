@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CompProgressView">
+        <attr name="glyph" format="reference"/>
+        <attr name="clickable" format="boolean"/>
+        <attr name="save_proportion" format="boolean"/>
+        <attr name="color" format="color"    />
+        <attr name="border_color" format="color" />
+        <attr name="alpha" format="float"/>
+        <attr name="blur_radius" format="float"/>
+        <attr name="shade_color" format="color"/>
+        <attr name="shade_offset_x" format="dimension"/>
+        <attr name="shade_offset_y" format="dimension"/>
+    </declare-styleable>
+</resources>

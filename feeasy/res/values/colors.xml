@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <item name="lightText" type="color">#A0A0A0</item>
+    <item name="darkText" type="color">#505050</item>
     
-    <item name="bgColor" type="color">#e3f4d7</item>
+    <item name="bgColor" type="color">#F3F3F3</item>
     
-    <item name="bgInner" type="color">#f0f9ea</item>
+    <item name="bgInner" type="color">#E3E3E3</item>
     <item name="strokeInner" type="color">#addf8d</item>
     
     <item name="bgInner2"             type="color">#ffffff</item>
-    <item name="strokeInner2"         type="color">#e3f4d7</item>
-    <item name="strokeInner2selected" type="color">#b7f4d7</item>
+    <item name="strokeInner2"         type="color">#e3e3e3</item>
+    <item name="strokeInner2selected" type="color">#c7f4e7</item>
     <item name="strokeInner2error"    type="color">#c8a0a0</item>
+    
+    <item name="headerBg"             type="color">#D9D9D9</item>
+    <item name="headerText"           type="color">#B03489CF</item>
 </resources>

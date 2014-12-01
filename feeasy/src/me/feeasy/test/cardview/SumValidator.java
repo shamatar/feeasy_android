@@ -19,7 +19,7 @@ public class SumValidator extends EditValidator {
 	
 	@Override
 	public boolean isComplete() {
-		return text.length() == 6;
+		return text.length() >= 3;
 	}
 
 	@Override
@@ -30,7 +30,15 @@ public class SumValidator extends EditValidator {
 	}
 
 	@Override public String correctString(String initial) {
-		text = initial;		
+		text = initial;
+		text.replace(",", ".");
+		
+		if( isValid() ) {
+			if( text.indexOf(".")<0 ) {
+				text += ".00";
+			}
+		}
+		
 		return text;
 	}
 	

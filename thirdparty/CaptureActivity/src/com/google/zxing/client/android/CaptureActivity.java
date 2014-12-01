@@ -406,6 +406,9 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
       beepManager.playBeepSoundAndVibrate();
       drawResultPoints(barcode, scaleFactor, rawResult);
     }
+    
+    //ADDED MANUALLY FOR FEEASY:
+    source = IntentSource.NATIVE_APP_INTENT;
 
     switch (source) {
       case NATIVE_APP_INTENT:
@@ -587,7 +590,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
       ClipboardInterface.setText(text, this);
     }
 
-    if (source == IntentSource.NATIVE_APP_INTENT) {
+    if ( source == IntentSource.NATIVE_APP_INTENT) {
       
       // Hand back whatever action they requested - this can be changed to Intents.Scan.ACTION when
       // the deprecated intent is retired.

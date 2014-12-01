@@ -7,7 +7,6 @@ import me.feeasy.test.cardview.CompoundButtonValidator;
 
 import org.cryptonode.jncryptor.AES256JNCryptor;
 
-import org.cryptonode.jncryptor.CryptorException;
 import org.cryptonode.jncryptor.JNCryptor;
 
 import android.app.Activity;
@@ -15,15 +14,12 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Base64;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
-import android.widget.Toast;
 
 class ValueHolder<T> {
 	public T value;
@@ -34,6 +30,9 @@ class ValueHolder<T> {
 
 public class ActivityPay extends Activity {
 	private static final int TAG_ACTIVITY_PAY = 12300;
+
+	private static final String TAG_RECIPIENT_ID = "recipient_id";
+	private static final String TAG_RECIPIENT_MESSAGE = "recipient_message";
 	
 	JNCryptor cryptor = new AES256JNCryptor();
 	String PAN;
@@ -46,7 +45,8 @@ public class ActivityPay extends Activity {
 	
 	CompoundButton acceptView;
 	
-	CardNumber recipientCard = new CardNumber();
+	String recipientId;
+	String recipientMessage;
 	
 	public void hideSoftKeyboard() {
 		View focus = getCurrentFocus();
@@ -59,6 +59,22 @@ public class ActivityPay extends Activity {
 	
 	@Override public void onCreate(Bundle savedState) {
 		super.onCreate(savedState);
+		
+		Bundle extras = getIntent().getExtras();
+		
+		recipientId = "4279010011528366";
+		
+		if( extras!=null ) {
+			recipientId = extras.getString(TAG_RECIPIENT_ID);
+			recipientMessage = extras.getString(TAG_RECIPIENT_MESSAGE);
+		}
+		if( recipientId==null ) {
+			setResult(InitialActivity.TAG_KILL_ALL);
+			finish();
+			Intent intent = new Intent(this, InitialActivity.class);
+			startActivity(intent);
+			return;
+		}
 		
 		setContentView(R.layout.pay);
 		
@@ -103,67 +119,40 @@ public class ActivityPay extends Activity {
         // set action for button if it is valid
         buttonValidator.setAction(new Runnable() {
 			@Override public void run() {
-				Intent intentPayProcess = new Intent(getApplicationContext(), ActivityPayProcess.class);
+				Intent intentPayProcess = new Intent(getApplicationContext(), ActivityConfirm.class);
 				
-				intentPayProcess.putExtra(ActivityPayProcess.TAG_SENDER_CARD, cardView.getPEN());
-				intentPayProcess.putExtra(ActivityPayProcess.TAG_PRECIPIENT_CARD, recipientCard.getString());
-				intentPayProcess.putExtra(ActivityPayProcess.TAG_CSC, cardView.getCSC());
-				intentPayProcess.putExtra(ActivityPayProcess.TAG_EXP_MONTH, cardView.getMonth()); 
-				intentPayProcess.putExtra(ActivityPayProcess.TAG_EXP_YEAR, cardView.getYear());
-				intentPayProcess.putExtra(ActivityPayProcess.TAG_SUM, sumValidator.getCents());
+				PayData payData = new PayData(
+						cardView.getPEN(), 
+						recipientId, 
+						cardView.getCSC(), 
+						cardView.getMonth(), 
+						cardView.getYear(), 
+						sumValidator.getCents(),
+						recipientMessage
+					);
+				
+				Bundle payDataBundle = new Bundle();
+				payData.save(payDataBundle);
+				
+				intentPayProcess.putExtra(ActivityConfirm.EXTRA_TAG_PAY_DATA, payDataBundle);
 				
 				startActivityForResult(intentPayProcess, TAG_ACTIVITY_PAY);
 			}
 		});
         
-        // run QR scanner
-        Intent intent = new Intent("com.google.zxing.client.android.SCAN");
-        intent.putExtra("SCAN_MODE", "QR_CODE_MODE");
-        startActivityForResult(intent, 0);
 	}
 	
 	@Override public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        if (requestCode == 0) {
-        	recipientCard.set("5486742777221135");
-        	
-            if (resultCode == RESULT_OK) { 
-            	String contents = intent.getStringExtra("SCAN_RESULT");
-            	String format = intent.getStringExtra("SCAN_RESULT_FORMAT");
-
-            	Toast.makeText(getApplicationContext(), format + ":" + contents, Toast.LENGTH_SHORT).show();
-
-            	String possiblePrefix[] = {"feeasy://", "http://feeasy.com/?q1=", "https://feeasy.com/?q1="
-            			, "http://www.feeasy.com/?q1=", "https://www.feeasy.com/?q1="};
-
-            	String usePrefix = null;
-
-            	for(String prefix : possiblePrefix) {
-            		if( contents.startsWith(prefix) ) {
-            			usePrefix = prefix;
-            		}
-            	}
-
-            	if( usePrefix==null ) {
-            		//TODO: error
-            	} else {
-	            	String code = contents.substring(usePrefix.length());
-	            	char secretKey[] = {'s','e','c','r','e','t','k','e','y'};
-	
-	            	try {
-						PAN = new String(cryptor.decryptData(Base64.decode(code, Base64.DEFAULT), secretKey));
-					} catch (CryptorException e) {
-						// TODO error
-					}
-            	}
-            	
-                // Handle successful scan   
-            } else if (resultCode == RESULT_CANCELED) {
-               // Handle cancel
-               Log.i("App","Scan unsuccessful");
-            }
-        } else if(requestCode == TAG_ACTIVITY_PAY ) {
-        	if( resultCode == ActivityPayProcess.EXTRA_STATUS_ERROR ) {
-        		showErrorDialog(intent.getStringExtra(ActivityPayProcess.EXTRA_TAG_ERROR_TEXT));
+		if( resultCode==InitialActivity.TAG_KILL_ALL ) {
+			setResult(InitialActivity.TAG_KILL_ALL);
+			finish();
+			
+			return;
+		}
+		
+        if( requestCode == TAG_ACTIVITY_PAY ) {
+        	if( resultCode == ActivityConfirm.EXTRA_STATUS_ERROR ) {
+        		showErrorDialog(intent.getStringExtra(ActivityConfirm.EXTRA_TAG_ERROR_TEXT));
         	}
         }
     }

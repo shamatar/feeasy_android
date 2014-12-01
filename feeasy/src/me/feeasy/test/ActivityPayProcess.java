@@ -18,13 +18,6 @@ public class ActivityPayProcess extends Activity {
 	
 	static String EXTRA_TAG_ERROR_TEXT = "error";
 	
-	static String TAG_SENDER_CARD = "sender_card";
-	static String TAG_PRECIPIENT_CARD = "recipient_card";
-	static String TAG_CSC = "csc";
-	static String TAG_EXP_MONTH = "exp_month";
-	static String TAG_EXP_YEAR  = "exp_year";
-	static String TAG_SUM  = "sum";
-	
 	@Override public void onCreate(Bundle savedState) {
 		super.onCreate(savedState);
 		
@@ -39,8 +32,8 @@ public class ActivityPayProcess extends Activity {
 		
 		apiAccess = new AlphaWebEmuilation(
 				new PayApiBase.PayData(
-						new CardNumber(intent.getExtras().getString(TAG_SENDER_CARD)), 
-						new CardNumber(intent.getExtras().getString(TAG_PRECIPIENT_CARD)),
+						intent.getExtras().getString(TAG_SENDER_CARD), 
+						intent.getExtras().getString(TAG_PRECIPIENT_CARD),
 						intent.getExtras().getInt(TAG_CSC, 0),
 						intent.getExtras().getInt(TAG_EXP_MONTH, 0), 
 						intent.getExtras().getInt(TAG_EXP_YEAR, 0), 

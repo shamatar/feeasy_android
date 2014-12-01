@@ -715,3 +715,11 @@
 bin
 gen
 .metadata
+/webapi/__pycache__/cardFormatter.cpython-34.pyc
+/webapi/bankapi.pyc
+/webapi/cardFormatter.pyc
+/webapi/encryptor.pyc
+/webapi/feeasyMySQL.pyc
+/webapi/feencryptor.pyc
+/webapi/flaskInit.pyc
+/webapi/thirdparty/RNCryptor.pyc

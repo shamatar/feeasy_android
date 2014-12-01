@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:svg="http://schemas.android.com/apk/res/me.feeasy.test"
+    
+	android:background="@color/bgColor"
+    
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+	<ProgressBar
+	    android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	
+    	android:layout_centerInParent="true"
+    	 
+	    android:indeterminate="true"/>
+	<LinearLayout 
+	    android:id="@+id/payContainer"
+	    
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:orientation="vertical"
+	    android:background="#FFFFFF" >
+	    
+	    <RelativeLayout
+	        android:layout_width="match_parent"
+	    	android:layout_height="wrap_content"
+	    	android:background="@drawable/title_bg"
+	    	
+	    	android:padding="@dimen/minStdPadding" >
+	        <me.feeasy.test.svgview.SvgGlyphView
+	            android:id="@+id/headChevron"
+	            
+	            android:layout_alignParentLeft="true"
+	            android:layout_centerVertical="true"
+	            
+	            android:layout_width="wrap_content"
+	            android:layout_height="@dimen/stdText"
+	            
+		        svg:glyph="@raw/chevron_l"
+		        svg:color="@color/headerText"
+	            />
+	        <TextView 
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            
+	            android:layout_marginLeft="@dimen/halfStdPadding"
+	            
+	            android:textSize="@dimen/stdText"
+	            android:text="Ввод данных"
+		        android:textColor="@color/headerText"
+	            
+	            android:clickable="true"
+	            android:focusable="true"
+	            
+	            android:layout_toRightOf="@id/headChevron" />
+	        
+	        <TextView 
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:textSize="@dimen/stdText"
+	            android:text="Соглашение"
+		        android:textColor="@color/headerText"
+	            
+	            android:clickable="true"
+	            android:focusable="true"
+	            
+	            android:layout_alignParentRight="true" />
+	    </RelativeLayout>
+	    
+	    <LinearLayout 
+	        style="@style/box_global"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="vertical" >
+		    
+		    <RelativeLayout
+		        style="@style/header_box"
+		        android:layout_width="match_parent"
+		       	android:layout_height="wrap_content" >
+		       		<TextView
+		       		    style="@style/header_text"
+		       		    android:layout_width ="wrap_content"
+		       		    android:layout_height="wrap_content"
+		       		    
+		       		    android:layout_alignParentLeft="true"
+		       		    
+			        	android:text="Данные перевода" />
+		       	</RelativeLayout>
+		    
+		    <LinearLayout
+		        android:layout_width="match_parent"
+		    	android:layout_height="wrap_content"
+		    	
+		    	android:orientation="vertical"
+		      
+		        style="@style/pay_box">
+		        
+		        <TextView
+		            android:id="@+id/paycaptionSource"
+		            
+				    android:layout_width ="wrap_content"
+				    android:layout_height="wrap_content"
+				    
+			        style="@style/payCaption"
+				    
+				    android:text="Счёт списания" />
+	
+		        <LinearLayout 
+				    android:layout_width ="match_parent"
+				    android:layout_height="wrap_content"
+		            android:orientation="horizontal"
+		            android:gravity="center_vertical">
+			    	<ImageView
+		       		    android:id="@+id/payimageCard"
+		       		    
+		       		    android:layout_width ="@dimen/tripleStdPadding"
+		       		    android:layout_height="wrap_content"
+		       		    
+		       		    android:src="@drawable/pk_default_card"
+		       		    android:contentDescription="Тип карты"
+		       		    
+		       		    android:layout_gravity="center_vertical"
+	        		    android:gravity="center_vertical" />
+			    	
+					<TextView
+		       		    android:id="@+id/paydataPan"
+		       		    
+					    android:layout_width ="wrap_content"
+					    android:layout_height="wrap_content"
+					    
+				        style="@style/payData"
+					    
+					    android:text="" />
+				</LinearLayout>
+				
+		        <TextView
+		            android:id="@+id/paycaptionMessage"
+		            
+				    android:layout_width ="wrap_content"
+				    android:layout_height="wrap_content"
+				    
+			        style="@style/payCaption"
+				    
+				    android:text="Сообщение получателя" />
+		        
+		        <LinearLayout 
+				    android:layout_width ="match_parent"
+				    android:layout_height="wrap_content"
+		            android:orientation="horizontal">
+			        <View
+		       		    android:id="@+id/paypaddingMessage"
+		       		    
+		       		    android:layout_width ="@dimen/tripleStdPadding"
+		       		    android:layout_height="@dimen/largerText" />
+			        
+			        <TextView
+		       		    android:id="@+id/paydataMessage"
+		       		    
+					    android:layout_width ="wrap_content"
+					    android:layout_height="wrap_content"
+					    
+				        style="@style/payData"
+					    
+					    android:text="" />
+			        </LinearLayout>
+		        
+		        <TextView
+				    android:layout_width ="wrap_content"
+				    android:layout_height="wrap_content"
+				    
+			        style="@style/payCaption"
+				    
+				    android:text="Сумма зачисления" />
+		        
+		        <LinearLayout 
+				    android:layout_width ="match_parent"
+				    android:layout_height="wrap_content"
+		            android:orientation="horizontal">
+			        
+			        <View	       		    
+		       		    android:layout_width ="@dimen/tripleStdPadding"
+		       		    android:layout_height="@dimen/largerText" />
+			        <TextView
+		       		    android:id="@+id/paydataSum"
+		       		    
+					    android:layout_width ="wrap_content"
+					    android:layout_height="wrap_content"
+					    
+				        style="@style/payData"
+					    
+					    android:text="" />
+			    </LinearLayout>
+		        
+		        <TextView
+				    android:layout_width ="wrap_content"
+				    android:layout_height="wrap_content"
+				    
+			        style="@style/payCaption"
+				    
+				    android:text="Комиссия" />
+		        
+		        <LinearLayout
+		       		android:orientation="horizontal"
+		       		
+			        android:layout_width="match_parent"
+			    	android:layout_height="wrap_content"
+			    	
+		            android:gravity="center_vertical" >
+			    	<ImageView
+	        		    android:id="@+id/payimageBank"
+	        		    
+		       		    android:layout_width ="@dimen/tripleStdPadding"
+		       		    android:layout_height="@dimen/largerText"
+		       		    
+		       		    android:layout_gravity="center_vertical"
+	        		    android:gravity="center_vertical"
+	        		    
+	        		    android:contentDescription="Банк" />
+					<TextView
+	        		    android:id="@+id/paydataFee"
+	        		    
+					    android:layout_width ="wrap_content"
+					    android:layout_height="wrap_content"
+					    
+				        style="@style/payData"
+					    
+					    android:text="" />
+				</LinearLayout>
+				
+		        <TextView
+				    android:layout_width ="wrap_content"
+				    android:layout_height="wrap_content"
+				    
+			        style="@style/payCaption"
+				    
+				    android:text="К оплате" />
+		        
+		        <LinearLayout 
+				    android:layout_width ="match_parent"
+				    android:layout_height="wrap_content"
+		            android:orientation="horizontal">
+			        
+			        <View	       		    
+		       		    android:layout_width ="@dimen/tripleStdPadding"
+		       		    android:layout_height="@dimen/largerText" />
+			        <TextView
+		       		    android:id="@+id/paydataFullSum"
+		       		    
+					    android:layout_width ="wrap_content"
+					    android:layout_height="wrap_content"
+					    
+				        style="@style/payData"
+					    
+					    android:text="" />
+			        </LinearLayout>
+		    </LinearLayout>
+		</LinearLayout>
+		    
+	    <View
+	        android:layout_height="@dimen/minStdPadding"
+	        android:layout_width="match_parent"
+	        android:layout_margin="@dimen/minStdPadding" />
+	    
+	    <Button 
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:background="@drawable/button_bg"
+	        
+	        android:layout_margin="@dimen/minStdPadding"
+	        
+	        android:textColor="#FFFFFF"
+	        android:text="Подтвердить"
+	        
+	        android:id="@+id/paybtn_confirm"
+	        />
+	</LinearLayout>
+</RelativeLayout>

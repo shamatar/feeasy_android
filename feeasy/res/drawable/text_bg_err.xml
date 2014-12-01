@@ -5,6 +5,8 @@
 	        <solid
 	        	android:color="@color/bgInner2" />
 		    
+	        <corners android:radius="@dimen/boxRadius" />
+	        
 		    <stroke
 		        android:width="@dimen/borderWidth2"
 		        android:color="@color/strokeInner2error" />
@@ -15,6 +17,8 @@
 	        <solid
 	        	android:color="@color/bgInner2" />
 		    
+	        <corners android:radius="@dimen/boxRadius" />
+	        
 		    <stroke
 		        android:width="@dimen/borderWidth"
 		        android:color="@color/strokeInner2error" />

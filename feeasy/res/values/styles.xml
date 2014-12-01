@@ -16,30 +16,49 @@
     <style name="AppTheme" parent="AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
         <item name="android:textSize">@dimen/stdText</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+    
+    <style name="header_box">
+		<item name="android:padding">@dimen/minStdPadding</item>
+		<item name="android:background">@color/headerBg</item>
+    </style>
+    
+    <style name="header_text">
+        <item name="android:textColor">#707070</item>
+		<item name="android:textStyle">bold</item>
+    </style>
+    
+    <style name="box_global">
+        <item name="android:background">@drawable/box_bg</item>
+        
+        <item name="android:layout_marginLeft">@dimen/minStdPadding</item>
+        <item name="android:layout_marginRight">@dimen/minStdPadding</item>
+        <item name="android:layout_marginTop">@dimen/minStdPadding</item>
     </style>
     
     <style name="pay_box">
-        <item name="android:background">@drawable/box_bg</item>
-        <item name="android:layout_margin">@dimen/minStdPadding</item>
-        
-        <item name="android:paddingTop">@dimen/minStdPadding</item>
         <item name="android:paddingBottom">@dimen/minStdPadding</item>
-        
-        <item name="android:paddingLeft">@dimen/borderWidth</item>
-        <item name="android:paddingRight">@dimen/borderWidth</item>
+        <item name="android:layout_margin">@dimen/halfStdPadding</item>
     </style>
     
     <style name="payCaption">
-        <item name="android:layout_marginTop">@dimen/minStdPadding</item>
-        <item name="android:layout_marginLeft">@dimen/minStdPadding</item>
-        <item name="android:layout_marginRight">@dimen/minStdPadding</item>
+        <item name="android:layout_marginTop">@dimen/halfStdPadding</item>
         <item name="android:textColor">@color/lightText</item>
+    </style>
+    
+    <style name="payData">
+        <item name="android:layout_marginTop">@dimen/minStdPadding</item>
+        <item name="android:layout_marginLeft">@dimen/halfStdPadding</item>
+        <item name="android:layout_marginRight">@dimen/halfStdPadding</item>
+        <item name="android:textColor">@color/darkText</item>
+        <item name="android:textStyle">bold</item>
     </style>
     
     <style name="payCaptionCard">
         <item name="android:layout_marginTop">@dimen/minStdPadding</item>
-        <item name="android:layout_marginLeft">@dimen/minStdPadding</item>
-        <item name="android:layout_marginRight">@dimen/minStdPadding</item>
+        <item name="android:layout_marginLeft">@dimen/halfStdPadding</item>
+        <item name="android:layout_marginRight">@dimen/halfStdPadding</item>
         
         <item name="android:textSize">@dimen/smallText</item>
         
@@ -47,12 +66,11 @@
     </style>
     
     <style name="payEdit">
-        <item name="android:layout_marginLeft">@dimen/halfStdPadding</item>
-        <item name="android:layout_marginRight">@dimen/halfStdPadding</item>
-        <item name="android:paddingTop">@dimen/halfStdPadding</item>
-        <item name="android:paddingBottom">@dimen/halfStdPadding</item>
-        <item name="android:paddingLeft">@dimen/minStdPadding</item>
-        <item name="android:paddingRight">@dimen/minStdPadding</item>
+        <item name="android:paddingTop">@dimen/quarterStdPadding</item>
+        <item name="android:paddingBottom">@dimen/quarterStdPadding</item>
+        <item name="android:paddingLeft">@dimen/halfStdPadding</item>
+        <item name="android:paddingRight">@dimen/halfStdPadding</item>
+        <item name="android:layout_margin">@dimen/halfStdPadding</item>
         <item name="android:background">@drawable/text_bg</item>
     </style>
 </resources>

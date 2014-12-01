@@ -1,5 +1,6 @@
 package me.feeasy.test;
 
+import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
 
@@ -169,6 +170,8 @@ public enum CardType {
 	
 	static {
 		ranges = new CardRangeDetector();
+		typeById = new HashMap<String, CardType>();
+		
 		for(CardType cardType: CardType.values()) {
 			cardType.register();
 		}
@@ -180,7 +183,10 @@ public enum CardType {
 	
 	private Pattern validationPattern;
 	private String[] strRanges;
+	
 	static CardRangeDetector ranges;
+	static HashMap<String, CardType> typeById;
+	
 	CardType(int val, String name, boolean isError, int maxCVVLength, String validationRegExp, String[] strRanges) {
 		this.mVal = val;
 		this.mName = name;
@@ -195,6 +201,7 @@ public enum CardType {
 		for(int i=0;i<strRanges.length-1;i+=2) {
 			ranges.regRange(strRanges[i], strRanges[i+1], this);
 		}
+		typeById.put(mName, this);
 	}
 
 	public static CardType getByPrefix(String prefix) {
@@ -271,6 +278,13 @@ public enum CardType {
 
 	public int getCSCLength() {
 		return 3;
+	}
+
+	public static CardType getById(String string) {
+		CardType result = typeById.get(string);
+		if( result==null ) return UNKNOWN_CARD;
+		
+		return result;
 	}
 }
 
