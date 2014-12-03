@@ -17,6 +17,7 @@ public class ActivityValidate extends Activity {
 	WebView webview;
 	
 	String validateUrl = null;
+	FeeasyApiSession session;
 	
 	@Override public void onCreate(Bundle savedState) {
 		super.onCreate(savedState);
@@ -37,24 +38,46 @@ public class ActivityValidate extends Activity {
 		setContentView(R.layout.validate);
 		webview = (WebView)findViewById(R.id.webview);
 		
-		new FeeasyApiSession(this, payData){
-			@Override protected void onError(ErrType err) {
-				Intent resultIntent = new Intent();
+		session = new FeeasyApiSession(this, payData){
+			@Override protected void onVerificationComplete(String transactionId) {
+				Intent resultIntent = new Intent(getApplicationContext(), ActivityResult.class);
+				
+				resultIntent.putExtra(ActivityResult.TAG_RESULT, true);
+				resultIntent.putExtra(ActivityResult.TAG_TRANSACTION_ID, transactionId);
 				
 				setResult(EXTRA_STATUS_ERROR, resultIntent);
 				
 				finish();
 			}
-		}.transferRequest(webview);
+			@Override protected void onError(ErrType err, String errMessage) {
+				if( err!=ErrType.ERR_Canceled ) {
+					Intent resultIntent = new Intent(getApplicationContext(), ActivityResult.class);
+					resultIntent.putExtra(ActivityResult.TAG_RESULT, false);
+					resultIntent.putExtra(ActivityResult.TAG_ERROR, errMessage);
+					if( transactionId!=null )
+						resultIntent.putExtra(ActivityResult.TAG_TRANSACTION_ID, transactionId);
+					
+					setResult(EXTRA_STATUS_ERROR, resultIntent);
+				}
+				
+				finish();
+			}
+		};
+		session.transferRequest(webview);
 	}
 	
 	@Override public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-		if( resultCode==InitialActivity.TAG_KILL_ALL ) {
-			setResult(InitialActivity.TAG_KILL_ALL);
+		if( resultCode==InitialActivity.TAG_KILL_ALL ||
+			resultCode==InitialActivity.TAG_SHOW_PAY ) {
+			setResult(resultCode);
 			finish();
 			
 			return;
 		}
+	}
+	
+	@Override public void onBackPressed() {
+		if( session!=null ) session.verificationCancel();
 	}
 	
 	/*void showWebView() {

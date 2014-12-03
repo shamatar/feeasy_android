@@ -21,4 +21,8 @@
 	<string name="error_accept">Согласитесь с правилами для продолжения</string>
 	
 	<string name="label_recipient_message_not_specified">Получатель решил не оставлять сообщения</string>
+	
+	<string name="err_badresponse">Сервис временно недоступен</string>
+	<string name="err_network">Ошибка сети</string>
+	<string name="err_verification">Верификация не пройдена</string>
 </resources>

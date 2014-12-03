@@ -73,14 +73,14 @@ public class ActivityConfirm extends Activity {
 				if( bankImage!=null ) payimageBank.setImageDrawable(
 						getResources().getDrawable(bankImage) );
 			}
-			@Override protected void onError(ErrType err) {
+			@Override protected void onError(ErrType err, String message) {
 				Intent resultIntent = new Intent();
 				
 				//String errorText = getResources().getString(code.descriptionResource);
 				//if( errorTitle!=null && !errorTitle.equals("") ) errorText+=": "+errorTitle;
-				//resultIntent.putExtra(EXTRA_TAG_ERROR_TEXT, errorText);
 				
 				setResult(EXTRA_STATUS_ERROR, resultIntent);
+				resultIntent.putExtra(EXTRA_TAG_ERROR_TEXT, message);
 				
 				finish();
 			}
@@ -106,8 +106,9 @@ public class ActivityConfirm extends Activity {
 	}
 	
 	@Override public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-		if( resultCode==InitialActivity.TAG_KILL_ALL ) {
-			setResult(InitialActivity.TAG_KILL_ALL);
+		if( resultCode==InitialActivity.TAG_KILL_ALL ||
+			resultCode==InitialActivity.TAG_SHOW_PAY ) {
+			setResult(resultCode);
 			finish();
 			
 			return;

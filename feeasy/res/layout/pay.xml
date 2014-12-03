@@ -2,7 +2,6 @@
 <LinearLayout 
     xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:svg="http://schemas.android.com/apk/res/me.feeasy.test"
-    xmlns:svgimageview="http://schemas.android.com/apk/res-auto"
 	
     android:id="@+id/payContainer"
     
@@ -132,7 +131,7 @@
 			</LinearLayout>
 			<TextView
 			    android:id="@+id/textMessage"
-			    android:text="Сообщение получателя: Сообщение получателя такое сообщенистое сообщение всё прям сообщение такое"
+			    android:text=""
 			    android:layout_width ="match_parent"
 			    android:layout_height="wrap_content" />
 	    </LinearLayout>

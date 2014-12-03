@@ -19,7 +19,7 @@ public class SumValidator extends EditValidator {
 	
 	@Override
 	public boolean isComplete() {
-		return text.length() >= 3;
+		return text.length() == 3 && text.indexOf(".")<0 || text.length()==6;
 	}
 
 	@Override

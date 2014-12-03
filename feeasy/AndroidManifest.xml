@@ -1,10 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="me.feeasy.test"
-    android:versionCode="2"
-    android:versionName="0.002" >
+    android:versionCode="3"
+    android:versionName="0.003" >
 
     <uses-sdk
-        android:minSdkVersion="9"
+        android:minSdkVersion="11"
         android:targetSdkVersion="21" />
     
 	<uses-permission android:name="android.permission.VIBRATE"/>
@@ -18,14 +18,20 @@
         android:label="@string/feeasy_app_name"
         android:theme="@style/AppTheme" >
         
-        <activity
-            android:name=".ActivityPay"
+        <activity 
+            android:name=".InitialActivity"
             android:label="@string/feeasy_app_name"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+		</activity>
+        
+        <activity
+            android:name=".ActivityPay"
+            android:label="@string/feeasy_app_name"
+            android:screenOrientation="portrait" >
         </activity>
         
         <activity 
@@ -36,6 +42,12 @@
 		
         <activity 
             android:name=".ActivityValidate"
+            android:label="@string/feeasy_app_name"
+            android:screenOrientation="portrait" >
+		</activity>
+		
+        <activity 
+            android:name=".ActivityResult"
             android:label="@string/feeasy_app_name"
             android:screenOrientation="portrait" >
 		</activity>

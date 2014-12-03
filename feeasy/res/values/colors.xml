@@ -15,4 +15,9 @@
     
     <item name="headerBg"             type="color">#D9D9D9</item>
     <item name="headerText"           type="color">#B03489CF</item>
+    
+    <item name="logoColor"            type="color">#474747</item>
+    
+    <item name="yesColor"            type="color">#1DD700</item>
+    <item name="noColor"             type="color">#EB4040</item>
 </resources>

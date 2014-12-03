@@ -7,6 +7,7 @@
     <dimen name="boxRadius">3dp</dimen>
     <dimen name="tripleStdPadding">24dp</dimen>
     <dimen name="doubleStdPadding">16dp</dimen>
+    <dimen name="fivefoldStdPadding">40dp</dimen>
     <dimen name="minStdPadding">8dp</dimen>
     <dimen name="halfStdPadding">4dp</dimen>
     <dimen name="quarterStdPadding">2dp</dimen>

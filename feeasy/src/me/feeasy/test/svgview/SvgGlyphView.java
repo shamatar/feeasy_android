@@ -96,7 +96,7 @@ public class SvgGlyphView extends View {
 	}
 	
 	public static int extractSize(int measureSpec, int normal) {
-		if( View.MeasureSpec.getMode(measureSpec) == View.MeasureSpec.EXACTLY || normal<0)
+		if( View.MeasureSpec.getMode(measureSpec) == View.MeasureSpec.EXACTLY || normal<=0)
 	    	return View.MeasureSpec.getSize(measureSpec);
 		if( View.MeasureSpec.getMode(measureSpec) == View.MeasureSpec.AT_MOST )
 	    	return Math.min(normal, View.MeasureSpec.getSize(measureSpec));

@@ -20,6 +20,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
+import android.widget.TextView;
 
 class ValueHolder<T> {
 	public T value;
@@ -29,10 +30,10 @@ class ValueHolder<T> {
 }
 
 public class ActivityPay extends Activity {
-	private static final int TAG_ACTIVITY_PAY = 12300;
+	public static final int TAG_ACTIVITY_PAY = 12300;
 
-	private static final String TAG_RECIPIENT_ID = "recipient_id";
-	private static final String TAG_RECIPIENT_MESSAGE = "recipient_message";
+	public static final String TAG_RECIPIENT_ID = "recipient_id";
+	public static final String TAG_RECIPIENT_MESSAGE = "recipient_message";
 	
 	JNCryptor cryptor = new AES256JNCryptor();
 	String PAN;
@@ -62,8 +63,6 @@ public class ActivityPay extends Activity {
 		
 		Bundle extras = getIntent().getExtras();
 		
-		recipientId = "4279010011528366";
-		
 		if( extras!=null ) {
 			recipientId = extras.getString(TAG_RECIPIENT_ID);
 			recipientMessage = extras.getString(TAG_RECIPIENT_MESSAGE);
@@ -82,6 +81,9 @@ public class ActivityPay extends Activity {
         sumView  = (EditText    )findViewById(R.id.sum_holder);
         switchView = (Switch    )findViewById(R.id.accept_holder);
         checkView  = (CheckBox  )findViewById(R.id.accept_holder_check);
+        
+        if( recipientMessage!=null) 
+        	((TextView)findViewById(R.id.textMessage)).setText(recipientMessage);
         
         acceptView = switchView == null ? checkView : switchView;
 
