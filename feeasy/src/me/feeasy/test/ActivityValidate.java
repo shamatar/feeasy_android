@@ -38,34 +38,54 @@ public class ActivityValidate extends Activity {
 		setContentView(R.layout.validate);
 		webview = (WebView)findViewById(R.id.webview);
 		
+		
 		session = new FeeasyApiSession(this, payData){
 			@Override protected void onVerificationComplete(String transactionId) {
-				Intent resultIntent = new Intent(getApplicationContext(), ActivityResult.class);
+				Intent resultIntent = resultIntent();
 				
 				resultIntent.putExtra(ActivityResult.TAG_RESULT, true);
 				resultIntent.putExtra(ActivityResult.TAG_TRANSACTION_ID, transactionId);
 				
-				setResult(EXTRA_STATUS_ERROR, resultIntent);
+				//setResult(EXTRA_STATUS_ERROR, resultIntent);
 				
-				finish();
+				startActivity(resultIntent);
+				
+				//finish();
 			}
 			@Override protected void onError(ErrType err, String errMessage) {
-				if( err!=ErrType.ERR_Canceled ) {
-					Intent resultIntent = new Intent(getApplicationContext(), ActivityResult.class);
+				if( err==ErrType.ERR_Canceled ) {
+					finish();
+				} else {
+					Intent resultIntent = resultIntent();
+					
 					resultIntent.putExtra(ActivityResult.TAG_RESULT, false);
 					resultIntent.putExtra(ActivityResult.TAG_ERROR, errMessage);
 					if( transactionId!=null )
 						resultIntent.putExtra(ActivityResult.TAG_TRANSACTION_ID, transactionId);
-					
-					setResult(EXTRA_STATUS_ERROR, resultIntent);
+
+					startActivity(resultIntent);
+					//setResult(EXTRA_STATUS_ERROR, resultIntent);
 				}
 				
-				finish();
+				//startActivity(resultIntent);
+				
+				//finish();
 			}
 		};
 		session.transferRequest(webview);
 	}
 	
+	protected Intent resultIntent() {
+		Intent intent = new Intent(getApplicationContext(), ActivityResult.class);
+		
+		Bundle payDataBundle = new Bundle();
+		payData.save(payDataBundle);
+		
+		intent.putExtra(ActivityValidate.EXTRA_TAG_PAY_DATA, payDataBundle);
+		
+		return intent;
+	}
+
 	@Override public void onActivityResult(int requestCode, int resultCode, Intent intent) {
 		if( resultCode==InitialActivity.TAG_KILL_ALL ||
 			resultCode==InitialActivity.TAG_SHOW_PAY ) {
@@ -78,6 +98,7 @@ public class ActivityValidate extends Activity {
 	
 	@Override public void onBackPressed() {
 		if( session!=null ) session.verificationCancel();
+		super.onBackPressed();
 	}
 	
 	/*void showWebView() {

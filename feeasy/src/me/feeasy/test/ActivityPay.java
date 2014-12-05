@@ -21,6 +21,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 class ValueHolder<T> {
 	public T value;
@@ -32,8 +33,9 @@ class ValueHolder<T> {
 public class ActivityPay extends Activity {
 	public static final int TAG_ACTIVITY_PAY = 12300;
 
-	public static final String TAG_RECIPIENT_ID = "recipient_id";
-	public static final String TAG_RECIPIENT_MESSAGE = "recipient_message";
+	//public static final String TAG_RECIPIENT_ID = "recipient_id";
+	//public static final String TAG_RECIPIENT_MESSAGE = "recipient_message";
+	public static final String TAG_URI = "uri";
 	
 	JNCryptor cryptor = new AES256JNCryptor();
 	String PAN;
@@ -62,10 +64,21 @@ public class ActivityPay extends Activity {
 		super.onCreate(savedState);
 		
 		Bundle extras = getIntent().getExtras();
+		FeeasyURI uri = null;
 		
-		if( extras!=null ) {
-			recipientId = extras.getString(TAG_RECIPIENT_ID);
-			recipientMessage = extras.getString(TAG_RECIPIENT_MESSAGE);
+		if( extras!=null && extras.getString(TAG_URI)!=null) {
+			uri = new FeeasyURI(extras.getString(TAG_URI));
+		}
+		if( getIntent().getAction() == Intent.ACTION_VIEW ) {
+			uri = new FeeasyURI(getIntent().getData().toString());
+		}
+		if( uri!=null ) {
+			if(!uri.error ) {
+				recipientId = uri.cyphertoken;// extras.getString(TAG_RECIPIENT_ID);
+				recipientMessage = uri.message;//extras.getString(TAG_RECIPIENT_MESSAGE);
+			} else {
+				Toast.makeText(getApplicationContext(), "Этот URL не может быть обработан", Toast.LENGTH_SHORT).show();
+			}
 		}
 		if( recipientId==null ) {
 			setResult(InitialActivity.TAG_KILL_ALL);

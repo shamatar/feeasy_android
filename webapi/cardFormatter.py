@@ -45,7 +45,7 @@ CardType.DISCOVER = CardType("Discover", False, 3, "^6(?:011\\d\\d|5\\d{4}|4[4-9
 CardType.JCB = CardType("JCB", False, 3, "^35(?:2[89]|[3-8]\\d)\\d{12}$", [("3528","359")])
 CardType.DINERS_CLUB = CardType("Diners Club", False, 3, "^$3(?:0[0-5]\\d|095|[689]\\d\\d)\\d{12}"
             , [("300","306"), ("309", "31"), ("36", "37"), ("38","4")])
-CardType.UNKNOWN_CARD = CardType("Unknown", False, 3, "", [])
+CardType.UNKNOWN_CARD = CardType("Credit Card", False, 3, "", [])
 CardType.MAESTRO = CardType("Maestro", False, 3, "^(?:5[0678]\\d\\d|6304|6390|67\\d\\d)\\d{8,15}$"
             , [("50", "51"), ("56", "59"), ("6304", "6305"), ("6390", "6391"), ("67", "68")])
 

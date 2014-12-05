@@ -3,7 +3,6 @@
 import flask
 import json
 import httplib
-import uuid
 import cgi
 import urlparse
 import urllib
@@ -16,67 +15,47 @@ import mysql.connector
 
 import flaskInit
 import feeasyMySQL
-import cardFormatter
 import bankapi
 
 import os.path
 import sys
 sys.path.append(os.path.join(os.path.dirname(__file__),'thirdparty') )
 
-import time
-import feencryptor
-
-from Crypto import Random
+import feetoken
+import cardFormatter
+import qrmailer
 
 from datetime import datetime
 app = flaskInit.app
 
-#rncryptor = RNCryptor.RNCryptor()
+class PayData :
+    def __init__(self, senderCardToken, recipientCardToken, senderExpYear, senderExpMonth, senderCSC, sumCents ):
+        self.senderCard     = feetoken.PanToken(senderCardToken, True)
+        self.recipientCard  = feetoken.PanToken(recipientCardToken, False)
 
-class PayData:
-    def __init__(self, senderCard, recipientCard, senderExpYear, senderExpMonth, senderCSC, sumCents ):
-        self.senderCard     = senderCard
-        self.recipientCard  = recipientCard
         self.senderExpYear  = senderExpYear
         self.senderExpMonth = senderExpMonth
+
         self.senderCSC = senderCSC
         self.sumCents = sumCents
 
         self.error, self.errorMessage = self.checkCorrectness()
 
     def checkCorrectness(self):
-        if not str(self.senderCard).isdigit() : return True, "Sender card must be numeric"
-        if not str(self.recipientCard).isdigit() : return True, "Recipient card must be numeric"
+        if self.senderCard.error    : return True, "Ошибка карты отправителя: %s" % self.senderCard.errorMessage
+        if self.recipientCard.error : return True, "Ошибка карты получателя: %s"  % self.recipientCard.errorMessage
 
-        if len(str(self.senderCard)) > 24 : return True, "Sender card number is too long"
-        if len(str(self.recipientCard)) > 24 : return True, "Recipient card number is too long"
+        if not str(self.senderExpYear).isdigit()  : return True, "Год должен быть числом"
+        if not str(self.senderExpMonth).isdigit() : return True, "Месяц должен быть числом"
+        if not str(self.senderCSC).isdigit()      : return True, "Код CSC должен быть числом"
+        if not str(self.sumCents).isdigit()       : return True, "Сумма перевода должна быть числом"
 
-        if not str(self.senderExpYear).isdigit()  : return True, "Year must be a number"
-        if not str(self.senderExpMonth).isdigit() : return True, "Month must be a number"
-        if not str(self.senderCSC).isdigit()      : return True, "CSC must be a number"
-        if not str(self.sumCents).isdigit()       : return True, "Sum must be a number"
-
-        self.senderCard     = int(self.senderCard)
-        self.recipientCard  = int(self.recipientCard)
         self.senderExpYear  = int(self.senderExpYear)
         self.senderExpMonth = int(self.senderExpMonth)
         self.senderCSC      = int(self.senderCSC)
         self.sumCents       = int(self.sumCents)
 
         return False, "Ok"
-
-    @staticmethod
-    def getCardNumber(data, isSender):
-        if data[0]=='t' :
-            if isSender :
-                return decryptToken('payertokens', data)
-            else :
-                return decryptToken('receivertokens', data)
-
-        return data;
-        #if method == 'pan' : return data
-        #if method == 'ignore' : return ''
-        #raise Exception("Unknown method %s" % method)
 
 
 @app.route("/verification-result", methods=['GET'])
@@ -133,12 +112,12 @@ def verifycomplete() :
         con.request('POST', urlObj.path, content, headers)
 
         resp = con.getresponse()
-        data = resp.read()
 
         error, trunsactionId = apiClass.getTransactionResult(resp)
+        print "Error 3d: %s, bank %s" % (result!='Y', error)
 
     except Exception as e:
-        
+        print e
         error = True
     
     return gotoVerificationResult(not error, trunsactionId)
@@ -190,19 +169,16 @@ def verification() :
 def payapi() :
     data = flask.request.form if flask.request.method=='POST' else flask.request.args
 
-    #cursor = getMySQLCursor()
-    #cursor.execute('CREATE TABLE verifications (token VARCHAR(64) UNIQUE NOT NULL PRIMARY KEY, url TEXT, postdata TEXT, date DATETIME, INDEX(date))')
-
     senderCard    = data.get('sender_card','-')
     recipientCard = data.get('recipient_card','-')
 
     payData = PayData(
-        PayData.getCardNumber(senderCard   , True),
-        PayData.getCardNumber(recipientCard, False),
-        int(data.get('sender_exp_year', '0')),
-        int(data.get('sender_exp_month', '0')),
-        int(data.get('sender_csc', '0')),
-        int(data.get('sum', '0'))
+        senderCard,
+        recipientCard,
+        data.get('sender_exp_year', '0'),
+        data.get('sender_exp_month', '0'),
+        data.get('sender_csc', '0'),
+        data.get('sum', '0')
     )
 
     if payData.error :
@@ -232,7 +208,7 @@ def payapi() :
         if senderCard[0]=='t' :
             cyphertoken = senderCard
         else :
-            id, cypher, cyphertoken = createTokenCypher('payertokens', payData.senderCard)
+            id, cypher, cyphertoken = feetoken.createTokenCypher('payertokens', payData.senderCard.pan)
 
         return flask.jsonify(error = False, token=queryId.hex,
                              cyphertoken = cyphertoken,
@@ -242,10 +218,11 @@ def payapi() :
         result = bankClass.getFee(payData)
         if result['error'] : return flask.jsonify(error = True)
 
-        senderCard = cardFormatter.CardNumber(payData.senderCard)
+        senderCard = payData.senderCard.cardNumber
 
         return flask.jsonify( error = False,
                               fee=result['fee'],
+                              message=payData.recipientCard.data['descr'],
                               bank=bankClass.getBankData(),
                               sender_card=senderCard.prettify(),
                               sender_card_type=senderCard.getType().name )
@@ -272,94 +249,76 @@ def generateToken() :
             reason = "pan possible length up to 24 digit"
         )
 
-    id, cypher, cyphertoken = createTokenCypher('receivertokens', pan, {'mail': mail, 'descr': descr})
+    id, cypher, cyphertoken = feetoken.createTokenCypher('receivertokens', pan, {'mail': mail, 'descr': descr})
 
     return flask.jsonify(
         error = False,
         cyphertoken = cyphertoken,
         cypher = cypher,
-        id = str(makeTokenId(id)),
-        forpan = str(decryptToken('receivertokens', cyphertoken))
+        id = str(feetoken.makeTokenId(id)),
+        forpan = str(feetoken.decryptToken('receivertokens', cyphertoken)[0])
     )
+    
+@app.route("/join", methods=['GET', 'POST'])
+def joinPage() :
+    if flask.request.method=='GET' :
+        content = """
+<html><head><script src='https://www.google.com/recaptcha/api.js?hl=ru'></script></head>
+<body>
+    <form method="POST" action="%s">
+        <div><input type="text" name="email" placeholder="e-mail"></div>
+        <div><input type="text" name="card"  placeholder="card"></div>
+        <div><input type="text" name="message"  placeholder="message"></div>
 
-def decryptToken(table, cyphertoken) :
-    if cyphertoken[0]!='t' : raise Exception('Bad token format')
+        <div class="g-recaptcha" data-sitekey="6Lee2P4SAAAAANmLmevRTR_ei92o2NA0EsIyoXWh"></div>
+        
+        <div><input type="submit"></div>
+    </form>
+</body>
+</html>
+        """ % flask.url_for('joinPage')
+        
+        return content
+    elif flask.request.method=='POST' :
+        catchaSecret = '6Lee2P4SAAAAAOcUACVTYo5Uj0M7dM8DXN4v3jPB'
+        catchaResponse = flask.request.form.get('g-recaptcha-response')
 
-    token  = cyphertoken[1:16+1]
-    cypher = cyphertoken[16+1:]
+        con = httplib.HTTPSConnection('www.google.com')
+        con.connect()
+        con.request('GET', '/recaptcha/api/siteverify?' + urllib.urlencode({'secret': catchaSecret, 'response': catchaResponse}))
 
-    cursor = feeasyMySQL.getCursor()
-    cursor.execute("SELECT data FROM " + table + " WHERE token=%s", [token])
+        resp = con.getresponse()
+        data = json.loads(resp.read())
 
-    sqlResult = cursor.fetchone()
-    if sqlResult is None :
-        return None
+        #if not data['success'] :
+        #    return flask.jsonify(error=True, errorMessage='Капча введена неверно')
 
-    return feencryptor.decryptPan10(cypher, sqlResult[0])
+        pan = flask.request.form.get('card').replace(' ', '')
+        mail = flask.request.form.get('email')
+        message = flask.request.form.get('message')
 
-def createTokenCypher(table, pan, fields = {}) :
+        #detect shortmessage
+        ellipsis = u"…"
+        ellipsisSize = len(ellipsis.encode('utf-8'))
 
-    startTime = time.time()
-    cypher, data = feencryptor.encryptPan10(pan)
-    print "Cypher time %s" % str(time.time() - startTime)
-
-    #cursor = feeasyMySQL.getCursor()
-    #cursor.execute("UPDATE " + table + " SET data=%s WHERE token=%s", [data, token.hex])
-
-    fields = fields.copy()
-    fields['data'] = data
-
-    id, token = createToken(table, fields)
-
-    return id, cypher, "t%s%s" % (token, cypher)
-
-#tokenField in table must be CHAR(32) UNIQUE
-def createToken(table, fields = {}) :
-    for attempt in range(10) :
-        try :
-            token = Random.new().read(8).encode('hex')
-
-            cursor = feeasyMySQL.getCursor()
-
-            cursor.execute("INSERT INTO %s (%s) VALUES (%s)" % (
-                table, ','.join(['token'] + fields.keys()), ','.join(['%s'] * (1 + len(fields)))
-                                                               ) , [token] + fields.values())
-
-            if cursor.rowcount > 0 :
-                return cursor.lastrowid, token
-        except mysql.connector.errors.DatabaseError as e:
-            if e.errno!=mysql.connector.errorcode.ER_DUP_ENTRY:
-                break
-
-    raise Exception('token creation error')
+        if len(message.encode('utf-8')) <= qrmailer.MESSAGE_MAX_LEN :
+            shortMessage = message
+        else :
+            for i in range(len(message)) :
+                if len(message[0:i].encode('utf-8')) + ellipsisSize > qrmailer.MESSAGE_MAX_LEN : break
+            shortMessage = message[0:i]+ellipsis
 
 
-def luhn_checksum(card_number):
-    def digits_of(n):
-        return [int(d) for d in str(n)]
-    digits = digits_of(card_number)
-    odd_digits = digits[-1::-2]
-    even_digits = digits[-2::-2]
-    checksum = 0
-    checksum += sum(odd_digits)
-    for d in even_digits:
-        checksum += sum(digits_of(d*2))
-    return checksum % 10
+        if not pan.isdigit() or len(pan)>24 :
+            return flask.jsonify(error=True, errorMessage='Неверный номер карты')
 
-def makeTokenId(id):
-    if id > 999999999999:
-        return -1
+        id, cypher, cyphertoken = feetoken.createTokenCypher('receivertokens', pan, {'mail': mail, 'descr': message})
 
-    token = 4687390000000000000 + 10*id;
+        number = cardFormatter.CardNumber(pan)
 
-    checksum = luhn_checksum(token)
+        qrmailer.processToken(shortMessage,cyphertoken,number.getType().name,number.prettify(),mail)
 
-    if checksum == 0:
-        token = token
-    else:
-        token = token + 10 - checksum
-
-    return token
+        return flask.jsonify(error=False, errorMessage='OK')
 
 if __name__ == '__main__':
-    app.run(debug=True, host='192.168.157.21')
+    app.run(debug=True, host='37.252.124.233')

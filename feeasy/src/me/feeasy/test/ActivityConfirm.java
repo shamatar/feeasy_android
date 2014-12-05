@@ -67,7 +67,7 @@ public class ActivityConfirm extends Activity {
 				paydataSum.setText(prettySum(payData.sum));
 				paydataFee.setText(prettySum(getFee()));
 				paydataFullSum.setText(prettySum(payData.sum + getFee()));
-				paydataMessage.setText(payData.getMessage(getResources()));
+				paydataMessage.setText(getFullMessage());
 				
 				Integer bankImage = bankImages.get(getBank());
 				if( bankImage!=null ) payimageBank.setImageDrawable(

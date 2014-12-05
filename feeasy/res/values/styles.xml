@@ -48,11 +48,13 @@
     </style>
     
     <style name="payData">
-        <item name="android:layout_marginTop">@dimen/minStdPadding</item>
         <item name="android:layout_marginLeft">@dimen/halfStdPadding</item>
         <item name="android:layout_marginRight">@dimen/halfStdPadding</item>
         <item name="android:textColor">@color/darkText</item>
         <item name="android:textStyle">bold</item>
+        
+        <item name="android:layout_gravity">center_vertical</item>
+	    <item name="android:gravity">center_vertical</item>
     </style>
     
     <style name="payCaptionCard">

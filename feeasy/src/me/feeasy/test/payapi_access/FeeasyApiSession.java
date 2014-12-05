@@ -34,13 +34,16 @@ public class FeeasyApiSession {
 	private static final int RETRYPOLICY_TIMEOUT_TRANSFER = 35000;
 	private static final int RETRYPOLICY_ATTEMPTS = 2;
 	
+	//final String apiUrl = "http://37.252.124.233:5000/payapi";
 	final String apiUrl = "http://37.252.124.233:5000/payapi";
+	
 	Context context;
 	
 	PayData payData;
 	
 	private int fee = 0;
 	private String bank = null;
+	private String fullMessage;
 	private String cardPattern = null;
 	private CardType cardType = CardType.UNKNOWN_CARD;
 	
@@ -64,6 +67,7 @@ public class FeeasyApiSession {
 	public String getBank() { return bank; }
 	public String getCardPattern() { return cardPattern; }
 	public CardType getCardType() { return cardType; }
+	public String getFullMessage() { return fullMessage; }
 	
 	public FeeasyApiSession(Context context, PayData payData) {
 		this.context = context;
@@ -78,6 +82,7 @@ public class FeeasyApiSession {
 	    		FeeasyApiSession.this.fee  = data.getInt("fee");
 	    		FeeasyApiSession.this.bank = data.getJSONObject("bank")
 	    				.getString("id");
+	    		FeeasyApiSession.this.fullMessage = data.getString("message");
 	    		
 	    		FeeasyApiSession.this.cardPattern = data.getString("sender_card");
 	    		FeeasyApiSession.this.cardType = CardType.getById(data.getString("sender_card_type"));

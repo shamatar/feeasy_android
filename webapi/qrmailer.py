@@ -21,6 +21,8 @@ import os.path
 import tempfile
 import shutil
 
+MESSAGE_MAX_LEN = 100
+
 def generatePayUrl(message, cyphertoken) :
     privKey = base64.b64decode("""
         MIICXAIBAAKBgQDIcRIyXNGGEPjDYKTlr6U2nAVZeFiQi2lBtoULYx9Gkn448H7B
@@ -43,7 +45,7 @@ def generatePayUrl(message, cyphertoken) :
     #hash = SHA.new()
     #hash.update(query)
     #signature = base64.urlsafe_b64encode(keyForSigning.decrypt(message[0:128 - 21] + hash.digest())).replace("=","~")
-    data = cyphertoken[0] + cyphertoken[1:].decode('hex')
+    data = "FESY" + cyphertoken[0] + cyphertoken[1:].decode('hex') + message.encode('utf-8')
     cryptedData = keyForSigning.decrypt(data)
 
     return "https://feeasy.me/a/%s" % base64.b32encode(cryptedData).replace('=','0')
@@ -69,10 +71,9 @@ def makeQR(link, tmpfolder, fileprefix) :
     
     qr = pyqrcode.create(link, error='Q', mode='alphanumeric')
     qr.svg(svgFileName, scale=8)
-
-    qr.svg('c:\\temp\\x.svg', scale=8)
+    qr.png(pngFileName, scale=8)
     
-    return [svgFileName]#, pngFileName]
+    return [pngFileName, svgFileName]#, pngFileName]
     
 def mailQR(dstmail, files, card, message) :
     # Open a plain text file for reading.  For this example, assume that
@@ -94,7 +95,7 @@ def mailQR(dstmail, files, card, message) :
 Будьте внимательны, для Вашей безопасности мы не храним данные Вашей карты у себя на сервере. 
 
 Спасибо, что вы с нами!
-http://feeasy.me""" % {'card': card, 'message': message}
+http://feeasy.me""" % {'card': card, 'message': message.encode('utf-8')}
 
     me = "Feeasy Team <feeasy@xpianotools.com>"
     you = dstmail
@@ -128,4 +129,4 @@ def processToken(message, cyphertoken, cardType, cardMask, email) :
     
     shutil.rmtree(tmpFolder)
 
-#processToken("Это сообщение, котороя я написал! Это сообщение!!!", 't0000000000aaaaaaaa', 'Maestro', '4444 **** 3333', 'gaosipov@gmail.com')
+#processToken("Это сообщение, котороя я написал! Это сообщение!!!", 'tf1f2f3f4f5f6f7f80102030405060708090a0b', 'Maestro', '4444 **** 3333', 'gaosipov@gmail.com')

@@ -32,6 +32,69 @@
             android:name=".ActivityPay"
             android:label="@string/feeasy_app_name"
             android:screenOrientation="portrait" >
+            
+		    <intent-filter>
+		        <action android:name="android.intent.action.VIEW" />
+		        <category android:name="android.intent.category.DEFAULT" />
+		        <category android:name="android.intent.category.BROWSABLE" />
+		        <data android:scheme="feeasy" />
+		    </intent-filter>
+		    
+		    <intent-filter>
+		        <action android:name="android.intent.action.VIEW" />
+		        <category android:name="android.intent.category.DEFAULT" />
+		        <category android:name="android.intent.category.BROWSABLE" />
+		        <data android:host="feeasy.me" android:scheme="http" />
+		    </intent-filter>
+		    
+		    <intent-filter>
+		        <action android:name="android.intent.action.VIEW" />
+		        <category android:name="android.intent.category.DEFAULT" />
+		        <category android:name="android.intent.category.BROWSABLE" />
+		        <data android:host="www.feeasy.me" android:scheme="http" />
+		    </intent-filter>
+		    
+		    <intent-filter>
+		        <action android:name="android.intent.action.VIEW" />
+		        <category android:name="android.intent.category.DEFAULT" />
+		        <category android:name="android.intent.category.BROWSABLE" />
+		        <data android:host="feeasy.me." android:scheme="http" />
+		    </intent-filter>
+		    
+		    <intent-filter>
+		        <action android:name="android.intent.action.VIEW" />
+		        <category android:name="android.intent.category.DEFAULT" />
+		        <category android:name="android.intent.category.BROWSABLE" />
+		        <data android:host="www.feeasy.me." android:scheme="http" />
+		    </intent-filter>
+		    
+		    <intent-filter>
+		        <action android:name="android.intent.action.VIEW" />
+		        <category android:name="android.intent.category.DEFAULT" />
+		        <category android:name="android.intent.category.BROWSABLE" />
+		        <data android:host="feeasy.me" android:scheme="https" />
+		    </intent-filter>
+		    
+		    <intent-filter>
+		        <action android:name="android.intent.action.VIEW" />
+		        <category android:name="android.intent.category.DEFAULT" />
+		        <category android:name="android.intent.category.BROWSABLE" />
+		        <data android:host="www.feeasy.me" android:scheme="https" />
+		    </intent-filter>
+		    
+		    <intent-filter>
+		        <action android:name="android.intent.action.VIEW" />
+		        <category android:name="android.intent.category.DEFAULT" />
+		        <category android:name="android.intent.category.BROWSABLE" />
+		        <data android:host="feeasy.me." android:scheme="https" />
+		    </intent-filter>
+		    
+		    <intent-filter>
+		        <action android:name="android.intent.action.VIEW" />
+		        <category android:name="android.intent.category.DEFAULT" />
+		        <category android:name="android.intent.category.BROWSABLE" />
+		        <data android:host="www.feeasy.me." android:scheme="https" />
+		    </intent-filter>
         </activity>
         
         <activity 
@@ -57,7 +120,6 @@
             android:theme="@style/Theme.Transparent"
             android:screenOrientation="portrait" >
 		</activity>  -->
-		
 		
         <activity
                android:name="com.google.zxing.client.android.CaptureActivity"

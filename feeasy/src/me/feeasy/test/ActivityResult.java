@@ -75,5 +75,13 @@ public class ActivityResult extends Activity {
 			}
 		});
 	}
+	
+	@Override public void onBackPressed() {
+		setResult(InitialActivity.TAG_KILL_ALL);
+		finish();
+		
+		Intent intent = new Intent(getApplicationContext(),InitialActivity.class);
+		startActivity(intent);
+	}
 }
 

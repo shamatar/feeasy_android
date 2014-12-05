@@ -15,9 +15,9 @@ class AlfaWebEmulation (BankApi) :
     def transfer(self, payData):
         params = {
             "sender_type":"cnm",
-            "sender_value":payData.senderCard,
+            "sender_value":payData.senderCard.pan,
             "recipient_type":"cnm",
-            "recipient_value":payData.recipientCard,
+            "recipient_value":payData.recipientCard.pan,
             "exp_date":"%d%02d%02d" % (datetime.now().year // 100, payData.senderExpYear, payData.senderExpMonth),
             "cvv":"%03d" % payData.senderCSC,
             "amount": str(payData.sumCents),
@@ -74,9 +74,9 @@ class AlfaWebEmulation (BankApi) :
     def getFee(self, payData):
         params = {
             "sender_type":"cnm",
-            "sender_value":payData.senderCard,
+            "sender_value":str(payData.senderCard.pan),
             "recipient_type":"cnm",
-            "recipient_value":payData.recipientCard,
+            "recipient_value":str(payData.recipientCard.pan),
             "amount": str(payData.sumCents),
             "currency":"RUR" }
 
