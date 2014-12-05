@@ -34,8 +34,8 @@ public class FeeasyApiSession {
 	private static final int RETRYPOLICY_TIMEOUT_TRANSFER = 35000;
 	private static final int RETRYPOLICY_ATTEMPTS = 2;
 	
-	//final String apiUrl = "http://37.252.124.233:5000/payapi";
 	final String apiUrl = "http://37.252.124.233:5000/payapi";
+	//final String apiUrl = "http://192.168.157.21:5000/payapi";
 	
 	Context context;
 	

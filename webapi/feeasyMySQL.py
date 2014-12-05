@@ -42,7 +42,7 @@ def init() :
 def setup() :
     tables = {
         'verifications' : """
-            (token CHAR(16) UNIQUE NOT NULL PRIMARY KEY,
+            (token CHAR(32) UNIQUE NOT NULL PRIMARY KEY,
              url TEXT,
              postdata TEXT,
              date DATETIME,
@@ -50,7 +50,7 @@ def setup() :
              cookies TEXT,
              apiclass VARCHAR(255),
              INDEX(date)
-             )""",
+             ) DEFAULT CHARSET=utf8 """,
         'receivertokens' : """
             (token CHAR(16) UNIQUE NOT NULL PRIMARY KEY,
              id    INT NOT NULL AUTO_INCREMENT,
@@ -58,13 +58,13 @@ def setup() :
              mail  VARCHAR(255),
              descr TEXT,
              INDEX(id)
-             )""",
+             ) DEFAULT CHARSET=utf8""",
         'payertokens' : """
-            (token CHAR(32) UNIQUE NOT NULL PRIMARY KEY,
+            (token CHAR(16) UNIQUE NOT NULL PRIMARY KEY,
              id    INT NOT NULL AUTO_INCREMENT,
              data  BLOB,
              INDEX(id)
-             )"""
+             ) DEFAULT CHARSET=utf8"""
         }
     for table in tables :
         if tableExists(table) : continue

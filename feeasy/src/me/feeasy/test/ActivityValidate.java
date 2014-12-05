@@ -48,7 +48,7 @@ public class ActivityValidate extends Activity {
 				
 				//setResult(EXTRA_STATUS_ERROR, resultIntent);
 				
-				startActivity(resultIntent);
+				startActivityForResult(resultIntent, 0);
 				
 				//finish();
 			}
@@ -63,7 +63,7 @@ public class ActivityValidate extends Activity {
 					if( transactionId!=null )
 						resultIntent.putExtra(ActivityResult.TAG_TRANSACTION_ID, transactionId);
 
-					startActivity(resultIntent);
+					startActivityForResult(resultIntent, 0);
 					//setResult(EXTRA_STATUS_ERROR, resultIntent);
 				}
 				
@@ -78,10 +78,10 @@ public class ActivityValidate extends Activity {
 	protected Intent resultIntent() {
 		Intent intent = new Intent(getApplicationContext(), ActivityResult.class);
 		
-		Bundle payDataBundle = new Bundle();
-		payData.save(payDataBundle);
+		//Bundle payDataBundle = new Bundle();
+		//payData.save(payDataBundle);
 		
-		intent.putExtra(ActivityValidate.EXTRA_TAG_PAY_DATA, payDataBundle);
+		//intent.putExtra(ActivityValidate.EXTRA_TAG_PAY_DATA, payDataBundle);
 		
 		return intent;
 	}
