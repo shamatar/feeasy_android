@@ -29,7 +29,7 @@ from datetime import datetime
 app = flaskInit.app
 
 class PayData :
-    def __init__(self, senderCardToken, recipientCardToken, senderExpYear, senderExpMonth, senderCSC, sumCents ):
+    def __init__(self, senderCardToken, recipientCardToken, senderExpYear, senderExpMonth, senderCSC, sumCents, recipientFee):
         self.senderCard     = feetoken.PanToken(senderCardToken, True)
         self.recipientCard  = feetoken.PanToken(recipientCardToken, False)
 
@@ -39,24 +39,42 @@ class PayData :
         self.senderCSC = senderCSC
         self.sumCents = sumCents
 
-        self.error, self.errorMessage = self.checkCorrectness()
+        self.recipientFee = recipientFee
 
-    def checkCorrectness(self):
+    def checkCorrectness(self, needSenderCard = False, needRecipientCard = False, needExpDat = False, needSum = False, needCsc = False):
+        if needSenderCard and not self.senderCard.isSet() : return True, "Карта отправителя не задана"
+        if needRecipientCard and not self.recipientCard.isSet() : return True, "Карта получателя не задана"
+        if needExpDat and not self.isExpDateSet() : return True, "Дата окончания не задана"
+        if needSum and not self.isSumSet() : return True, "Сумма не задана"
+        if needCsc and not self.isCscSet() : return True, "Код CSC не задан"
+
         if self.senderCard.error    : return True, "Ошибка карты отправителя: %s" % self.senderCard.errorMessage
         if self.recipientCard.error : return True, "Ошибка карты получателя: %s"  % self.recipientCard.errorMessage
 
-        if not str(self.senderExpYear).isdigit()  : return True, "Год должен быть числом"
-        if not str(self.senderExpMonth).isdigit() : return True, "Месяц должен быть числом"
-        if not str(self.senderCSC).isdigit()      : return True, "Код CSC должен быть числом"
-        if not str(self.sumCents).isdigit()       : return True, "Сумма перевода должна быть числом"
+        if self.isExpDateSet() and not str(self.senderExpYear).isdigit()  : return True, "Год должен быть числом"
+        if self.isExpDateSet() and not str(self.senderExpMonth).isdigit() : return True, "Месяц должен быть числом"
+        if self.isCscSet() and not str(self.senderCSC).isdigit()      : return True, "Код CSC должен быть числом"
+        if self.isSumSet() and not str(self.sumCents).isdigit()       : return True, "Сумма перевода должна быть числом"
 
-        self.senderExpYear  = int(self.senderExpYear)
-        self.senderExpMonth = int(self.senderExpMonth)
-        self.senderCSC      = int(self.senderCSC)
-        self.sumCents       = int(self.sumCents)
+        if self.isExpDateSet() : self.senderExpYear  = int(self.senderExpYear)
+        if self.isExpDateSet() : self.senderExpMonth = int(self.senderExpMonth)
+        if self.isCscSet() : self.senderCSC      = int(self.senderCSC)
+        if self.isSumSet() : self.sumCents       = int(self.sumCents)
 
         return False, "Ok"
 
+    @staticmethod
+    def valueIsSet(value):
+        return value is not None and value != '' and value != '-'
+
+    def isExpDateSet(self):
+        return PayData.valueIsSet(self.senderExpMonth) and PayData.valueIsSet(self.senderExpYear)
+
+    def isSumSet(self):
+        return PayData.valueIsSet(self.sumCents)
+
+    def isCscSet(self):
+        return PayData.valueIsSet(self.senderCSC)
 
 @app.route("/verification-result", methods=['GET'])
 def verifyres() :
@@ -175,22 +193,25 @@ def payapi() :
     payData = PayData(
         senderCard,
         recipientCard,
-        data.get('sender_exp_year', '0'),
-        data.get('sender_exp_month', '0'),
-        data.get('sender_csc', '0'),
-        data.get('sum', '0')
+        data.get('sender_exp_year', ''),
+        data.get('sender_exp_month', ''),
+        data.get('sender_csc', ''),
+        data.get('sum', '-'),
+        data.get('recipientfee', 'y') == 'y'
     )
-
-    if payData.error :
-        return flask.jsonify(error = True,
-                             reason = payData.errorMessage )
 
     method = data.get('method')
     bankClass = bankapi.apiAlfaWeb
 
     if method == 'transfer' :
+        error, message = payData.checkCorrectness(
+            needSenderCard = True, needRecipientCard = True, needExpDat = True, needSum = True, needCsc = True
+        )
+        if error :
+            return flask.jsonify(error = True, reason = message )
+
         result = bankClass.transfer(payData)
-        if result['error'] : return flask.jsonify(error = True)
+        if result['error'] : return flask.jsonify(error = True, reason = result['error-description'])
 
         queryId = result['queryId']
         cursor = feeasyMySQL.getCursor()
@@ -215,17 +236,29 @@ def payapi() :
                              url=flask.url_for('verification', _external=True) + '?' +
                              urllib.urlencode({'token' : queryId.hex}))
     elif method == 'check' :
-        result = bankClass.getFee(payData)
-        if result['error'] : return flask.jsonify(error = True)
+        error, message = payData.checkCorrectness(needRecipientCard = True)
+        if error :
+            return flask.jsonify(error = True, reason = message )
 
-        senderCard = payData.senderCard.cardNumber
+        response = {
+            'error': False,
+            'message': payData.recipientCard.data['descr']
+        }
 
-        return flask.jsonify( error = False,
-                              fee=result['fee'],
-                              message=payData.recipientCard.data['descr'],
-                              bank=bankClass.getBankData(),
-                              sender_card=senderCard.prettify(),
-                              sender_card_type=senderCard.getType().name )
+        if payData.senderCard.isSet() :
+            senderCard = payData.senderCard.cardNumber
+            response['sender_card'] = senderCard.prettify()
+            response['sender_card_type'] = senderCard.getType().name
+
+            if payData.isSumSet() :
+                result = bankClass.getFee(payData)
+                if result['error'] :
+                    return flask.jsonify(error = True, reason = result['error-description'])
+
+                response['fee'] = result['fee']
+                response['bank'] = bankClass.getBankData()
+
+        return flask.jsonify( **response )
 
     return flask.Response('Bad Request',400)
 
@@ -320,4 +353,5 @@ def joinPage() :
         return flask.jsonify(error=False, errorMessage='OK')
 
 if __name__ == '__main__':
-    app.run(debug=True, host='37.252.124.233')
+    #app.run(debug=True, host='37.252.124.233')
+    app.run(debug=True, host='192.168.157.21')

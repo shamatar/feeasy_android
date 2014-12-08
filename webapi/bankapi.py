@@ -13,14 +13,20 @@ class AlfaWebEmulation (BankApi) :
         BankApi.allApiFunction[AlfaWebEmulation.ID] = self
 
     def transfer(self, payData):
+        result = self.getFee(payData)
+        if result['error'] :
+            return result
+
+        sum = payData.sumCents - result['fee']
+
         params = {
             "sender_type":"cnm",
-            "sender_value":payData.senderCard.pan,
+            "sender_value":str(payData.senderCard.pan),
             "recipient_type":"cnm",
-            "recipient_value":payData.recipientCard.pan,
+            "recipient_value":str(payData.recipientCard.pan),
             "exp_date":"%d%02d%02d" % (datetime.now().year // 100, payData.senderExpYear, payData.senderExpMonth),
             "cvv":"%03d" % payData.senderCSC,
-            "amount": str(payData.sumCents),
+            "amount": str(sum),
             "currency":"RUR",
             "client_ip":"127.0.0.1" }
 

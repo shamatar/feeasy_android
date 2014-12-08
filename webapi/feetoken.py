@@ -12,19 +12,20 @@ class PanToken :
     def __init__(self, data, isSender) :
         self.error = False
 
-        self.data = data
+        self.token = data
         self.isSender = isSender
         
         self.pan = None
+
+        if not self.isSet() :
+            return
 
         if data[0] == 't' :
             self.table = 'payertokens' if isSender else 'receivertokens'
             self.pan, self.data = decryptToken(self.table, data)
         else :
             if not isSender :
-                self.error = True
-                self.errorMessage = "неизвестный формат получателя"
-
+                self.error, self.errorMessage = True, "неизвестный формат получателя"
                 return
 
             if data.isdigit() :
@@ -41,7 +42,11 @@ class PanToken :
         if not self.error :
             self.cardNumber = CardNumber(self.pan)
 
+    def isSet(self):
+        return not(self.token is None or len(self.token) == 0 or self.token=='-')
+
     def isError(self) :
+        if not self.isSet() : return False, "Not set"
         if self.pan is None : return True, self.errorMessage
         if len(str(self.pan)) == 0 : return True, "номер карты не задан"
         if not str(self.pan).isdigit()    : return True, "номер карты должен быть числовым"

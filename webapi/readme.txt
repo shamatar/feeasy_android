@@ -12,7 +12,7 @@ mysql> GRANT ALL ON feeasy.* TO 'feeasyapp'@'localhost' IDENTIFIED BY 'feeasy129
 
 ==ЗАПРОС (комиссия)==
 
-http://37.252.124.233:5000/payapi?recipient_card=676280388571625380&sender_card=676280388571625380&sum=10000&method=check
+http://37.252.124.233:5000/payapi?recipient_card=tb66e1853e1479e72ae9491e5a36618903d1546&sender_card=676280388571625380&sum=10000&method=check
 
 поля
 recipient_card - понятно
@@ -50,6 +50,7 @@ sender_exp_year - год (2 цифры)
 sender_exp_month - месяц (номер месяца)
 sender_csc - CSC (число)
 sum - сумма в копейках
+recipientfee - указать значение, отличное от 'y', если комиссию оплачивает отправитель
 method - 'transfer'
 
 ==ОТВЕТ (транзакция)==

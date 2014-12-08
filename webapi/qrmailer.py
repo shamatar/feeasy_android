@@ -48,6 +48,8 @@ def generatePayUrl(message, cyphertoken) :
     data = "FESY" + cyphertoken[0] + cyphertoken[1:].decode('hex') + message.encode('utf-8')
     cryptedData = keyForSigning.decrypt(data)
 
+    print "!!! created QR for %s" % cyphertoken
+
     return "https://feeasy.me/a/%s" % base64.b32encode(cryptedData).replace('=','0')
     
 def makeQR(link, tmpfolder, fileprefix) :
