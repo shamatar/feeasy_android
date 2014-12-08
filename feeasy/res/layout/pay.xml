@@ -96,15 +96,12 @@
 	      
 	        style="@style/pay_box">
 	        
-	        <LinearLayout
-	       		android:orientation="horizontal"
-	       		
+	        <RelativeLayout
 		        android:layout_width="match_parent"
 		    	android:layout_height="wrap_content" >
 				<TextView
-				    android:layout_width ="0dp"
-				    android:layout_height="match_parent"
-				    android:layout_weight="3"
+				    android:layout_width ="wrap_content"
+				    android:layout_height="wrap_content"
 				    
 			        style="@style/payCaption"
 				    
@@ -112,9 +109,8 @@
 				<EditText
 				    android:id="@+id/sum_holder"
 				    
-				    android:layout_width ="0dp"
-				    android:layout_height="match_parent"
-				    android:layout_weight="1"
+				    android:layout_width ="wrap_content"
+				    android:layout_height="wrap_content"
 				    
 				    android:hint="500.00"
 				    
@@ -125,10 +121,12 @@
 				    
 				    android:imeOptions="actionDone"
 					android:singleLine="true"
+					
+					android:layout_alignParentRight="true"
 				    
 				    style="@style/payEdit"
 				    />
-			</LinearLayout>
+			</RelativeLayout>
 			<TextView
 			    android:id="@+id/textMessage"
 			    android:text=""

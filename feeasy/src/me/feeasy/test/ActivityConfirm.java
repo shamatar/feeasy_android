@@ -62,6 +62,10 @@ public class ActivityConfirm extends Activity {
 				TextView  paydataFee   = (TextView) findViewById(R.id.paydataFee);
 				TextView  paydataFullSum = (TextView) findViewById(R.id.paydataFullSum);
 				
+				FeeasyApp.addViewRurSign(paydataSum);
+				FeeasyApp.addViewRurSign(paydataFee);
+				FeeasyApp.addViewRurSign(paydataFullSum);
+				
 				payimageCard.setImageResource(getCardType().getCardImage());
 				paydataPan.setText(getCardPattern());
 				paydataSum.setText(prettySum(payData.sum));

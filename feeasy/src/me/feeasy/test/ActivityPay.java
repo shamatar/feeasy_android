@@ -14,6 +14,8 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Html;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
@@ -80,6 +82,7 @@ public class ActivityPay extends Activity {
 				Toast.makeText(getApplicationContext(), "Этот URL не может быть обработан", Toast.LENGTH_SHORT).show();
 			}
 		}
+		
 		if( recipientId==null ) {
 			setResult(InitialActivity.TAG_KILL_ALL);
 			finish();
@@ -95,8 +98,11 @@ public class ActivityPay extends Activity {
         switchView = (Switch    )findViewById(R.id.accept_holder);
         checkView  = (CheckBox  )findViewById(R.id.accept_holder_check);
         
-        if( recipientMessage!=null) 
-        	((TextView)findViewById(R.id.textMessage)).setText(recipientMessage);
+        FeeasyApp.addViewRurSign(sumView);
+        
+        if( recipientMessage!=null &&!recipientMessage.equals("")) { 
+        	((TextView)findViewById(R.id.textMessage)).setText(Html.fromHtml("<b>Сообщение получателя:</b> " + TextUtils.htmlEncode(recipientMessage)));
+        }
         
         acceptView = switchView == null ? checkView : switchView;
 

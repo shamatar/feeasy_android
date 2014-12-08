@@ -88,10 +88,10 @@
 		        <EditText
 		            android:id="@+id/payfieldMonth"
 		            
-		            android:layout_width="wrap_content"
+		            android:layout_width="@dimen/quadroStdPadding"
 		        	android:layout_height="wrap_content"
 		        	
-		        	android:hint="09"
+		        	android:hint="ММ"
 		        	
 				    android:digits="0123456789"
 				    android:inputType="number"
@@ -101,6 +101,8 @@
 		        	
 		        	android:imeOptions="actionDone"
 					android:singleLine="true"
+					
+					android:gravity="center"
 		        	
 		            style="@style/payEdit" >
 		        </EditText>
@@ -118,10 +120,10 @@
 		        <EditText
 		            android:id="@+id/payfieldYear"
 		            
-		            android:layout_width="wrap_content"
+		            android:layout_width="@dimen/quadroStdPadding"
 		        	android:layout_height="wrap_content"
 		        	
-		        	android:hint="18"
+		        	android:hint="ГГ"
 		        	
 		        	android:digits="0123456789"
 				    android:inputType="number"
@@ -129,6 +131,8 @@
 				    
 				    android:imeOptions="actionDone"
 					android:singleLine="true"
+					
+					android:gravity="center"
 		        	
 		        	android:layout_toRightOf="@id/paytextSlash"
 		        	

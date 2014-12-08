@@ -37,6 +37,7 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Picture;
 import android.graphics.RectF;
 import android.graphics.Shader;
 import android.util.Log;
@@ -193,6 +194,48 @@ public class FontEncoder {
 		
 		public Layer getMasterLayer() {
 			return layers.get("");
+		}
+		
+		//null is possible for width and for height
+		public Picture getPicture(Integer width, Integer height, int color,
+				int marginT, int marginR, int marginB, int marginL) {
+			Paint paint = new Paint();
+			paint.setColor(color);
+			paint.setAntiAlias(true);
+			
+			return getPicture(width,height,paint,marginT, marginR, marginB, marginL);
+		}
+		
+		//null is possible for width and for height
+		public Picture getPicture(Integer width, Integer height, Paint paint,
+				int marginT, int marginR, int marginB, int marginL) {
+			int pictureW;
+			int pictureH;
+			
+			if( width==null && height==null ) {
+				pictureW = (int)getWidth();
+				pictureH = (int)getHeight();
+			} else if( width==null ) {
+				pictureW = (int)(getWidth() * height / getHeight());
+				pictureH = height;
+			} else if( height==null ) {
+				pictureH = (int)(getHeight() * width / getWidth());
+				pictureW = width;
+			} else {
+				pictureH = height;
+				pictureW = width;
+			}
+			
+			Picture  picture = new Picture();
+			Canvas   canvas = picture.beginRecording(pictureW + marginL + marginR, pictureH + marginT + marginB);
+
+			canvas.translate(marginL, marginT);
+			canvas.scale(pictureW / getWidth(), pictureH / getHeight());
+			draw(canvas, paint);
+			
+			picture.endRecording();
+			
+			return picture;
 		}
 	}
 	

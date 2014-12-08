@@ -24,6 +24,9 @@ def before_first_request():
 
 @app.before_request
 def initContext():
+    try: sqlConnection.cursor()
+    except: init()
+    
     flask.g.cnx = sqlConnection
 
 def init() :

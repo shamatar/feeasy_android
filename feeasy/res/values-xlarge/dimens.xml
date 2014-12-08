@@ -5,6 +5,7 @@
     <dimen name="smallText">24sp</dimen>
     
     <dimen name="boxRadius">8dp</dimen>
+    <dimen name="quadroStdPadding">80dp</dimen>
     <dimen name="tripleStdPadding">60dp</dimen>
     <dimen name="doubleStdPadding">40dp</dimen>
     <dimen name="fivefoldStdPadding">100dp</dimen>

@@ -14,6 +14,8 @@ class PanToken :
 
         self.data = data
         self.isSender = isSender
+        
+        self.pan = None
 
         if data[0] == 't' :
             self.table = 'payertokens' if isSender else 'receivertokens'
