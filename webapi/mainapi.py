@@ -308,7 +308,6 @@ def joinPage() :
                 if len(message[0:i].encode('utf-8')) + ellipsisSize > qrmailer.MESSAGE_MAX_LEN : break
             shortMessage = message[0:i]+ellipsis
 
-
         if not pan.isdigit() or len(pan)>24 :
             return flask.jsonify(error=True, errorMessage='Неверный номер карты')
 

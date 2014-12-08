@@ -79,7 +79,7 @@ def mailQR(dstmail, files, card, message) :
     # Open a plain text file for reading.  For this example, assume that
     # the text file contains only ASCII characters.
     
-    text="""
+    text=u"""
 Здравствуйте, это команда Feeasy!
 
 В этом письме находится ваша feeasy-тка, которая позволит Вам получать вознаграждения на указанную карту:
@@ -95,7 +95,7 @@ def mailQR(dstmail, files, card, message) :
 Будьте внимательны, для Вашей безопасности мы не храним данные Вашей карты у себя на сервере. 
 
 Спасибо, что вы с нами!
-http://feeasy.me""" % {'card': card, 'message': message.encode('utf-8')}
+http://feeasy.me""" % {'card': card, 'message': message}
 
     me = "Feeasy Team <feeasy@xpianotools.com>"
     you = dstmail
@@ -105,7 +105,7 @@ http://feeasy.me""" % {'card': card, 'message': message.encode('utf-8')}
     msg['To']   = you
     msg['Subject'] = "Ваша feeasy-тка готова!"
     
-    msg.attach(MIMEText(text))
+    msg.attach(MIMEText(text.encode('utf-8'),'plain','utf-8'))
     
     for file in files :
         fileAttachment = MIMEBase('application', "octet-stream")
