@@ -58,9 +58,9 @@ public class ActivityValidate extends Activity {
 				} else {
 					Intent resultIntent = resultIntent();
 					
-					resultIntent.putExtra(ActivityResult.TAG_RESULT, true);
-					transactionId="CC9357845786";
-					//resultIntent.putExtra(ActivityResult.TAG_ERROR, errMessage);
+					resultIntent.putExtra(ActivityResult.TAG_RESULT, false);
+					//transactionId="CC9357845786";
+					resultIntent.putExtra(ActivityResult.TAG_ERROR, errMessage);
 					if( transactionId!=null )
 						resultIntent.putExtra(ActivityResult.TAG_TRANSACTION_ID, transactionId);
 
