@@ -26,22 +26,41 @@ method - 'check'
 (пример)
 {
   "bank": {
+    "api_id": "alfaweb", 
     "id": "alfa", 
     "name-ru": "\u0410\u043b\u044c\u0444\u0430-\u0411\u0430\u043d\u043a", 
     "web-site": "http://alfabank.ru/"
   }, 
   "error": false, 
   "fee": 3000, 
+  "fee2": 3000, 
+  "message": "\u0427\u0430\u0435\u0432\u044b\u0435 \u0434\u043b\u044f \u0412\u0430\u0441\u0438", 
   "sender_card": "6762 **** 5380", 
-  "sender_card_type": "Maestro"
+  "sender_card_type": "Maestro", 
+  "sum": 10000, 
+  "sum2": 13000
 }
 
-Если error - false, то комиссия (в копейках) в fee
+Если error - false, 
+fee и sum - это комиссия и сумма в случае, если комиссию оплачивает плательщик
+fee2 и sum2 - это комиссия и сумма в случае, если комиссию оплачивает получатель
+response["bank"]["api_id"] нужно будет передать в transfer параметром api_id (!)
+
+==ЗАПРОС (узнать данные получателя)==
+
+в check указывается только карта получателя:
+http://37.252.124.233:5000/payapi?recipient_card=tb66e1853e1479e72ae9491e5a36618903d1546&method=check
+
+==ОТВЕТ (узнать данные получателя)==
+{
+  "error": false, 
+  "message": "\u0427\u0430\u0435\u0432\u044b\u0435 \u0434\u043b\u044f \u0412\u0430\u0441\u0438"
+}
 
 ==ЗАПРОС (транзакция)==
 
 (пример)
-http://37.252.124.233:5000/payapi?recipient_card=676280388571625380&sender_card=676280388571625380&sender_exp_year=16&sender_exp_month=1&sender_csc=555&sum=10000&method=transfer
+http://37.252.124.233:5000/payapi?recipient_card=676280388571625380&sender_card=676280388571625380&sender_exp_year=16&sender_exp_month=1&sender_csc=555&sum=10000&api_id=alfaweb&method=transfer
 
 поля
 recipient_card - понятно
@@ -52,6 +71,7 @@ sender_csc - CSC (число)
 sum - сумма в копейках
 recipientfee - указать значение, отличное от 'y', если комиссию оплачивает отправитель
 method - 'transfer'
+api_id - обязательный параметр, полученный в запросе check: response["bank"]["api_id"]
 
 ==ОТВЕТ (транзакция)==
 ответ парсишь как JSON

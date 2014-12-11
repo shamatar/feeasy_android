@@ -73,6 +73,7 @@ class AlfaWebEmulation (BankApi) :
     def getBankData(self):
         return {
             'id': 'alfa',
+            'api_id' : AlfaWebEmulation.ID,
             'name-ru': u'Альфа-Банк',
             'web-site': 'http://alfabank.ru/',
         }
@@ -111,8 +112,11 @@ class AlfaWebEmulation (BankApi) :
 
         if 'error' in data and data['error'] != '0':
             return {'error': True, 'error-description': 'Error processing request'}
+            
+        fee = int(data['fee'])
 
-        return {'error': False, 'fee': int(data['fee'])}
+        return {'error': False, 'fee': fee, 'sum': payData.sumCents, 
+        'fee2': fee, 'sum2': payData.sumCents + fee}
 
     def getTransactionResult(self, response) :
         try :

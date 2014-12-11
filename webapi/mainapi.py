@@ -132,10 +132,11 @@ def verifycomplete() :
         resp = con.getresponse()
 
         error, trunsactionId = apiClass.getTransactionResult(resp)
-        print "Error 3d: %s, bank %s" % (result!='Y', error)
+        print "WebApi: Error 3d: %s, bank %s" % (result!='Y', error)
 
     except Exception as e:
-        print e
+        print "WebApi: " + e
+        trunsactionId = ''
         error = True
     
     return gotoVerificationResult(not error, trunsactionId)
@@ -201,10 +202,21 @@ def payapi() :
     )
 
     method = data.get('method')
-    bankClass = bankapi.apiAlfaWeb
+    api_id = data.get('api_id', None)
+    
+    if api_id is None :
+        api_id = 'alfaweb'
+    
+    if not api_id in bankapi.BankApi.allApiFunction :
+        error, message = True, "Некорректный api_id"
+        return flask.jsonify(error = True, reason = message )
+    
+    bankClass = bankapi.BankApi.allApiFunction[api_id]
 
     if method == 'transfer' :
-        error, message = payData.checkCorrectness(
+        if not 'api_id' in data :
+            error, message = True, "Необходимо явно указывать api_id"
+        else : error, message = payData.checkCorrectness(
             needSenderCard = True, needRecipientCard = True, needExpDat = True, needSum = True, needCsc = True
         )
         if error :
@@ -256,6 +268,10 @@ def payapi() :
                     return flask.jsonify(error = True, reason = result['error-description'])
 
                 response['fee'] = result['fee']
+                response['sum'] = result['sum']
+                response['fee2'] = result['fee2']
+                response['sum2'] = result['sum2']
+                
                 response['bank'] = bankClass.getBankData()
 
         return flask.jsonify( **response )
@@ -354,4 +370,4 @@ def joinPage() :
 
 if __name__ == '__main__':
     #app.run(debug=True, host='37.252.124.233')
-    app.run(debug=True, host='192.168.157.21')
+    app.run(debug=True, host='192.168.157.15')

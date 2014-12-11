@@ -66,7 +66,7 @@ def decryptToken(table, cyphertoken) :
 
     sqlResult = cursor.fetchone()
     if sqlResult is None :
-        return None
+        return None, "token not found"
 
     data = dict(zip(cursor.column_names, sqlResult))
 
