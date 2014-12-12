@@ -391,5 +391,5 @@ def joinPage() :
         return flask.jsonify(error=False, errorMessage='OK')
 
 if __name__ == '__main__':
-    #app.run(debug=True, host='37.252.124.233')
-    app.run(debug=True, host='192.168.157.15')
+    app.run(debug=True, host='37.252.124.233')
+    #app.run(debug=True, host='192.168.157.15')
