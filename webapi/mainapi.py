@@ -88,13 +88,8 @@ def gotoVerificationResult(success, transactionid = '') :
 def verifycomplete() :
     pares = ''
     success1, success2 = False, False
+    historyId = -1
     try :
-        pares = zlib.decompress(base64.b64decode(flask.request.form['PaRes']))
-        
-        root = xml.etree.ElementTree.fromstring(pares)
-        result = root.findall('Message')[0].findall('PARes')[0].findall('TX')[0].findall('status')[0].text
-        success1 = result=='Y'
-        
         token = flask.request.args.get('token','')
         
         cursor = feeasyMySQL.getCursor()
@@ -105,6 +100,12 @@ def verifycomplete() :
             raise Exception()
 
         termurl, postdata, ascurl, cookies, apiClassId, historyId = sqlResult
+        
+        pares = zlib.decompress(base64.b64decode(flask.request.form['PaRes']))
+        
+        root = xml.etree.ElementTree.fromstring(pares)
+        result = root.findall('Message')[0].findall('PARes')[0].findall('TX')[0].findall('status')[0].text
+        success1 = result=='Y'
         
         content = urllib.urlencode(dict([[x,flask.request.form[x]] for x in flask.request.form]))
         urlObj = urlparse.urlparse(termurl)
@@ -142,10 +143,11 @@ def verifycomplete() :
         error = True
 
     # save to hist:
-    cursor = feeasyMySQL.getCursor()
-    cursor.execute("UPDATE transactionhistory SET "
-                   "confirmDate=NOW(), pares=%(pares)s, success3d=%(success1)s, successBank=%(success2)s, transactionId=%(tid)s",
-                   {'pares': pares, 'success1': success1, 'success2': success2, 'tid': trunsactionId})
+    if historyId>=0 :
+        cursor = feeasyMySQL.getCursor()
+        cursor.execute("UPDATE transactionhistory SET "
+                   "confirmDate=NOW(), pares=%(pares)s, success3d=%(success1)s, successBank=%(success2)s, transactionId=%(tid)s WHERE id=%(id)s",
+                   {'pares': pares, 'success1': success1, 'success2': success2, 'tid': trunsactionId, 'id': historyId})
     
     return gotoVerificationResult(not error, trunsactionId)
 

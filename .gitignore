@@ -728,3 +728,4 @@ gen
 /thirdparty/androidsvg/gen
 /thirdparty/androidsvg/bin
 /thirdparty/androidsvg/doc
+/webapi/*.pyc
