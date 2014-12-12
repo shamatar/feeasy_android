@@ -75,4 +75,11 @@ public class PayData {
 		sum      = bundle.getInt(TAG_SUM);
 		message  = bundle.getString(TAG_MESSAGE);
 	}
+
+	public boolean senderIdentifyedByToken() {
+		if( senderCard.length() == 0 ) return false;
+		char first = senderCard.charAt(0);
+		
+		return first < '0' || first > '9';
+	}
 }

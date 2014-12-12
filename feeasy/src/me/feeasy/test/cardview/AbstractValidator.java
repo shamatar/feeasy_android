@@ -14,6 +14,9 @@ abstract public class AbstractValidator {
 	public void addObserver(Runnable observer) {
 		observers.add(observer);
 	}
+	public void removeObserver(Runnable observer) {
+		observers.remove(observer);
+	}
 	
 	//MUST be called when validity can be changed
 	protected void onChange() {

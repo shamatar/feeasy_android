@@ -52,6 +52,7 @@ def setup() :
              termUrl VARCHAR(255),
              cookies TEXT,
              apiclass VARCHAR(255),
+             historyId INT,
              INDEX(date)
              ) DEFAULT CHARSET=utf8 """,
         'receivertokens' : """
@@ -67,6 +68,20 @@ def setup() :
              id    INT NOT NULL AUTO_INCREMENT,
              data  BLOB,
              INDEX(id)
+             ) DEFAULT CHARSET=utf8""",
+        'transactionhistory' : """
+            (id    INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+             payerToken     CHAR(16),
+             recipientToken CHAR(16),
+             transferDate   DATETIME,
+             confirmDate    DATETIME,
+             sum   INT,
+             fee   INT,
+             api   VARCHAR(100),
+             pares BLOB,
+             success3d   BOOL,
+             successBank BOOL,
+             transactionId VARCHAR(255)
              ) DEFAULT CHARSET=utf8"""
         }
     for table in tables :

@@ -1,6 +1,6 @@
 package me.feeasy.test.cardview;
 
-import java.util.LinkedList;
+import java.util.HashSet;
 
 import android.view.View;
 
@@ -9,7 +9,7 @@ public class ButtonValidator {
 	private int backgroundValid; 
 	private int backgroundInvalid;
 	
-	private LinkedList<AbstractValidator> validators = new LinkedList<AbstractValidator>(); 
+	private HashSet<AbstractValidator> validators = new HashSet<AbstractValidator>(); 
 	
 	private Runnable listener;
 	
@@ -47,6 +47,12 @@ public class ButtonValidator {
 	public void addValidator(AbstractValidator validator) {
 		validators.add(validator);
 		validator.addObserver(validatorsListener);
+		updateButton();
+	}
+	
+	public void removeValidator(AbstractValidator validator) {
+		validators.remove(validator);
+		validator.removeObserver(validatorsListener);
 		updateButton();
 	}
 	

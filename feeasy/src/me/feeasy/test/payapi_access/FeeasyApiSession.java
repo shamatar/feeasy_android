@@ -35,16 +35,18 @@ public class FeeasyApiSession {
 	private static final int RETRYPOLICY_ATTEMPTS = 2;
 	
 	final String apiUrl = "http://37.252.124.233:5000/payapi";
-	//final String apiUrl = "http://192.168.157.21:5000/payapi";
+	//final String apiUrl = "http://192.168.157.15:5000/payapi";
 	
 	Context context;
 	
 	PayData payData;
 	
-	private int fee = 0;
+	private int fee1 = 0, fee2 = 0, sum1 = 0, sum2 = 0;
 	private String bank = null;
+	private String api_id = null;
 	private String fullMessage;
 	private String cardPattern = null;
+	private String cypherToken = null;
 	private CardType cardType = CardType.UNKNOWN_CARD;
 	
 	private boolean verificationCanceled = false;
@@ -63,11 +65,18 @@ public class FeeasyApiSession {
 	protected void onError(ErrType err, String reason) {}
 	protected void onVerificationComplete(String transactionId) {}
 	
-	public int getFee() { return fee; }
+	public int getFee1() { return fee1; }
+	public int getFee2() { return fee2; }
+	public int getSum1() { return sum1; }
+	public int getSum2() { return sum2; }
+	
 	public String getBank() { return bank; }
+	public String getApiId() { return api_id; }
 	public String getCardPattern() { return cardPattern; }
 	public CardType getCardType() { return cardType; }
 	public String getFullMessage() { return fullMessage; }
+	
+	public String getCypherToken() { return cypherToken; }
 	
 	public FeeasyApiSession(Context context, PayData payData) {
 		this.context = context;
@@ -79,9 +88,15 @@ public class FeeasyApiSession {
 		try {
 			data = new JSONObject(response);
 	    	if(!data.getBoolean("error") ) {
-	    		FeeasyApiSession.this.fee  = data.getInt("fee");
+	    		FeeasyApiSession.this.fee1  = data.getInt("fee");
+	    		FeeasyApiSession.this.sum1  = data.getInt("sum");
+	    		FeeasyApiSession.this.fee2  = data.getInt("fee2");
+	    		FeeasyApiSession.this.sum2  = data.getInt("sum2");
+	    		
 	    		FeeasyApiSession.this.bank = data.getJSONObject("bank")
 	    				.getString("id");
+	    		FeeasyApiSession.this.api_id = data.getJSONObject("bank")
+	    				.getString("api_id");
 	    		FeeasyApiSession.this.fullMessage = data.getString("message");
 	    		
 	    		FeeasyApiSession.this.cardPattern = data.getString("sender_card");
@@ -128,7 +143,7 @@ public class FeeasyApiSession {
 		queue.add(stringRequest);
 	}
 	
-	public void transferRequest(final WebView webView) {
+	public void transferRequest(final WebView webView, final boolean payFee, final String api_id) {
 		RequestQueue queue = Volley.newRequestQueue(context);
 
 		// Request a string response from the provided URL.
@@ -140,6 +155,7 @@ public class FeeasyApiSession {
 					try {
 						data = new JSONObject(response);
 				    	if(!data.getBoolean("error") ) {
+				    		cypherToken = data.getString("cyphertoken");
 				    		showValidationWindow(webView, data.getString("url"));
 				    		return;
 				    	}
@@ -157,6 +173,9 @@ public class FeeasyApiSession {
 			@Override protected Map<String, String> getParams() {
 		        Map<String, String> params = getPayParams();
 		        params.put("method", "transfer");
+		        params.put("recipientfee", payFee ? "n" : "y");
+		        params.put("api_id", api_id);
+		        
 		        return params;
 		    }
 		};

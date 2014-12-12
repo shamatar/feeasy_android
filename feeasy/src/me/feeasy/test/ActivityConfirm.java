@@ -3,11 +3,14 @@ package me.feeasy.test;
 import java.util.HashMap;
 
 import me.feeasy.test.payapi_access.FeeasyApiSession;
+import android.animation.ArgbEvaluator;
+import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -23,6 +26,9 @@ public class ActivityConfirm extends Activity {
 	static String EXTRA_TAG_ERROR_TEXT = "error";
 	
 	View payContainer;
+	CompoundButton switchFee;
+	CompoundButton switchSave;
+	String apiId = "";
 	
 	static HashMap<String, Integer> bankImages = new HashMap<String, Integer>();
 	static {
@@ -54,13 +60,13 @@ public class ActivityConfirm extends Activity {
 			@Override protected void onSuccess() {
 				payContainer.setVisibility(View.VISIBLE);
 				
-				ImageView payimageCard = (ImageView)findViewById(R.id.payimageCard);
-				TextView  paydataPan   = (TextView) findViewById(R.id.paydataPan);
-				TextView  paydataMessage = (TextView) findViewById(R.id.paydataMessage);
-				TextView  paydataSum   = (TextView) findViewById(R.id.paydataSum);
-				ImageView payimageBank = (ImageView)findViewById(R.id.payimageBank);
-				TextView  paydataFee   = (TextView) findViewById(R.id.paydataFee);
-				TextView  paydataFullSum = (TextView) findViewById(R.id.paydataFullSum);
+				final ImageView payimageCard = (ImageView)findViewById(R.id.payimageCard);
+				final TextView  paydataPan   = (TextView) findViewById(R.id.paydataPan);
+				final TextView  paydataMessage = (TextView) findViewById(R.id.paydataMessage);
+				final TextView  paydataSum   = (TextView) findViewById(R.id.paydataSum);
+				final ImageView payimageBank = (ImageView)findViewById(R.id.payimageBank);
+				final TextView  paydataFee   = (TextView) findViewById(R.id.paydataFee);
+				final TextView  paydataFullSum = (TextView) findViewById(R.id.paydataFullSum);
 				
 				FeeasyApp.addViewRurSign(paydataSum);
 				FeeasyApp.addViewRurSign(paydataFee);
@@ -69,9 +75,49 @@ public class ActivityConfirm extends Activity {
 				payimageCard.setImageResource(getCardType().getCardImage());
 				paydataPan.setText(getCardPattern());
 				paydataSum.setText(prettySum(payData.sum));
-				paydataFee.setText(prettySum(getFee()));
-				paydataFullSum.setText(prettySum(payData.sum + getFee()));
+				paydataFee.setText(prettySum(getFee1()));
+				paydataFullSum.setText(prettySum(getSum1()));
 				paydataMessage.setText(getFullMessage());
+				
+				apiId = getApiId();
+				
+				final View paycheckFee  = findViewById(R.id.paycheckFee );
+				
+				switchFee = (CompoundButton)paycheckFee.findViewById(R.id.accept_holder);
+				
+				if( getFee1()==0 ) paycheckFee.setVisibility(View.GONE);
+				else {
+					switchFee.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+						@Override public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+							paydataFee.setText(prettySum(isChecked ? getFee2() : getFee1()));
+							paydataFullSum.setText(prettySum(isChecked ? getSum2() : getSum1()));
+							
+							//hightlight sum widget
+							
+							int colorFrom = 0x00FFFFFF;
+							int colorTo = 0x80FFFFFF;
+							
+							ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
+							colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+							    @Override public void onAnimationUpdate(ValueAnimator animator) {
+							    	paydataFullSum.setBackgroundColor((Integer)animator.getAnimatedValue());
+							    }
+
+							});
+							colorAnimation.setDuration(100);
+							colorAnimation.setRepeatMode(ValueAnimator.REVERSE);
+							colorAnimation.setRepeatCount(1);
+							colorAnimation.start();
+						}
+					});
+				}
+
+				final View paycheckSave = findViewById(R.id.paycheckSave);
+				switchSave = (CompoundButton)paycheckSave.findViewById(R.id.accept_holder);
+				
+				if( payData.senderIdentifyedByToken() ) {
+					paycheckSave.setVisibility(View.GONE);
+				}
 				
 				Integer bankImage = bankImages.get(getBank());
 				if( bankImage!=null ) payimageBank.setImageDrawable(
@@ -98,6 +144,9 @@ public class ActivityConfirm extends Activity {
 				payData.save(payDataBundle);
 				
 				intent.putExtra(ActivityValidate.EXTRA_TAG_PAY_DATA, payDataBundle);
+				intent.putExtra(ActivityValidate.EXTRA_TAG_PAY_FEE, switchFee!=null ? switchFee.isChecked() : false);
+				intent.putExtra(ActivityValidate.EXTRA_TAG_NO_SAVE, switchSave!=null ? switchSave.isChecked() : false);
+				intent.putExtra(ActivityValidate.EXTRA_TAG_API_ID, apiId);
 				
 				startActivityForResult(intent, TAG_ACTIVITY_VALIDATE);
 			}
@@ -106,7 +155,7 @@ public class ActivityConfirm extends Activity {
 	
 	@SuppressLint("DefaultLocale")
 	public static String prettySum(int sum) {
-		return String.format("%d.%02d ₽", sum/100, sum%100);
+		return String.format("%d.%02d", sum/100, sum%100);
 	}
 	
 	@Override public void onActivityResult(int requestCode, int resultCode, Intent intent) {

@@ -1,5 +1,12 @@
 package me.feeasy.test;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import android.os.Bundle;
+import android.os.Parcel;
+import android.util.Base64;
+
 public class Utility {
 	//private static final String base32Chars =
     //    "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
@@ -74,5 +81,58 @@ public class Utility {
 	        hexChars[(j-start) * 2 + 1] = hexArray[v & 0x0F];
 	    }
 	    return new String(hexChars);
+	}
+	
+	public static String bundleToString(Bundle in) {
+	    Parcel parcel = Parcel.obtain();
+
+        in.writeToParcel(parcel, 0);
+        String serialized = Base64.encodeToString(parcel.marshall(), 0);
+        parcel.recycle();
+        
+        return serialized;
+	}
+
+	public static Bundle bundleFromString(String str) {
+		Bundle bundle = new Bundle();
+	    if (str != null) {
+	        Parcel parcel = Parcel.obtain();
+	        try {
+	            byte[] data = Base64.decode(str, 0);
+	            parcel.unmarshall(data, 0, data.length);
+	            parcel.setDataPosition(0);
+	            bundle = parcel.readBundle();
+	        } finally {
+	            parcel.recycle();
+	        }
+	    }
+	    return bundle;
+	}
+	
+	public static<T> String arrayToString(List<T> data) {
+		Parcel parcel = Parcel.obtain();
+
+        parcel.writeList(data);
+        String serialized = Base64.encodeToString(parcel.marshall(), 0);
+        parcel.recycle();
+        
+        return serialized;
+	}
+	
+	public static<T> ArrayList<T> stringToArray(String str) {
+		ArrayList<T> result = new ArrayList<T>();
+		if( str==null ) return result;
+		
+		Parcel parcel = Parcel.obtain();
+        try {
+            byte[] data = Base64.decode(str, 0);
+            parcel.unmarshall(data, 0, data.length);
+            parcel.setDataPosition(0);
+            parcel.readList(result, null);
+        } finally {
+            parcel.recycle();
+        }
+        
+        return result;
 	}
 }

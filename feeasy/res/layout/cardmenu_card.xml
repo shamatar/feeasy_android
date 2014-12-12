@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:svg="http://schemas.android.com/apk/res/me.feeasy.test"
+     
+    android:layout_width="wrap_content"
+    android:layout_height="@dimen/tripleStdPadding"
+    android:background="@drawable/cardmenu_card_bg"
+    android:padding="@dimen/halfStdPadding"
+    
+    android:minWidth="@dimen/fivefoldStdPadding"
+    
+    android:clickable="true"
+    android:focusable="true"
+     >
+    
+    <me.feeasy.test.svgview.SvgGlyphView
+        android:layout_width="@dimen/doubleStdPadding"
+        android:layout_height="@dimen/doubleStdPadding"
+        
+        android:id="@+id/plusSign"
+        
+        android:layout_centerInParent="true"
+         
+		svg:glyph="@raw/plus_sign"
+		svg:color="@color/bgInner"
+           />
+    
+    <RelativeLayout 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:id="@+id/cardDescription">
+	    <TextView
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        
+	        android:id="@+id/cardName"
+	        android:text="Unknown card"
+	        
+	        android:textSize="@dimen/stdText"
+	        
+	        android:visibility="gone"
+	        
+	        android:layout_alignParentTop="true"
+	        android:layout_alignParentLeft="true"
+	        />
+	    <ImageView
+	        android:layout_width="@dimen/doubleStdPadding"
+	        android:layout_height="@dimen/stdText"
+	        
+	        android:id="@+id/cardImage"
+	        
+	        android:layout_margin="@dimen/quarterStdPadding"
+	        
+	        android:src="@drawable/pk_default_card"
+	        
+	        android:layout_centerVertical="true"
+	        android:layout_alignParentLeft="true"
+	        />
+	    <TextView
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        
+	        android:id="@+id/cardNumber"
+	        android:text="1111"
+	        
+	        android:textSize="@dimen/stdText"
+	        android:textColor="@color/lightText"
+	        
+	        android:layout_alignParentBottom="true"
+	        android:layout_toRightOf="@id/cardImage" 
+	        />
+	    <!-- <View
+	        android:layout_width="@dimen/borderWidth2"
+	        android:layout_height="match_parent"
+	        
+	        android:layout_marginLeft="@dimen/minStdPadding"
+	        
+	        android:layout_toRightOf="@id/cardNumber"
+	        
+	        android:background="#000000" />  -->
+	</RelativeLayout>
+</RelativeLayout>

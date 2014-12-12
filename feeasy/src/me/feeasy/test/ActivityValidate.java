@@ -1,5 +1,6 @@
 package me.feeasy.test;
 
+import me.feeasy.test.cardview.SavedCard;
 import me.feeasy.test.payapi_access.FeeasyApiSession;
 import android.app.Activity;
 import android.content.Intent;
@@ -8,6 +9,9 @@ import android.webkit.WebView;
 
 public class ActivityValidate extends Activity {
 	static String EXTRA_TAG_PAY_DATA = "payData";
+	static String EXTRA_TAG_PAY_FEE = "payFee";
+	static String EXTRA_TAG_NO_SAVE = "noSave";
+	static String EXTRA_TAG_API_ID = "apiId";
 	
 	static int EXTRA_STATUS_SUCCESS =  0;
 	static int EXTRA_STATUS_ERROR   = -1;
@@ -18,6 +22,10 @@ public class ActivityValidate extends Activity {
 	
 	String validateUrl = null;
 	FeeasyApiSession session;
+
+	private boolean payFee = false;
+	private boolean noSave = true;
+	private String apiId = "";
 	
 	@Override public void onCreate(Bundle savedState) {
 		super.onCreate(savedState);
@@ -25,8 +33,12 @@ public class ActivityValidate extends Activity {
 		Bundle extras = getIntent().getExtras();
 		Bundle payDataBundle = null;
 		
-		if( extras!=null ) 
+		if( extras!=null ) {
 			payDataBundle = extras.getBundle(EXTRA_TAG_PAY_DATA);
+			payFee = extras.getBoolean(EXTRA_TAG_PAY_FEE);
+			noSave = extras.getBoolean(EXTRA_TAG_NO_SAVE);
+			apiId  = extras.getString(EXTRA_TAG_API_ID);
+		}
 		
 		if( payDataBundle!=null )
 			payData.load(payDataBundle);
@@ -37,7 +49,6 @@ public class ActivityValidate extends Activity {
 		
 		setContentView(R.layout.validate);
 		webview = (WebView)findViewById(R.id.webview);
-		
 		
 		session = new FeeasyApiSession(this, payData){
 			@Override protected void onVerificationComplete(String transactionId) {
@@ -50,9 +61,17 @@ public class ActivityValidate extends Activity {
 				
 				startActivityForResult(resultIntent, 0);
 				
+				if(!payData.senderIdentifyedByToken() && !noSave ) {
+					SavedCard.saveNew(payData, getCypherToken());
+				}
+				
 				//finish();
 			}
 			@Override protected void onError(ErrType err, String errMessage) {
+				/*if(!payData.senderIdentifyedByToken() && !noSave ) {
+					SavedCard.saveNew(payData, getCypherToken());
+				}*/
+				
 				if( err==ErrType.ERR_Canceled ) {
 					finish();
 				} else {
@@ -73,7 +92,7 @@ public class ActivityValidate extends Activity {
 				//finish();
 			}
 		};
-		session.transferRequest(webview);
+		session.transferRequest(webview, payFee, apiId);
 	}
 	
 	protected Intent resultIntent() {

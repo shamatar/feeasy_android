@@ -1,10 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="me.feeasy.test"
-    android:versionCode="4"
-    android:versionName="0.004" >
+    android:versionCode="5"
+    android:versionName="0.005" >
 
     <uses-sdk
-        android:minSdkVersion="11"
+        android:minSdkVersion="15"
         android:targetSdkVersion="21" />
     
 	<uses-permission android:name="android.permission.VIBRATE"/>
@@ -14,6 +14,7 @@
 
     <application
         android:allowBackup="true"
+        android:name="me.feeasy.test.FeeasyApp"
         android:icon="@drawable/ic_launcher"
         android:label="@string/feeasy_app_name"
         android:theme="@style/AppTheme" >
@@ -22,6 +23,7 @@
             android:name=".InitialActivity"
             android:label="@string/feeasy_app_name"
             android:screenOrientation="portrait" >
+            
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -125,7 +127,7 @@
                android:name="com.google.zxing.client.android.CaptureActivity"
                android:screenOrientation="portrait"
                android:configChanges="orientation|keyboardHidden"
-               android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+               android:theme="@android:style/Theme.NoTitleBar"
                android:windowSoftInputMode="stateAlwaysHidden">
         </activity>
     </application>

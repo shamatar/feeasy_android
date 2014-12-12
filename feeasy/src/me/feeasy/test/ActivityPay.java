@@ -14,6 +14,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
@@ -32,7 +33,7 @@ class ValueHolder<T> {
 	ValueHolder(T value) { this.value = value;}
 }
 
-public class ActivityPay extends Activity {
+public class ActivityPay extends FragmentActivity {
 	public static final int TAG_ACTIVITY_PAY = 12300;
 
 	//public static final String TAG_RECIPIENT_ID = "recipient_id";
@@ -83,6 +84,7 @@ public class ActivityPay extends Activity {
 			}
 		}
 		
+		//TODO: uncomment
 		if( recipientId==null ) {
 			setResult(InitialActivity.TAG_KILL_ALL);
 			finish();
@@ -101,7 +103,7 @@ public class ActivityPay extends Activity {
         FeeasyApp.addViewRurSign(sumView);
         
         if( recipientMessage!=null &&!recipientMessage.equals("")) { 
-        	((TextView)findViewById(R.id.textMessage)).setText(Html.fromHtml("<b>Сообщение получателя:</b> " + TextUtils.htmlEncode(recipientMessage)));
+        	((TextView)findViewById(R.id.textMessage)).setText(Html.fromHtml("<font color=#A0A0A0>Сообщение получателя:</font> " + TextUtils.htmlEncode(recipientMessage)));
         }
         
         acceptView = switchView == null ? checkView : switchView;

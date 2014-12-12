@@ -86,27 +86,28 @@ def gotoVerificationResult(success, transactionid = '') :
 
 @app.route("/verification-complete", methods=['POST'])
 def verifycomplete() :
+    pares = ''
+    success1, success2 = False, False
     try :
-        data = zlib.decompress(base64.b64decode(flask.request.form['PaRes']))
+        pares = zlib.decompress(base64.b64decode(flask.request.form['PaRes']))
         
-        root = xml.etree.ElementTree.fromstring(data)
+        root = xml.etree.ElementTree.fromstring(pares)
         result = root.findall('Message')[0].findall('PARes')[0].findall('TX')[0].findall('status')[0].text
+        success1 = result=='Y'
         
         token = flask.request.args.get('token','')
         
         cursor = feeasyMySQL.getCursor()
-        cursor.execute("SELECT termurl, postdata, url, cookies, apiclass FROM verifications WHERE token=%(token)s", {'token': token})
+        cursor.execute("SELECT termurl, postdata, url, cookies, apiclass, historyId FROM verifications WHERE token=%(token)s", {'token': token})
         
         sqlResult = cursor.fetchone()
         if sqlResult is None :
             raise Exception()
-            
-        termurl, postdata, ascurl, cookies, apiClassId = sqlResult
+
+        termurl, postdata, ascurl, cookies, apiClassId, historyId = sqlResult
         
         content = urllib.urlencode(dict([[x,flask.request.form[x]] for x in flask.request.form]))
-
         urlObj = urlparse.urlparse(termurl)
-
         apiClass = bankapi.BankApi.allApiFunction[apiClassId]
 
         headers = {
@@ -132,12 +133,19 @@ def verifycomplete() :
         resp = con.getresponse()
 
         error, trunsactionId = apiClass.getTransactionResult(resp)
+        success2 = not error
         print "WebApi: Error 3d: %s, bank %s" % (result!='Y', error)
 
     except Exception as e:
         print "WebApi: " + e
         trunsactionId = ''
         error = True
+
+    # save to hist:
+    cursor = feeasyMySQL.getCursor()
+    cursor.execute("UPDATE transactionhistory SET "
+                   "confirmDate=NOW(), pares=%(pares)s, success3d=%(success1)s, successBank=%(success2)s, transactionId=%(tid)s",
+                   {'pares': pares, 'success1': success1, 'success2': success2, 'tid': trunsactionId})
     
     return gotoVerificationResult(not error, trunsactionId)
 
@@ -225,16 +233,30 @@ def payapi() :
         result = bankClass.transfer(payData)
         if result['error'] : return flask.jsonify(error = True, reason = result['error-description'])
 
+        cursor = feeasyMySQL.getCursor()
+        cursor.execute("INSERT INTO transactionhistory (recipientToken, transferDate, sum, fee, api) VALUES "
+                       "(%(recipientToken)s, NOW(), %(sum)s, %(fee)s, %(api)s)",
+            {
+                'recipientToken' : recipientCard[1:16+1],
+                'sum'   : result['sum'],
+                'fee'   : result['fee'],
+                'api'   : bankClass.ID
+            })
+
+        historyId = cursor.lastrowid
+
         queryId = result['queryId']
         cursor = feeasyMySQL.getCursor()
-        cursor.execute("INSERT INTO verifications (token, url, postdata, date, termurl, cookies, apiclass) VALUES (%(token)s, %(url)s, %(postdata)s, NOW(), %(termUrl)s, %(cookies)s, %(api)s)",
+        cursor.execute("INSERT INTO verifications (token, url, postdata, date, termurl, cookies, apiclass, historyId) VALUES "
+                       "(%(token)s, %(url)s, %(postdata)s, NOW(), %(termUrl)s, %(cookies)s, %(api)s, %(historyId)s)",
             {
                 'token' : queryId.hex,
                 'url'   : result['url'],
                 'postdata'  : json.dumps(result['data']),
                 'termUrl' : result['termUrl'],
                 'cookies' : result['cookies'],
-                'api'  : bankClass.ID
+                'api'  : bankClass.ID,
+                'historyId' : historyId
             })
 
 

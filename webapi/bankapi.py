@@ -17,7 +17,8 @@ class AlfaWebEmulation (BankApi) :
         if result['error'] :
             return result
 
-        sum = payData.sumCents - result['fee']
+        fee = result['fee']
+        sum = payData.sumCents - fee if payData.recipientFee else payData.sumCents
 
         params = {
             "sender_type":"cnm",
@@ -64,6 +65,8 @@ class AlfaWebEmulation (BankApi) :
             'termUrl' : 'https://click.alfabank.ru/api/v1/transfers',#data['termURL'],
             'queryId' : queryId,
             'cookies' : resp.getheader('Set-Cookie'),
+            'fee'     : fee,
+            'sum'     : sum,
             'data' : {
                 'PaReq' : data['pareq'].replace('\n',''),
                 'MD'    : data['md'],
