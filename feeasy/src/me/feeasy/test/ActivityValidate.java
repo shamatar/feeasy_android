@@ -9,9 +9,11 @@ import android.webkit.WebView;
 
 public class ActivityValidate extends Activity {
 	static String EXTRA_TAG_PAY_DATA = "payData";
-	static String EXTRA_TAG_PAY_FEE = "payFee";
+	//static String EXTRA_TAG_PAY_FEE = "payFee";
 	static String EXTRA_TAG_NO_SAVE = "noSave";
 	static String EXTRA_TAG_API_ID = "apiId";
+	static String EXTRA_TAG_SENDER_CARD_TYPE = "senderType";
+	static String EXTRA_TAG_SENDER_CARD_NAME = "senderName";
 	
 	static int EXTRA_STATUS_SUCCESS =  0;
 	static int EXTRA_STATUS_ERROR   = -1;
@@ -23,9 +25,14 @@ public class ActivityValidate extends Activity {
 	String validateUrl = null;
 	FeeasyApiSession session;
 
-	private boolean payFee = false;
+	//private boolean payFee = false;
 	private boolean noSave = true;
 	private String apiId = "";
+	
+	private CardType senderCardType;
+	private String   senderCardName;
+	
+	private String errorText = null;
 	
 	@Override public void onCreate(Bundle savedState) {
 		super.onCreate(savedState);
@@ -33,11 +40,16 @@ public class ActivityValidate extends Activity {
 		Bundle extras = getIntent().getExtras();
 		Bundle payDataBundle = null;
 		
+		senderCardType = CardType.UNKNOWN_CARD;
+		senderCardName = "";
+		
 		if( extras!=null ) {
 			payDataBundle = extras.getBundle(EXTRA_TAG_PAY_DATA);
-			payFee = extras.getBoolean(EXTRA_TAG_PAY_FEE);
+			//payFee = extras.getBoolean(EXTRA_TAG_PAY_FEE);
 			noSave = extras.getBoolean(EXTRA_TAG_NO_SAVE);
 			apiId  = extras.getString(EXTRA_TAG_API_ID);
+			senderCardType = CardType.getById(extras.getString(EXTRA_TAG_SENDER_CARD_TYPE));
+			senderCardName = extras.getString(EXTRA_TAG_SENDER_CARD_NAME);
 		}
 		
 		if( payDataBundle!=null )
@@ -52,14 +64,16 @@ public class ActivityValidate extends Activity {
 		
 		session = new FeeasyApiSession(this, payData){
 			@Override protected void onVerificationComplete(String transactionId) {
-				Intent resultIntent = resultIntent();
+				//Intent resultIntent = resultIntent();
 				
-				resultIntent.putExtra(ActivityResult.TAG_RESULT, true);
-				resultIntent.putExtra(ActivityResult.TAG_TRANSACTION_ID, transactionId);
+				//resultIntent.putExtra(ActivityResult.TAG_RESULT, true);
+				//resultIntent.putExtra(ActivityResult.TAG_TRANSACTION_ID, transactionId);
 				
 				//setResult(EXTRA_STATUS_ERROR, resultIntent);
 				
-				startActivityForResult(resultIntent, 0);
+				showResult(getCypherToken(),transactionId, true);
+				
+				//startActivityForResult(resultIntent, 0);
 				
 				if(!payData.senderIdentifyedByToken() && !noSave ) {
 					SavedCard.saveNew(payData, getCypherToken());
@@ -75,15 +89,19 @@ public class ActivityValidate extends Activity {
 				if( err==ErrType.ERR_Canceled ) {
 					finish();
 				} else {
-					Intent resultIntent = resultIntent();
+					//Intent resultIntent = resultIntent();
 					
-					resultIntent.putExtra(ActivityResult.TAG_RESULT, false);
+					//resultIntent.putExtra(ActivityResult.TAG_RESULT, false);
 					//transactionId="CC9357845786";
-					resultIntent.putExtra(ActivityResult.TAG_ERROR, errMessage);
-					if( transactionId!=null )
-						resultIntent.putExtra(ActivityResult.TAG_TRANSACTION_ID, transactionId);
+					//resultIntent.putExtra(ActivityResult.TAG_ERROR, errMessage);
+					//if( transactionId!=null )
+					//	resultIntent.putExtra(ActivityResult.TAG_TRANSACTION_ID, transactionId);
+					
+					ActivityValidate.this.errorText = errMessage;
+					
+					showResult(getCypherToken(),transactionId, false);
 
-					startActivityForResult(resultIntent, 0);
+					//startActivityForResult(resultIntent, 0);
 					//setResult(EXTRA_STATUS_ERROR, resultIntent);
 				}
 				
@@ -92,7 +110,32 @@ public class ActivityValidate extends Activity {
 				//finish();
 			}
 		};
-		session.transferRequest(webview, payFee, apiId);
+		session.transferRequest(webview, apiId);
+	}
+	
+
+	private void showResult(String cypherToken, String transactionId, boolean success) {
+		payData.senderCard = cypherToken;
+		if( noSave || payData.senderCard==null ) payData.senderCard = "";
+		if( transactionId==null ) transactionId="";
+		if( errorText==null ) errorText="";
+		
+		Intent initialIntent = new Intent(this, InitialActivity.class);
+		initialIntent.putExtra(InitialActivity.TAG_NO_SCAN, true);
+		
+		HistoryElem histElem = new HistoryElem(payData,senderCardType,senderCardName,transactionId, errorText, success);
+		histElem.addAndSave();
+		
+		Bundle histBundle = new Bundle();
+		histElem.save(histBundle);
+		
+		Intent intent = resultIntent();
+		intent.putExtra(ActivityResult.TAG_HIST_ELEM, histBundle);
+		
+		finishActivity(InitialActivity.TAG_KILL_ALL);
+
+		startActivity(initialIntent);
+		startActivity(intent);
 	}
 	
 	protected Intent resultIntent() {

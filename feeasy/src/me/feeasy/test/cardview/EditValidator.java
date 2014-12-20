@@ -48,6 +48,7 @@ public abstract class EditValidator {
 	
 	public void bindToView(final EditText edit) {
 		thisView = edit;
+		correctString(edit.getText().toString());
 		
 		edit.setImeActionLabel("Далее", KeyEvent.KEYCODE_ENTER);
 		

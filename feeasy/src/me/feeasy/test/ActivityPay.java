@@ -2,6 +2,7 @@ package me.feeasy.test;
 
 import me.feeasy.test.cardview.ButtonValidator;
 import me.feeasy.test.cardview.CardFormView;
+import me.feeasy.test.cardview.SavedCard;
 import me.feeasy.test.cardview.SumValidator;
 import me.feeasy.test.cardview.CompoundButtonValidator;
 
@@ -39,6 +40,7 @@ public class ActivityPay extends FragmentActivity {
 	//public static final String TAG_RECIPIENT_ID = "recipient_id";
 	//public static final String TAG_RECIPIENT_MESSAGE = "recipient_message";
 	public static final String TAG_URI = "uri";
+	public static final String TAG_HISTORY = "history";
 	
 	JNCryptor cryptor = new AES256JNCryptor();
 	String PAN;
@@ -51,8 +53,10 @@ public class ActivityPay extends FragmentActivity {
 	
 	CompoundButton acceptView;
 	
-	String recipientId;
-	String recipientMessage;
+	//String recipientId;
+	//String recipientMessage;
+	
+	PayData payData = new PayData();
 	
 	public void hideSoftKeyboard() {
 		View focus = getCurrentFocus();
@@ -77,15 +81,28 @@ public class ActivityPay extends FragmentActivity {
 		}
 		if( uri!=null ) {
 			if(!uri.error ) {
-				recipientId = uri.cyphertoken;// extras.getString(TAG_RECIPIENT_ID);
-				recipientMessage = uri.message;//extras.getString(TAG_RECIPIENT_MESSAGE);
+				payData.recipientCard = uri.cyphertoken;// extras.getString(TAG_RECIPIENT_ID);
+				payData.message = uri.message;//extras.getString(TAG_RECIPIENT_MESSAGE);
 			} else {
 				Toast.makeText(getApplicationContext(), "Этот URL не может быть обработан", Toast.LENGTH_SHORT).show();
 			}
 		}
 		
+		HistoryElem hist = null;
+		
+		if( extras!=null && extras.getBundle(TAG_HISTORY)!=null) {
+			Bundle histBundle = extras.getBundle(TAG_HISTORY);
+			hist = new HistoryElem();
+			hist.load(histBundle);
+			
+			//copy paydata object
+			Bundle dataBundle = new Bundle();
+			hist.payData.save(dataBundle);
+			payData.load(dataBundle);
+		}
+		
 		//TODO: uncomment
-		if( recipientId==null ) {
+		if( payData.recipientCard==null ) {
 			setResult(InitialActivity.TAG_KILL_ALL);
 			finish();
 			Intent intent = new Intent(this, InitialActivity.class);
@@ -94,16 +111,28 @@ public class ActivityPay extends FragmentActivity {
 		}
 		
 		setContentView(R.layout.pay);
+		FeeasyApp.instance.setupActivity(this);
 		
         cardView = (CardFormView)findViewById(R.id.pay_card);
         sumView  = (EditText    )findViewById(R.id.sum_holder);
         switchView = (Switch    )findViewById(R.id.accept_holder);
         checkView  = (CheckBox  )findViewById(R.id.accept_holder_check);
         
+        if( hist!=null ) {
+	        SavedCard tmpSavedCard = new SavedCard(
+	        		hist.payData.senderCard, hist.senderCardName, hist.senderCardType, 
+	        		hist.senderCardName, payData.expYear, payData.expMonth);
+	        cardView.setInitialSavedCard(tmpSavedCard);
+        }
+        
+        if( payData.sum!=0 ) {
+        	sumView.setText(Utility.prettySum(payData.sum));
+        }
+        
         FeeasyApp.addViewRurSign(sumView);
         
-        if( recipientMessage!=null &&!recipientMessage.equals("")) { 
-        	((TextView)findViewById(R.id.textMessage)).setText(Html.fromHtml("<font color=#A0A0A0>Сообщение получателя:</font> " + TextUtils.htmlEncode(recipientMessage)));
+        if( payData.message!=null &&!payData.message.equals("")) { 
+        	((TextView)findViewById(R.id.textMessage)).setText(Html.fromHtml("<font color=#A0A0A0>Сообщение получателя:</font> " + TextUtils.htmlEncode(payData.message)));
         }
         
         acceptView = switchView == null ? checkView : switchView;
@@ -144,15 +173,11 @@ public class ActivityPay extends FragmentActivity {
 			@Override public void run() {
 				Intent intentPayProcess = new Intent(getApplicationContext(), ActivityConfirm.class);
 				
-				PayData payData = new PayData(
-						cardView.getPEN(), 
-						recipientId, 
-						cardView.getCSC(), 
-						cardView.getMonth(), 
-						cardView.getYear(), 
-						sumValidator.getCents(),
-						recipientMessage
-					);
+				payData.senderCard = cardView.getPEN();
+				payData.cvc = cardView.getCSC();
+				payData.expMonth = cardView.getMonth();
+				payData.expYear = cardView.getYear();
+				payData.sum = sumValidator.getCents();
 				
 				Bundle payDataBundle = new Bundle();
 				payData.save(payDataBundle);

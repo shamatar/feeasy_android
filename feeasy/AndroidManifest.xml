@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="me.feeasy.test"
-    android:versionCode="5"
-    android:versionName="0.005" >
+    android:versionCode="6"
+    android:versionName="0.006" >
 
     <uses-sdk
         android:minSdkVersion="15"
@@ -23,12 +23,23 @@
             android:name=".InitialActivity"
             android:label="@string/feeasy_app_name"
             android:screenOrientation="portrait" >
-            
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 		</activity>
+		
+        <activity
+            android:name=".ActivityHistory"
+            android:label="@string/feeasy_app_name"
+            android:screenOrientation="portrait" >
+        </activity>
+        
+        <activity
+            android:name=".ActivityTerms"
+            android:label="@string/feeasy_app_name"
+            android:screenOrientation="portrait" >
+        </activity>
         
         <activity
             android:name=".ActivityPay"
@@ -46,56 +57,56 @@
 		        <action android:name="android.intent.action.VIEW" />
 		        <category android:name="android.intent.category.DEFAULT" />
 		        <category android:name="android.intent.category.BROWSABLE" />
-		        <data android:host="feeasy.me" android:scheme="http" />
+		        <data android:host="feeasy.me" android:scheme="http" android:pathPrefix="/a/" />
 		    </intent-filter>
 		    
 		    <intent-filter>
 		        <action android:name="android.intent.action.VIEW" />
 		        <category android:name="android.intent.category.DEFAULT" />
 		        <category android:name="android.intent.category.BROWSABLE" />
-		        <data android:host="www.feeasy.me" android:scheme="http" />
+		        <data android:host="www.feeasy.me" android:scheme="http" android:pathPrefix="/a/" />
 		    </intent-filter>
 		    
 		    <intent-filter>
 		        <action android:name="android.intent.action.VIEW" />
 		        <category android:name="android.intent.category.DEFAULT" />
 		        <category android:name="android.intent.category.BROWSABLE" />
-		        <data android:host="feeasy.me." android:scheme="http" />
+		        <data android:host="feeasy.me." android:scheme="http" android:pathPrefix="/a/" />
 		    </intent-filter>
 		    
 		    <intent-filter>
 		        <action android:name="android.intent.action.VIEW" />
 		        <category android:name="android.intent.category.DEFAULT" />
 		        <category android:name="android.intent.category.BROWSABLE" />
-		        <data android:host="www.feeasy.me." android:scheme="http" />
+		        <data android:host="www.feeasy.me." android:scheme="http" android:pathPrefix="/a/" />
 		    </intent-filter>
 		    
 		    <intent-filter>
 		        <action android:name="android.intent.action.VIEW" />
 		        <category android:name="android.intent.category.DEFAULT" />
 		        <category android:name="android.intent.category.BROWSABLE" />
-		        <data android:host="feeasy.me" android:scheme="https" />
+		        <data android:host="feeasy.me" android:scheme="https" android:pathPrefix="/a/" />
 		    </intent-filter>
 		    
 		    <intent-filter>
 		        <action android:name="android.intent.action.VIEW" />
 		        <category android:name="android.intent.category.DEFAULT" />
 		        <category android:name="android.intent.category.BROWSABLE" />
-		        <data android:host="www.feeasy.me" android:scheme="https" />
+		        <data android:host="www.feeasy.me" android:scheme="https" android:pathPrefix="/a/" />
 		    </intent-filter>
 		    
 		    <intent-filter>
 		        <action android:name="android.intent.action.VIEW" />
 		        <category android:name="android.intent.category.DEFAULT" />
 		        <category android:name="android.intent.category.BROWSABLE" />
-		        <data android:host="feeasy.me." android:scheme="https" />
+		        <data android:host="feeasy.me." android:scheme="https" android:pathPrefix="/a/" />
 		    </intent-filter>
 		    
 		    <intent-filter>
 		        <action android:name="android.intent.action.VIEW" />
 		        <category android:name="android.intent.category.DEFAULT" />
 		        <category android:name="android.intent.category.BROWSABLE" />
-		        <data android:host="www.feeasy.me." android:scheme="https" />
+		        <data android:host="www.feeasy.me." android:scheme="https" android:pathPrefix="/a/" />
 		    </intent-filter>
         </activity>
         

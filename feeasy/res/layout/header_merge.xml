@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:feesvg="http://schemas.android.com/apk/res/me.feeasy.test"
+    xmlns:svgimageview="http://schemas.android.com/apk/res-auto"
+    
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+    
+	<RelativeLayout
+        android:layout_width="match_parent"
+    	android:layout_height="wrap_content"
+    	android:background="@drawable/title_bg"
+    	
+    	android:layout_alignParentTop="true"
+    	
+    	android:paddingBottom="@dimen/minStdPadding"
+    	android:paddingTop="@dimen/minStdPadding"
+    	android:paddingRight="@dimen/minStdPadding" >
+    	
+	    <me.feeasy.test.svgview.SvgGlyphView
+            android:id="@+id/headDrawerIcon"
+            
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/smallText"
+            
+            android:layout_marginRight="@dimen/halfStdPadding"
+            
+	        feesvg:glyph="@raw/hamburger_cropped"
+	        feesvg:color="@color/darkText"
+            />
+        
+        <me.feeasy.test.svgview.SvgGlyphView
+            android:id="@+id/headIcon"
+            
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/headDrawerIcon"
+            
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/largerText"
+            
+	        feesvg:glyph="@raw/logo_monochrome_small"
+	        feesvg:color="@color/headerImg"
+            />
+	    
+        <TextView 
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/feeasyTitle"
+            
+            android:layout_marginLeft="@dimen/halfStdPadding"
+            
+            android:textSize="@dimen/stdText"
+            android:text="Feeasy"
+	        android:textColor="@color/headerText"
+            
+            android:clickable="true"
+            android:focusable="true"
+	        
+	        android:layout_toRightOf="@id/headIcon" />
+        
+        <TextView 
+            android:id="@+id/headerTermsLink"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/stdText"
+            android:text="Соглашение"
+	        android:textColor="@color/headerText"
+            
+            android:clickable="true"
+            android:focusable="true"
+            
+            android:layout_alignParentRight="true" />
+    </RelativeLayout>
+    
+</merge>

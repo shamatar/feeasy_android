@@ -15,6 +15,8 @@ public class PayData {
 	public int sum; //times 100
 	
 	public String message;
+	public int fee = 0;
+	public boolean payFee=false;
 	
 	public static String TAG_SENDER_CARD = "sender_card";
 	public static String TAG_PRECIPIENT_CARD = "recipient_card";
@@ -22,6 +24,8 @@ public class PayData {
 	public static String TAG_EXP_MONTH = "exp_month";
 	public static String TAG_EXP_YEAR  = "exp_year";
 	public static String TAG_SUM       = "sum";
+	public static String TAG_FEE       = "fee";
+	public static String TAG_PAY_FEE       = "pay_fee";
 	public static String TAG_MESSAGE   = "message";
 	
 	public PayData(String senderCard, String recipientCard, 
@@ -62,6 +66,8 @@ public class PayData {
 		bundle.putInt(TAG_EXP_MONTH, expMonth); 
 		bundle.putInt(TAG_EXP_YEAR, expYear);
 		bundle.putInt(TAG_SUM, sum);
+		bundle.putInt(TAG_FEE, fee);
+		bundle.putBoolean(TAG_PAY_FEE, payFee);
 		bundle.putString(TAG_MESSAGE, message);
 	}
 	
@@ -73,6 +79,8 @@ public class PayData {
 		expMonth = bundle.getInt(TAG_EXP_MONTH);
 		expYear  = bundle.getInt(TAG_EXP_YEAR);
 		sum      = bundle.getInt(TAG_SUM);
+		fee      = bundle.getInt(TAG_FEE);
+		payFee   = bundle.getBoolean(TAG_PAY_FEE);
 		message  = bundle.getString(TAG_MESSAGE);
 	}
 

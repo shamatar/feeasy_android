@@ -75,4 +75,18 @@
         <item name="android:layout_margin">@dimen/halfStdPadding</item>
         <item name="android:background">@drawable/text_bg</item>
     </style>
+    
+    <style name="resultText">
+        <item name="android:textColor">@color/darkText</item>
+    </style>
+    <style name="resultCaption" parent="resultText">
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_centerVertical">true</item>
+    </style>
+    <style name="resultField" parent="resultText">
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:layout_alignParentRight">true</item>
+        <item name="android:minWidth">@dimen/quadroStdPadding</item>
+        <item name="android:gravity">center</item>
+    </style>
 </resources>

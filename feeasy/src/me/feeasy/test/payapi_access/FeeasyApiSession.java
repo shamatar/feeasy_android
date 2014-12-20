@@ -34,7 +34,8 @@ public class FeeasyApiSession {
 	private static final int RETRYPOLICY_TIMEOUT_TRANSFER = 35000;
 	private static final int RETRYPOLICY_ATTEMPTS = 2;
 	
-	final String apiUrl = "http://37.252.124.233:5000/payapi";
+	final String apiUrl = "https://feeasy.me/payapi";
+	//final String apiUrl = "http://37.252.124.233:5000/payapi";
 	//final String apiUrl = "http://192.168.157.15:5000/payapi";
 	
 	Context context;
@@ -143,7 +144,7 @@ public class FeeasyApiSession {
 		queue.add(stringRequest);
 	}
 	
-	public void transferRequest(final WebView webView, final boolean payFee, final String api_id) {
+	public void transferRequest(final WebView webView, final String api_id) {
 		RequestQueue queue = Volley.newRequestQueue(context);
 
 		// Request a string response from the provided URL.
@@ -173,7 +174,7 @@ public class FeeasyApiSession {
 			@Override protected Map<String, String> getParams() {
 		        Map<String, String> params = getPayParams();
 		        params.put("method", "transfer");
-		        params.put("recipientfee", payFee ? "n" : "y");
+		        params.put("recipientfee", payData.payFee ? "n" : "y");
 		        params.put("api_id", api_id);
 		        
 		        return params;

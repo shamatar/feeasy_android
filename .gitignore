@@ -729,3 +729,4 @@ gen
 /thirdparty/androidsvg/bin
 /thirdparty/androidsvg/doc
 /webapi/*.pyc
+/webpage/nbproject/private/

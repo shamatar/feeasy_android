@@ -1,8 +1,13 @@
 package me.feeasy.test;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.util.Base64;
@@ -134,5 +139,67 @@ public class Utility {
         }
         
         return result;
+	}
+
+	public static String prettyNum(int q, String one, String two,
+			String five) {
+		if( q<0 ) q = -q;
+		
+		if( q%10 == 1 && ((q%100) / 10) !=1 ) {
+			return one;
+		}
+		
+		if( (q + 9)%10 + 1 >= 5 || ((q%100) / 10) ==1 ) {
+			return five;
+		}
+		
+		return two;
+	}
+
+	@SuppressLint("DefaultLocale")
+	public static String prettySum(int sum) {
+		return String.format("%d.%02d", sum/100, sum%100);
+	}
+	
+	static SimpleDateFormat dateFormat=new SimpleDateFormat("dd.MM yyyy", Locale.US);
+
+	public static String timeInterval(Date old, Date cur) {
+		long millisGone = cur.getTime() - old.getTime();
+		
+		Calendar cnew = Calendar.getInstance(), 
+				 cold = Calendar.getInstance(),
+				 ctmp = Calendar.getInstance();
+		
+		cnew.setTime(cur);
+		cold.setTime(old);
+		
+		if( millisGone < 1000L * 60 * 3)
+			return "только что";
+		
+		if( millisGone < 1000L * 60 * 60) {
+			int minutes = (int)(millisGone / (1000L * 60)); 
+			return minutes + " " + Utility.prettyNum(minutes, "минуту назад", "минуты назад", "минут назад");
+		}
+		
+		if( millisGone < 1000L * 60 * 60 * 2)
+			return "час назад";
+		
+		ctmp.setTime(new Date(cur.getTime() - 1000L * 60 * 60 * 24));
+		if( cold.get(Calendar.DAY_OF_YEAR) == ctmp.get(Calendar.DAY_OF_YEAR) &&
+			cold.get(Calendar.YEAR)        == ctmp.get(Calendar.YEAR) ) {
+			return "вчера";
+		}
+		
+		if( millisGone < 1000L * 60 * 60 * 24) {
+			int hours = (int)(millisGone / (1000L * 60 * 60)); 
+			return hours + " " + Utility.prettyNum(hours, "час назад", "часа назад", "часов назад");
+		}
+		
+		if( millisGone < 1000L * 60 * 60 * 24 * 7 ) {
+			int days = (int)(millisGone / (1000L * 60 * 60 * 7));
+			return days + " " + Utility.prettyNum(days, "день назад", "дня назад", "дней назад");
+		}
+		
+		return dateFormat.format(old);
 	}
 }

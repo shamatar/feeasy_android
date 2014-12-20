@@ -33,7 +33,7 @@ public class CardFormView extends LinearLayout {
 		
 		private CardFragment cardFragment;
 		
-		public SavedCardWidget(SavedCard savedCard) {
+		public SavedCardWidget(SavedCard savedCard, int index) {
 			this.savedCard = savedCard;
 			
 			LayoutInflater inflater = (LayoutInflater) getContext().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
@@ -51,7 +51,7 @@ public class CardFormView extends LinearLayout {
 				((TextView)(this.cardDescription.findViewById(R.id.cardNumber))).setText(savedCard.displayNumbers);
 			}
 			
-			cardmenuNavbar.addView(view);
+			cardmenuNavbar.addView(view, index);
 			
 			this.view.setOnClickListener(new View.OnClickListener() {
 				@Override public void onClick(View v) {
@@ -272,6 +272,70 @@ public class CardFormView extends LinearLayout {
 		
 		super.onLayout(changed, left, top, right, bottom);
 	}*/
+	
+	static public class WrapContentHeightViewPager extends ViewPager {
+
+	    /**
+	     * Constructor
+	     *
+	     * @param context the context
+	     */
+	    public WrapContentHeightViewPager(Context context) {
+	        super(context);
+	    }
+
+	    /**
+	     * Constructor
+	     *
+	     * @param context the context
+	     * @param attrs the attribute set
+	     */
+	    public WrapContentHeightViewPager(Context context, AttributeSet attrs) {
+	        super(context, attrs);
+	    }
+
+	    @Override
+	    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+	        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
+	        // find the first child view
+	        View view = getChildAt(0);
+	        if (view != null) {
+	            // measure the first child view with the specified measure spec
+	            view.measure(widthMeasureSpec, heightMeasureSpec);
+	        }
+
+	        setMeasuredDimension(getMeasuredWidth(), measureHeight(heightMeasureSpec, view));
+	    }
+
+	    /**
+	     * Determines the height of this view
+	     *
+	     * @param measureSpec A measureSpec packed into an int
+	     * @param view the base view with already measured height
+	     *
+	     * @return The height of the view, honoring constraints from measureSpec
+	     */
+	    private int measureHeight(int measureSpec, View view) {
+	        int result = 0;
+	        int specMode = MeasureSpec.getMode(measureSpec);
+	        int specSize = MeasureSpec.getSize(measureSpec);
+
+	        if (specMode == MeasureSpec.EXACTLY) {
+	            result = specSize;
+	        } else {
+	            // set the height from the base view if available
+	            if (view != null) {
+	                result = view.getMeasuredHeight();
+	            }
+	            if (specMode == MeasureSpec.AT_MOST) {
+	                result = Math.min(result, specSize);
+	            }
+	        }
+	        return result;
+	    }
+
+	}
 
 	void setup() {
 		LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -296,7 +360,17 @@ public class CardFormView extends LinearLayout {
 			cardmenuNavbar.setVisibility(View.GONE);
 		}
 
-		pager = (ViewPager) findViewById(R.id.paypagerCard);
+		//pager = (ViewPager) findViewById(R.id.paypagerCard);
+		this.removeView(findViewById(R.id.paypagerCard));
+		
+		pager = new WrapContentHeightViewPager(getContext());
+		pager.setId(R.id.paypagerCard);
+		pager.setLayoutParams(new LinearLayout.LayoutParams(
+				LinearLayout.LayoutParams.WRAP_CONTENT, 
+				LinearLayout.LayoutParams.MATCH_PARENT ));
+		
+		this.addView(pager);
+		
 		pagerAdapter = new CardSlideAdapter(((FragmentActivity)getContext()).getSupportFragmentManager());
         pager.setAdapter(pagerAdapter);
         
@@ -306,6 +380,11 @@ public class CardFormView extends LinearLayout {
             	savedCards.get(position).select(false);
             }
         });
+	}
+
+	public void setInitialSavedCard(SavedCard tmpSavedCard) {
+		addSavedCard(tmpSavedCard,0);
+		savedCards.get(0).select(true);
 	}
 
 	public String getPEN() {
@@ -329,10 +408,18 @@ public class CardFormView extends LinearLayout {
 	}
 	
 	public void addSavedCard(SavedCard savedCard) {
-		savedCards.add(new SavedCardWidget(savedCard));
+		addSavedCard(savedCard, savedCards.size());
+	}
+	
+	public void addSavedCard(SavedCard savedCard, int index) {
+		savedCards.add(index, new SavedCardWidget(savedCard, index));
 		
 		if( pagerAdapter!=null )
 			pagerAdapter.notifyDataSetChanged();
+		
+		if( savedCards.size()==2 ) {
+			cardmenuNavbar.setVisibility(View.VISIBLE);
+		}
 		
 		//payboxCardMenu.setVisibility(cardSelected ? View.INVISIBLE : View.VISIBLE);
 		//payboxNewCard .setVisibility(cardSelected ? View.VISIBLE : View.INVISIBLE);

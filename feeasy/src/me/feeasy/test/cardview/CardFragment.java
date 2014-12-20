@@ -81,6 +81,12 @@ public class CardFragment extends Fragment {
         savedCard = new SavedCard();
         savedCard.load(getArguments());
     }
+	
+	@Override public void onResume() {
+		super.onResume();
+		
+		updatePager();
+	}
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
@@ -175,9 +181,9 @@ public class CardFragment extends Fragment {
 		if( pager==null ) return;
 		if( content==null || payBox.getHeight()==0 ) return;
 		
-		ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams)payBox.getLayoutParams();
-		pager.getLayoutParams().height = payBox.getHeight() + params.topMargin + params.bottomMargin;
-		pager.requestLayout();
+		//ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams)payBox.getLayoutParams();
+		//pager.getLayoutParams().height = payBox.getHeight() + params.topMargin + params.bottomMargin;
+		//pager.requestLayout();
 	}
 
 	public void setFocus() {

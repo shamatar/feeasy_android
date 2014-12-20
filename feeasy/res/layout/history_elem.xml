@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+    <LinearLayout 
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:orientation="horizontal" 
+    
+	    android:padding="@dimen/halfStdPadding">
+	    
+		<TextView 
+		    android:layout_width="0dp"
+		    android:layout_height="wrap_content"
+		    android:layout_weight="1"
+		    
+		    android:layout_margin="@dimen/halfStdPadding"
+		    
+		    android:id="@+id/hist_message"
+		    android:text="Это сообщение получателя. Раз два три четыре пять, вышел зайчик погулять. Очень длинное сообщение, и правда."
+		    
+		    android:layout_gravity="center_vertical" />
+		
+		<RelativeLayout 
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:minWidth="@dimen/quadroStdPadding"
+		    
+		    android:layout_margin="@dimen/halfStdPadding"
+		    
+		    android:layout_gravity="center_vertical">
+		    <TextView 
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        
+		        android:layout_alignParentTop="true"
+		        android:layout_centerHorizontal="true"
+		        
+		        android:textSize="@dimen/smallText"
+		        android:text="100"
+		        
+		        android:textStyle="bold"
+		        
+		        android:layout_marginBottom="@dimen/halfStdPadding"
+		        
+		        android:id="@+id/hist_paysum" />
+		    
+		    <TextView 
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        
+		        android:layout_below="@id/hist_paysum"
+		        android:layout_centerHorizontal="true"
+		        
+		        android:textSize="@dimen/smallText"
+		        android:text="10:38\n17-12-2014"
+		        
+		        android:gravity="center"
+		        
+		        android:id="@+id/hist_paydate" />
+		</RelativeLayout>
+		
+		<RelativeLayout 
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:minWidth="@dimen/tripleStdPadding"
+		    
+		    android:layout_margin="@dimen/halfStdPadding"
+		    
+		    android:layout_gravity="center_vertical">
+		    <ImageView 
+		        android:layout_width="@dimen/tripleStdPadding"
+		        android:layout_height="wrap_content"
+		        
+		        android:layout_alignParentTop="true"
+		        android:layout_centerHorizontal="true"
+		        
+		        android:src="@drawable/pk_default_card"
+		        
+		        android:id="@+id/hist_cardimg" />
+		    
+		    <TextView 
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        
+		        android:layout_below="@id/hist_cardimg"
+		        android:layout_centerHorizontal="true"
+		        
+		        android:textSize="@dimen/smallText"
+		        android:text="*1234"
+		        
+		        android:id="@+id/hist_cardnum" />
+		</RelativeLayout>
+	</LinearLayout>
+	<!-- <View
+	    android:layout_width="match_parent"
+		android:layout_height="@dimen/borderWidth"
+		android:background="#80000000"
+		android:layout_alignParentBottom="true" />  -->
+</RelativeLayout>

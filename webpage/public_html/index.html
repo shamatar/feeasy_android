@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <link type="text/css" rel="stylesheet" href="env.css" />
+        
+        <script src="js/libs/jquery/jquery.js"></script>
+        <script src="js/semantic.js"></script>
+    </head>
+    <body>
+        <div class="box-header">
+            <div class="top-shade"></div>
+        </div>
+        <ul class="top-menu">
+            <li>Получить код</li>
+        </ul>
+        <div class="codegen">
+            <div class="codegen-pointer">&nbsp;</div>
+            <div class="codegen-inner"> <form id="genform">
+                <div class="input-holder" id="holderMail"><div><input type="text" name="email"   placeholder="e-mail"/></div></div>
+                <div class="input-holder" id="holderMsg" ><div><input type="text" name="message" placeholder="сообщение получателю"/></div></div>
+                <div class="input-helper">
+                    <div id="comment-helper"></div>
+                </div>
+                <div class="input-holder" id="holderCard"><div><input type="text" name="card"    placeholder="номер карты"/></div></div>
+                <div class="submit-holder" id="holderSubmit"><input type="submit" value="Получить"/></div>
+                <div class="comment-outer-helper" id="form-helper">
+                    <div class="comment-inner-helper"></div>
+                    <div class="div-pointer">&nbsp;</div>
+                </div>
+                <div class="comment-outer-helper helper-err" id="form-helper-err">
+                    <div class="comment-inner-helper"></div>
+                    <div class="div-pointer">&nbsp;</div>
+                </div>
+            </form> </div>
+        </div>
+        <div class="box-content" style="height:200vh">
+            <div class="mainimg-holder">
+                <div class="slogun">позвольте людям отблагодарить вас</div>
+            </div>
+            <div class="mainimg-grad"><div></div></div>
+        </div>
+        <div class="footer">
+            <div class="footer-inner">
+                <div class="footer-section">
+                    <h5>О сервисе</h5>
+                    <ul>
+                        <li>Политика безопасности</li>
+                        <li>Условия использования</li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h5>Помощь</h5>
+                    <ul>
+                        <li>Часто задаваемые вопросы</li>
+                        <li>Сообщить о проблеме</li>
+                    </ul>
+                </div>
+                <div class="footer-r">
+                    <img class="logo-light" src="static/logo_light.svg" alt="feeasy.me"/>
+                    <img class="logo-dark"  src="static/logo_dark.svg"  alt="feeasy.me" />
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

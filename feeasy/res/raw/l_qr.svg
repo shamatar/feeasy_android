@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="391.7767"
+   height="361.37109"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.4 r9939"
+   inkscape:export-filename="C:\Users\Carlos\Desktop\bitmap.png"
+   inkscape:export-xdpi="299.78653"
+   inkscape:export-ydpi="299.78653"
+   sodipodi:docname="Reprap-qr.svg">
+  <defs
+     id="defs4">
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect3901"
+       is_visible="true" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect3897"
+       is_visible="true" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect3893"
+       is_visible="true" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect3889"
+       is_visible="true" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect3885"
+       is_visible="true" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect3881"
+       is_visible="true" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect3877"
+       is_visible="true" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect3873"
+       is_visible="true" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect3869"
+       is_visible="true" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect3088"
+       is_visible="true" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect3082"
+       is_visible="true" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect3082-0"
+       is_visible="true" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ff3bff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1"
+     inkscape:cx="420.87681"
+     inkscape:cy="284.82023"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer2"
+     showgrid="false"
+     inkscape:snap-nodes="true"
+     inkscape:snap-bbox="true"
+     inkscape:bbox-nodes="true"
+     inkscape:snap-grids="true"
+     inkscape:snap-to-guides="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:object-nodes="true"
+     inkscape:snap-page="true"
+     showguides="false"
+     inkscape:guide-bbox="true"
+     inkscape:snap-object-midpoints="true"
+     inkscape:snap-midpoints="true"
+     inkscape:snap-smooth-nodes="true"
+     inkscape:object-paths="true"
+     inkscape:snap-bbox-edge-midpoints="true"
+     inkscape:snap-bbox-midpoints="true"
+     inkscape:snap-intersection-paths="true"
+     inkscape:snap-center="true"
+     inkscape:bbox-paths="true"
+     inkscape:window-width="1440"
+     inkscape:window-height="837"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1">
+    <inkscape:grid
+       type="xygrid"
+       id="grid2985"
+       empspacing="5"
+       visible="true"
+       enabled="true"
+       snapvisiblegridlinesonly="true"
+       originx="-5px"
+       originy="146.3711px" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="25.455843,361.37109"
+       id="guide3945" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="0,330.92596"
+       id="guide3947" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="70,151.37109"
+       id="guide3949" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="210,291.35769"
+       id="guide3951" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="104.6083,361.37109"
+       id="guide3955" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="0,256.37109"
+       id="guide3957" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(2984.5033,1600.1003)"
+     style="display:inline" />
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="Layer"
+     transform="translate(3080,1863.9509)">
+    <path
+       style="fill:#000000;stroke:none"
+       d="M 0.09375 0.4375 L 0.09375 70 L 70 70 L 70 0.4375 L 0.09375 0.4375 z M 100 0.4375 L 100 10 L 120 10 L 120 1.53125 C 115.13341 0.81854169 110.15343 0.45664623 105.09375 0.4375 L 104.6875 0.4375 L 100 0.4375 z M 100 10 L 80 10 L 80 30 L 90 30 L 90 40 L 80 40 L 80 80 L 100 80 L 100 90 L 110 90 L 110 80 L 130 80 L 130 60 L 120 60 L 120 70 L 110 70 L 110 60 L 120 60 L 120 50 L 100 50 L 100 70 L 90 70 L 90 50 L 100 50 L 100 40 L 110 40 L 110 20 L 100 20 L 100 10 z M 110 90 L 110 100 L 120 100 L 120 110 L 140 110 L 140 90 L 110 90 z M 140 90 L 160 90 L 160 100 L 170 100 L 170 80 L 140 80 L 140 90 z M 160 100 L 150 100 L 150 110 L 160 110 L 160 100 z M 160 110 L 160 120 L 170 120 L 170 130 L 180 130 L 180 110 L 160 110 z M 180 110 L 190 110 L 190 100 L 180 100 L 180 110 z M 190 110 L 190 120 L 208.34375 120 C 209.03654 115.1361 209.40625 110.17994 209.40625 105.125 C 209.40625 99.995241 209.02556 94.93222 208.3125 90 L 200 90 L 200 110 L 190 110 z M 200 90 L 200 80 L 180 80 L 180 90 L 200 90 z M 160 120 L 150 120 L 150 140 L 160 140 L 160 120 z M 160 140 L 160 160 L 150 160 L 150 170 L 130 170 L 130 160 L 120 160 L 120 180 L 110 180 L 110 200 L 100 200 L 100 180 L 90 180 L 90 190 L 80 190 L 80 206.90625 C 87.915157 208.82024 96.184221 209.8125 104.6875 209.8125 C 124.9986 209.8125 143.94422 204.0139 160 194 L 160 190 L 166 190 C 167.35861 189.01702 168.69151 188.01425 170 186.96875 L 170 170 L 180 170 L 180 160 L 170 160 L 170 150 L 199.3125 150 C 199.54312 149.5149 199.77666 149.02042 200 148.53125 L 200 140 L 160 140 z M 200 140 L 203.4375 140 C 204.59022 136.73851 205.57666 133.40057 206.40625 130 L 200 130 L 200 140 z M 90 180 L 90 170 L 80 170 L 80 180 L 90 180 z M 90 170 L 100 170 L 100 160 L 90 160 L 90 170 z M 100 160 L 110 160 L 110 150 L 100 150 L 100 160 z M 100 150 L 100 140 L 110 140 L 110 130 L 100 130 L 100 120 L 80 120 L 80 150 L 100 150 z M 150 120 L 150 110 L 140 110 L 140 120 L 150 120 z M 100 90 L 80 90 L 80 80 L 60 80 L 60 90 L 70 90 L 70 100 L 80 100 L 80 110 L 100 110 L 100 90 z M 70 100 L 60 100 L 60 90 L 50 90 L 50 120 L 60 120 L 60 110 L 70 110 L 70 100 z M 60 120 L 60 130 L 70 130 L 70 120 L 60 120 z M 50 120 L 40 120 L 40 130 L 50 130 L 50 120 z M 40 120 L 40 110 L 30 110 L 30 90 L 20 90 L 20 80 L 0.09375 80 L 0.09375 100 L 20 100 L 20 120 L 40 120 z M 30 90 L 40 90 L 40 80 L 30 80 L 30 90 z M 140 6.53125 L 140 70 L 203.375 70 C 202.15829 66.582411 200.77017 63.243418 199.21875 60 L 150 60 L 150 10.71875 C 146.75896 9.161427 143.41555 7.7543003 140 6.53125 z M 10 10 L 60 10 L 60 60 L 10 60 L 10 10 z M 20 20 L 20 50 L 50 50 L 50 20 L 20 20 z M 160 20 L 160 50 L 190 50 L 190 44.40625 C 183.28713 34.993698 175.08079 26.738983 165.6875 20 L 160 20 z M 120 30 L 120 40 L 130 40 L 130 30 L 120 30 z M 1.0625 120 C 1.5448289 123.38846 2.17016 126.72405 2.96875 130 L 10 130 L 10 120 L 1.0625 120 z M 120 120 L 120 150 L 140 150 L 140 130 L 130 130 L 130 120 L 120 120 z M 6.03125 140.25 C 7.2495957 143.67235 8.633767 147.0022 10.1875 150.25 L 60 150.25 L 60 199.8125 C 63.252223 201.35107 66.574349 202.73477 70 203.9375 L 70 140.25 L 6.03125 140.25 z M 190 160 L 190 165.84375 C 191.35705 163.94163 192.64495 161.99372 193.875 160 L 190 160 z M 20 160.25 L 20 166.65625 C 26.601526 175.72758 34.63347 183.70809 43.75 190.25 L 50 190.25 L 50 160.25 L 20 160.25 z "
+       transform="translate(-3080,-1863.9509)"
+       id="path3072" />
+    <path
+       style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       d="M 80 0.4375 L 80 10.4375 L 104.6875 10.4375 C 156.9386 10.4375 199.3125 52.822 199.3125 105.125 C 199.3125 157.428 156.9386 199.84375 104.6875 199.84375 C 52.4365 199.84375 10.09375 157.428 10.09375 105.125 L 10.09375 80 L 0.09375 80 L 0.09375 101.09375 C 0.04275 102.43645 0 103.7698 0 105.125 C 0 162.9474 46.8653 209.84375 104.6875 209.84375 C 162.5099 209.84375 209.40625 162.9474 209.40625 105.125 C 209.40625 47.4376 162.72995 0.6556 105.09375 0.4375 L 104.6875 0.4375 L 80 0.4375 z "
+       transform="translate(-3080,-1863.9509)"
+       id="path3930" />
+  </g>
+</svg>

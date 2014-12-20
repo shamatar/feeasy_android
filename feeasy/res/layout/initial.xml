@@ -1,85 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout 
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:feesvg="http://schemas.android.com/apk/res/me.feeasy.test"
     xmlns:svgimageview="http://schemas.android.com/apk/res-auto"
-	
+    
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    
-    android:background="@drawable/std_bg" >
-    
-	<RelativeLayout
-	        android:layout_width="match_parent"
-	    	android:layout_height="wrap_content"
-	    	android:background="@drawable/title_bg"
-	    	
-	    	android:layout_alignParentTop="true"
-	    	
-	    	android:padding="@dimen/minStdPadding" >
-	        <me.feeasy.test.svgview.SvgGlyphView
-	            android:id="@+id/headChevron"
-	            
-	            android:layout_alignParentLeft="true"
-	            android:layout_centerVertical="true"
-	            
-	            android:layout_width="wrap_content"
-	            android:layout_height="@dimen/stdText"
-	            
-		        feesvg:glyph="@raw/logo_monochrome_small"
-		        feesvg:color="@color/headerText"
-	            />
-	        <TextView 
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            
-	            android:layout_marginLeft="@dimen/halfStdPadding"
-	            
-	            android:textSize="@dimen/stdText"
-	            android:text="Feeasy"
-		        android:textColor="@color/headerText"
-	            
-	            android:clickable="true"
-	            android:focusable="true"
-	            
-	            android:layout_toRightOf="@id/headChevron" />
-	        
-	        <TextView 
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:textSize="@dimen/stdText"
-	            android:text="Соглашение"
-		        android:textColor="@color/headerText"
-	            
-	            android:clickable="true"
-	            android:focusable="true"
-	            
-	            android:layout_alignParentRight="true" />
-	    </RelativeLayout>
+	android:orientation="vertical" >
 	    
-    <me.feeasy.test.svgview.SvgGlyphView
-        android:id="@+id/logoHolder"
-        android:layout_width="match_parent"
-    	android:layout_height="wrap_content"
-    	
-    	android:layout_centerInParent="true"
-    	
-        feesvg:glyph="@raw/logo_monochrome_small"
-        feesvg:color="@color/logoColor"
-        
-        android:clickable="true"
-        android:focusable="true"
-        
-        android:layout_marginLeft="@dimen/fivefoldStdPadding"
-        android:layout_marginRight="@dimen/fivefoldStdPadding"
-        android:layout_marginBottom="@dimen/halfStdPadding"
-	        />
-    
-	<TextView
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:layout_below="@id/logoHolder"
-	    android:layout_centerHorizontal="true"
-        android:textColor="@color/logoColor"
-	    android:text="нажмите на логотип для чтения кода" />
-</RelativeLayout>
+	<include layout="@layout/header_merge"/>
+
+	<android.support.v4.widget.DrawerLayout
+	    android:id="@+id/drawer_layout"
+	    android:layout_width="match_parent"
+	    android:layout_weight="1"
+	    android:layout_height="0dp">
+	    
+		<RelativeLayout 
+		    android:layout_width="match_parent"
+		    android:layout_height="match_parent"
+		    
+		    android:background="@drawable/std_bg" >
+			    
+		    <me.feeasy.test.svgview.SvgGlyphView
+		        android:id="@+id/logoHolder"
+		        android:layout_width="match_parent"
+		    	android:layout_height="wrap_content"
+		    	
+		    	android:layout_centerInParent="true"
+		    	
+		        feesvg:glyph="@raw/logo_monochrome_small"
+		        feesvg:color="@color/logoColor"
+		        
+		        android:clickable="true"
+		        android:focusable="true"
+		        
+		        android:layout_marginLeft="@dimen/fivefoldStdPadding"
+		        android:layout_marginRight="@dimen/fivefoldStdPadding"
+		        android:layout_marginBottom="@dimen/halfStdPadding"
+			        />
+		    
+			<TextView
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:layout_below="@id/logoHolder"
+			    android:layout_centerHorizontal="true"
+		        android:textColor="@color/logoColor"
+			    android:text="нажмите на логотип для чтения кода" />
+		</RelativeLayout>
+        <include layout="@layout/left_drawer"/>
+	</android.support.v4.widget.DrawerLayout>
+</LinearLayout>

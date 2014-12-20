@@ -118,8 +118,11 @@ http://feeasy.me""" % {'card': card, 'message': message}
 
     # Send the message via our own SMTP server, but don't include the
     # envelope header.
-    server = smtplib.SMTP_SSL('smtp.yandex.ru', 465)
-    server.login('feeasy@xpianotools.com','feeasy12930846')
+    # server = smtplib.SMTP_SSL('smtp.yandex.ru', 465)
+    # server.login('feeasy@xpianotools.com','feeasy12930846')
+
+    server = smtplib.SMTP('localhost', local_hostname='mail.feeasy.me')
+
     server.sendmail(me, [you], msg.as_string())
     server.quit()
     

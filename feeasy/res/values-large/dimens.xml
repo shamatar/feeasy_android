@@ -2,6 +2,7 @@
 <resources>
     <dimen name="stdText">25sp</dimen>
     <dimen name="largerText">32sp</dimen>
+    <dimen name="largeText">44sp</dimen>
     <dimen name="smallText">18sp</dimen>
     
     <dimen name="boxRadius">6dp</dimen>

@@ -10,12 +10,14 @@ import android.view.View;
 
 public class InitialActivity extends Activity {
 	private static final String TAG_RESTORED = "restored";
+	public static final String TAG_NO_SCAN = "noscan";
 	public static final int TAG_KILL_ALL = 8888;
 	public static final int TAG_SHOW_PAY = 8889;
 
 	@Override protected void onCreate(Bundle savedState) {
 		super.onCreate(savedState);
 		setContentView(R.layout.initial);
+		FeeasyApp.instance.setupActivity(this);
 		
 		//String s = decryptSign("nb6q7cpkhpdxbv5cwggwknwqaloj6ch3rfpy3nrk6tizxg4wp6w5s5dqb2u7lmwkrnn3fygk63rcmxcfaqam2umd2c454fbwn25q3l25vx45gzj3zbmbkgwb2eqbh5ow3wbbrihcj726rqesgq4iksl6vhmi2yxfci52w6w2i5yxzakqmejd2gyv4ywehypo4du3zradujsgo000");
 		
@@ -25,7 +27,16 @@ public class InitialActivity extends Activity {
 			}
 		});
 		
-		if( savedState==null ||!savedState.getBoolean(TAG_RESTORED,false) ) {
+		boolean scan = true;
+		Bundle extras = getIntent().getExtras();
+		if( extras!=null && extras.getBoolean(TAG_NO_SCAN, false) ) {
+			scan = false;
+		}
+		if( savedState!=null && savedState.getBoolean(TAG_RESTORED,false) ) {
+			scan = false;
+		}
+		
+		if( scan ) {
 	        // run QR scanner
 	        runQr();
 		}
