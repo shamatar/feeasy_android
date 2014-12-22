@@ -2,7 +2,6 @@
 
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:feesvg="http://schemas.android.com/apk/res/me.feeasy.test"
   xmlns:svgimageview="http://schemas.android.com/apk/res-auto"
   
   android:layout_width="match_parent"
@@ -16,129 +15,130 @@
       android:layout_width="match_parent"
       android:layout_weight="1"
       android:layout_height="0dp">
-      
-    <LinearLayout 
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:svg="http://schemas.android.com/apk/res/me.feeasy.test"
-      
-        android:id="@+id/payContainer"
-        
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:background="#FFFFFF" >
-        
-        <!-- <com.caverock.androidsvg.SVGImageView
-            android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-            svgimageview:svg="icon_yes.svg"
-            />  -->
-        
-        <LinearLayout 
-            style="@style/box_global"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" >
-          <me.feeasy.test.cardview.CardFormView
-              android:id="@+id/pay_card"
-              
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:orientation="vertical" />
-          
-          <RelativeLayout
-              style="@style/header_box"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content" >
-                 <TextView
-                     style="@style/header_text"
-                     android:layout_width ="wrap_content"
-                     android:layout_height="wrap_content"
-                     
-                     android:layout_alignParentLeft="true"
-                     
-                  android:text="Данные перевода" />
-               </RelativeLayout>
-          
-          <LinearLayout
-              android:orientation="vertical"
-              
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-            
-              style="@style/pay_box">
-              
-              <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
-            <TextView
-                android:layout_width ="wrap_content"
-                android:layout_height="wrap_content"
-                
-                style="@style/payCaption"
-                
-                android:text="Сумма от 100 до 500 р." />
-            <EditText
-                android:id="@+id/sum_holder"
-                
-                android:layout_width ="wrap_content"
-                android:layout_height="wrap_content"
-                
-                android:hint="500.00"
-                
-                android:digits="0123456789."
-                android:inputType="number"
-                
-                android:maxLength="6" 
-                
-                android:imeOptions="actionDone"
-                android:singleLine="true"
-              
-                android:layout_alignParentRight="true"
-                
-                style="@style/payEdit"
-                />
-          </RelativeLayout>
-          <TextView
-              android:id="@+id/textMessage"
-              android:text=""
-              android:layout_width ="match_parent"
-              android:layout_height="wrap_content" />
-          </LinearLayout>
+        android:background="@drawable/std_bg" >
       
-          <RelativeLayout
-              style="@style/header_box"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content" >
-                 <TextView
-                     style="@style/header_text"
-                     android:layout_width ="wrap_content"
-                     android:layout_height="wrap_content"
-                     
-                     android:layout_alignParentLeft="true"
-                     android:text="Я принимаю соглашение" />
-                 
-            <include layout="@layout/compound_button_accept" />
-               </RelativeLayout>
-          </LinearLayout>
-        <View
-            android:layout_height="@dimen/minStdPadding"
-            android:layout_width="match_parent"
-            android:layout_margin="@dimen/minStdPadding" />
-        
-        <Button 
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/button_bg"
-            
-            android:layout_margin="@dimen/minStdPadding"
-            
-            android:textColor="#FFFFFF"
-            android:text="Продолжить"
-            
-            android:id="@+id/paybtn_commit"
-            />
-    </LinearLayout>
+	    <LinearLayout 
+	        android:id="@+id/payContainer"
+	        
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="vertical" >
+	        
+	        <!-- <com.caverock.androidsvg.SVGImageView
+	            android:layout_width="match_parent"
+	          android:layout_height="wrap_content"
+	            svgimageview:svg="icon_yes.svg"
+	            />  -->
+	        
+	        <LinearLayout 
+	            style="@style/box_global"
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:orientation="vertical" >
+	          <me.feeasy.test.cardview.CardFormView
+	              android:id="@+id/pay_card"
+	              
+	              android:layout_width="match_parent"
+	              android:layout_height="wrap_content"
+	              android:orientation="vertical" />
+	          
+	          <RelativeLayout
+	              style="@style/header_box"
+	              android:layout_width="match_parent"
+	              android:layout_height="wrap_content" >
+	                 <TextView
+	                     style="@style/header_text"
+	                     android:layout_width ="wrap_content"
+	                     android:layout_height="wrap_content"
+	                     
+	                     android:layout_alignParentLeft="true"
+	                     
+	                  android:text="Данные перевода" />
+	               </RelativeLayout>
+	          
+	          <LinearLayout
+	              android:orientation="vertical"
+	              
+	              android:layout_width="match_parent"
+	              android:layout_height="wrap_content"
+	            
+	              style="@style/pay_box">
+	              
+	              <RelativeLayout
+	                android:layout_width="match_parent"
+	                android:layout_height="wrap_content" >
+	            <TextView
+	                android:layout_width ="wrap_content"
+	                android:layout_height="wrap_content"
+	                
+	                style="@style/payCaption"
+	                
+	                android:text="Сумма от 100 до 500 р." />
+	            <EditText
+	                android:id="@+id/sum_holder"
+	                
+	                android:layout_width ="wrap_content"
+	                android:layout_height="wrap_content"
+	                
+	                android:hint="500.00"
+	                
+	                android:digits="0123456789."
+	                android:inputType="number"
+	                
+	                android:maxLength="6" 
+	                
+	                android:imeOptions="actionDone"
+	                android:singleLine="true"
+	              
+	                android:layout_alignParentRight="true"
+	                
+	                style="@style/payEdit"
+	                />
+	          </RelativeLayout>
+	          <TextView
+	              android:id="@+id/textMessage"
+	              android:text=""
+	              android:layout_width ="match_parent"
+	              android:layout_height="wrap_content" />
+	          </LinearLayout>
+	      
+	          <RelativeLayout
+	              style="@style/header_box"
+	              android:layout_width="match_parent"
+	              android:layout_height="wrap_content" >
+	                 <TextView
+	                     style="@style/header_text"
+	                     android:layout_width ="wrap_content"
+	                     android:layout_height="wrap_content"
+	                     
+	                     android:layout_alignParentLeft="true"
+	                     android:text="Я принимаю соглашение" />
+	                 
+	            <include layout="@layout/compound_button_accept" />
+	               </RelativeLayout>
+	          </LinearLayout>
+	        <View
+	            android:layout_height="@dimen/minStdPadding"
+	            android:layout_width="match_parent"
+	            android:layout_margin="@dimen/minStdPadding" />
+	        
+	        <Button 
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:background="@drawable/button_bg"
+	            
+	            android:layout_margin="@dimen/minStdPadding"
+	            
+	            android:textColor="#FFFFFF"
+	            android:text="Продолжить"
+	            
+	            android:id="@+id/paybtn_commit"
+	            />
+	    </LinearLayout>
+	</ScrollView>
     <include layout="@layout/left_drawer"/>
   </android.support.v4.widget.DrawerLayout>
 </LinearLayout>

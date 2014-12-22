@@ -298,14 +298,21 @@ public class CardFormView extends LinearLayout {
 	    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 	        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-	        // find the first child view
-	        View view = getChildAt(0);
-	        if (view != null) {
-	            // measure the first child view with the specified measure spec
-	            view.measure(widthMeasureSpec, heightMeasureSpec);
+	        int height = 0;
+	        
+	        for(int i=0;i<getChildCount();++i) {
+	        	// find the first child view
+		        View view = getChildAt(i);
+		        if (view != null) {
+		            // measure the first child view with the specified measure spec
+		            view.measure(widthMeasureSpec, heightMeasureSpec);
+		        }
+		        
+		        height = Math.max(height, measureHeight(heightMeasureSpec, view));
 	        }
-
-	        setMeasuredDimension(getMeasuredWidth(), measureHeight(heightMeasureSpec, view));
+	        
+	        setMeasuredDimension(getMeasuredWidth(), height);
+	        //super.onMeasure(MeasureSpec.EXACTLY | getMeasuredWidth(),MeasureSpec.EXACTLY | getMeasuredHeight());
 	    }
 
 	    /**
@@ -366,8 +373,8 @@ public class CardFormView extends LinearLayout {
 		pager = new WrapContentHeightViewPager(getContext());
 		pager.setId(R.id.paypagerCard);
 		pager.setLayoutParams(new LinearLayout.LayoutParams(
-				LinearLayout.LayoutParams.WRAP_CONTENT, 
-				LinearLayout.LayoutParams.MATCH_PARENT ));
+				LinearLayout.LayoutParams.MATCH_PARENT, 
+				LinearLayout.LayoutParams.WRAP_CONTENT ));
 		
 		this.addView(pager);
 		
@@ -436,7 +443,6 @@ public class CardFormView extends LinearLayout {
         public Fragment getItem(int position) {
         	CardFragment f = savedCards.get(position).createFragment();
         	f.bindBefore(validatorToBindBefore);
-        	f.setPager(pager);
         	return f;
         }
 

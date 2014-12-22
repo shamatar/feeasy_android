@@ -331,8 +331,7 @@ public class FontEncoder {
                 }
                 case 'Z':
                 case 'z': {
-                		/// p.lineTo(contourInitialX, contourInitialY);
-				        p.close();
+                		p.lineTo(contourInitialX, contourInitialY);
 				        lastX = contourInitialX;
 				        lastY = contourInitialY;
                         break;

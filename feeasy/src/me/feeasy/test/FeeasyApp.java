@@ -13,6 +13,7 @@ import android.graphics.drawable.PictureDrawable;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -114,6 +115,7 @@ public class FeeasyApp extends Application {
 	static abstract class DrawerMenuItem {
 		public String name;
 		public int    icon;
+		Drawable iconDrawable;
 
 		DrawerMenuItem(String name, int icon) {
 			this.name = name;
@@ -121,6 +123,18 @@ public class FeeasyApp extends Application {
 		}
 
 		abstract public void fire(Activity context);
+
+		public void setupView(TextView view) {
+			if( iconDrawable==null ) {
+				FontEncoder.Glyph glyph = FontEncoder.createFromResouce(view.getResources(), icon);
+				iconDrawable = new PictureDrawable(glyph.getPicture(
+					null, view.getResources().getDimensionPixelSize(R.dimen.largerText), view.getResources().getColor(R.color.darkText),
+					0, view.getResources().getDimensionPixelSize(R.dimen.minStdPadding)/2 , 0, 0));
+			}
+			
+			view.setLayerType(TextView.LAYER_TYPE_SOFTWARE, null);
+	    	view.setCompoundDrawablesWithIntrinsicBounds(iconDrawable, null, null, null);
+		}
 	}
 	
 	DrawerMenuItem leftMenuItems[] = {
@@ -198,7 +212,17 @@ public class FeeasyApp extends Application {
 
         // Set the adapter for the list view
 		drawerList.setAdapter(new ArrayAdapter<String>(activity,
-                R.layout.drawer_list_item, labels));
+                R.layout.drawer_list_item, labels){
+			@Override public View getView(int position, View convertView, ViewGroup parent) {
+				View view = super.getView(position, convertView, parent);
+				
+				//view.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
+				leftMenuItems[position].setupView((TextView)view);
+				//view.setOn
+				
+				return view;
+			}
+		});
         // Set the list's click listener
         drawerList.setOnItemClickListener(new ListView.OnItemClickListener() {
         	@Override public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

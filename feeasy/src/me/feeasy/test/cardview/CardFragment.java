@@ -6,11 +6,9 @@ import me.feeasy.test.CardType;
 import me.feeasy.test.R;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.EditText;
 import android.widget.ImageView;
 
@@ -28,9 +26,7 @@ public class CardFragment extends Fragment {
 	private YearValidator yearValidator = new YearValidator();
 	private CSCValidator cscValidator = new CSCValidator(penValidator.cardNumber);
 
-	private ViewPager pager;
 	private View content;
-	private View payBox;
 	
 	HashSet<ButtonValidator> validators = new HashSet<ButtonValidator>(); 
 	
@@ -81,29 +77,11 @@ public class CardFragment extends Fragment {
         savedCard = new SavedCard();
         savedCard.load(getArguments());
     }
-	
-	@Override public void onResume() {
-		super.onResume();
-		
-		updatePager();
-	}
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         // Inflate the layout containing a title and body text.
         content = inflater.inflate(R.layout.card_fragment, container, false);
-        payBox = content.findViewById(R.id.payboxNewCard);
-        //container.addView(content);
-        
-        content.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @SuppressWarnings("deprecation")
-			@Override
-            public void onGlobalLayout() {
-            	updatePager();
-            	content.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                //int height = content.getHeight();
-            }
-        });
         
         payimageCard  = (ImageView)((View)container.getParent()).findViewById(R.id.payimageCard );
 		
@@ -170,20 +148,6 @@ public class CardFragment extends Fragment {
 		if(!savedCard.isExisting() ) 
     		return yearValidator.getNumber();
 		else return savedCard.expYear;
-	}
-
-	public void setPager(ViewPager pager) {
-		this.pager = pager;
-		updatePager();
-	}
-
-	private void updatePager() {
-		if( pager==null ) return;
-		if( content==null || payBox.getHeight()==0 ) return;
-		
-		//ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams)payBox.getLayoutParams();
-		//pager.getLayoutParams().height = payBox.getHeight() + params.topMargin + params.bottomMargin;
-		//pager.requestLayout();
 	}
 
 	public void setFocus() {

@@ -14,7 +14,7 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.48.4 r9939"
-   sodipodi:docname="hamburger_full.svg">
+   sodipodi:docname="hamburger_cropped.svg">
   <defs
      id="defs4" />
   <sodipodi:namedview
@@ -24,9 +24,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.979899"
-     inkscape:cx="74.005881"
-     inkscape:cy="9.783753"
+     inkscape:zoom="11.2"
+     inkscape:cx="9.6941995"
+     inkscape:cy="20.844116"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -70,7 +70,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -81,9 +81,10 @@
      transform="translate(-150.00096,-410.21847)">
     <path
        style="font-size:medium;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-indent:0;text-align:start;text-decoration:none;line-height:normal;letter-spacing:normal;word-spacing:normal;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;text-anchor:start;baseline-shift:baseline;color:#000000;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:9.99998951;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;font-family:Sans;-inkscape-font-specification:Sans"
-       d="m 20.71875,0 0,10 24.65625,0 a 5.0004948,5.0004948 0 0 0 5,-5 5.0004948,5.0004948 0 0 0 -5,-5 L 20.71875,0 z m 0,16.71875 0,10 24.65625,0 a 5.0004948,5.0004948 0 0 0 5,-5 5.0004948,5.0004948 0 0 0 -5,-5 l -24.65625,0 z m 0,16.71875 0,10 24.65625,0 a 5.0004948,5.0004948 0 0 0 5,-5 5.0004948,5.0004948 0 0 0 -5,-5 l -24.65625,0 z"
+       d="m 20.71875,0 0,10 24.65625,0 c 7.021863,-0.7406883 5.291069,-9.82047222 0,-10 z m 0,16.71875 0,10 24.65625,0 c 7.021863,-0.740688 5.291069,-9.820472 0,-10 z m 0,16.71875 0,10 24.65625,0 c 7.021863,-0.740688 5.291069,-9.820472 0,-10 z"
        transform="translate(129.28221,410.21847)"
        id="path3804-4"
-       inkscape:connector-curvature="0" />
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccccccccccccc" />
   </g>
 </svg>

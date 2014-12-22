@@ -15,239 +15,241 @@
       android:layout_width="match_parent"
       android:layout_weight="1"
       android:layout_height="0dp">
-      
-    <LinearLayout 
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-  
-        android:background="@drawable/std_bg"
-        android:orientation="vertical" >
-        <LinearLayout 
-            style="@style/box_global"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" >
-          
-          <RelativeLayout
-              style="@style/header_box"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content" >
-                <TextView
-                    style="@style/header_text"
-                    android:layout_width ="wrap_content"
-                    android:layout_height="wrap_content"
-                    
-                    android:layout_alignParentLeft="true"
-                    
-                    android:text="Результат" />
-               </RelativeLayout>
-          
-          <LinearLayout
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-            
-              android:orientation="vertical"
-              style="@style/pay_box">
-              
-              <RelativeLayout 
-                  android:layout_margin="@dimen/minStdPadding"
-                  android:gravity="center_horizontal"
-                  android:layout_gravity="center_horizontal"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content">
-                  <com.caverock.androidsvg.SVGImageView
-                      android:id="@+id/paysvgResult"
-                    
-                      android:layout_alignParentLeft="true"
-                      android:layout_centerVertical="true"
-                    
-                      android:layout_margin="@dimen/minStdPadding"
-                    
-                      android:layout_width="@dimen/quadroStdPadding"
-                      android:layout_height="@dimen/quadroStdPadding" />
-                  <TextView 
-                      android:id="@+id/paydataResult"
-                      
-                      android:layout_toRightOf="@id/paysvgResult"
-                      android:layout_width="wrap_content"
-                      android:layout_height="wrap_content" 
-                    
-                      android:textStyle="bold"
-                      android:gravity="center_vertical"
-                      android:layout_centerVertical="true"
-                      
-                      android:text="успешно"
-                    
-                      android:textSize="@dimen/largerText"/>
-              </RelativeLayout>
-              
-              <TextView
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  
-                  android:textSize="@dimen/largerText"
-                  android:textColor="@color/darkText"
-                  
-                  android:gravity="center"
-                  
-                  android:text="Транзакция №123456789"
-                  
-                  android:id="@+id/resdataTransaction" />
-              
-              <RelativeLayout 
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:layout_marginTop="@dimen/minStdPadding"
-                  
-                  android:id="@+id/resholderErr">
-                  <TextView
-                      android:layout_width ="wrap_content"
-                  	  android:layout_height="wrap_content"
-                  	  
-                  	  android:text="Ошибка"
-                  	  style="@style/resultCaption" />
-                  <TextView
-                      android:layout_width ="wrap_content"
-                  	  android:layout_height="wrap_content"
-                  	  
-                  	  android:id="@+id/resdataErr" 
-                  	  style="@style/resultField" />
-              </RelativeLayout>
-              
-              <RelativeLayout 
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:layout_marginTop="@dimen/minStdPadding">
-                  <TextView
-                      android:layout_width ="wrap_content"
-                  	  android:layout_height="wrap_content"
-                  	  
-                  	  android:layout_centerVertical="true"
-                  	  
-                  	  android:text="Использованная карта"
-                  	  style="@style/resultCaption" />
-                  <TextView
-                      android:layout_width ="wrap_content"
-                  	  android:layout_height="wrap_content"
-                  	  
-                  	  android:layout_centerVertical="true"
-                  	  android:layout_alignParentRight="true"
-                  	  android:id="@+id/resdataCard" 
-                  	  style="@style/resultText" />
-                  
-                  <ImageView
-                      android:layout_width ="wrap_content"
-                  	  android:layout_height="wrap_content"
-                  	  
-                  	  android:layout_centerVertical="true"
-                  	  android:layout_toLeftOf="@id/resdataCard"
-                  	  android:id="@+id/resdataCardImage" />
-              </RelativeLayout>
-              
-              <RelativeLayout 
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:layout_marginTop="@dimen/minStdPadding">
-                  <TextView
-                      android:layout_width ="wrap_content"
-                  	  android:layout_height="wrap_content"
-                  	  
-                  	  android:layout_centerVertical="true"
-                  	  
-                  	  android:text="Дата операции"
-                  	  style="@style/resultCaption" />
-                  <TextView
-                      android:layout_width ="wrap_content"
-                  	  android:layout_height="wrap_content"
-                  	  
-                  	  android:id="@+id/resdataDate" 
-                  	  style="@style/resultField" />
-              </RelativeLayout>
-              
-              <RelativeLayout 
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:layout_marginTop="@dimen/minStdPadding">
-                  <TextView
-                      android:layout_width ="wrap_content"
-                  	  android:layout_height="wrap_content"
-                  	  
-                  	  android:layout_centerVertical="true"
-                  	  
-                  	  android:text="Сумма"
-                  	  style="@style/resultCaption" />
-                  <TextView
-                      android:layout_width ="wrap_content"
-                  	  android:layout_height="wrap_content"
-                  	  
-                  	  android:id="@+id/resdataSum" 
-                  	  style="@style/resultField" />
-              </RelativeLayout>
-              
-              <RelativeLayout 
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:layout_marginTop="@dimen/minStdPadding"
-                  android:id="@+id/resholderFee" >
-                  <TextView
-                      android:layout_width ="wrap_content"
-                  	  android:layout_height="wrap_content"
-                  	  
-                  	  android:layout_centerVertical="true"
-                  	  
-                  	  android:text="Комиссия"
-                  	  style="@style/resultCaption" />
-                  <TextView
-                      android:layout_width ="wrap_content"
-                  	  android:layout_height="wrap_content"
-                  	  
-                  	  android:id="@+id/resdataFee" 
-                  	  style="@style/resultField" />
-              </RelativeLayout>
-              
-              <TextView
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  
-                  android:textSize="@dimen/largerText"
-                  android:textColor="@color/darkText"
-                  
-                  android:gravity="center"
-                  
-                  android:id="@+id/resdataMessage" />
-          </LinearLayout>
-      </LinearLayout>
-          
-        <View
-            android:layout_height="@dimen/minStdPadding"
-            android:layout_width="match_parent" />
-        
-        <Button 
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/button_bg"
-            
-            android:layout_margin="@dimen/minStdPadding"
-            
-            android:textColor="#FFFFFF"
-            android:text="Повторить операцию"
-            
-            android:id="@+id/paybtn_replay"
-            />
-        
-        <Button 
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/button_bg"
-            
-            android:layout_margin="@dimen/minStdPadding"
-            
-            android:textColor="#FFFFFF"
-            android:text="Продолжить"
-            
-            android:id="@+id/paybtn_continue"
-            />
-    </LinearLayout>
+        android:background="@drawable/std_bg" >
+	    <LinearLayout 
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="vertical" >
+	        <LinearLayout 
+	            style="@style/box_global"
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:orientation="vertical" >
+	          
+	          <RelativeLayout
+	              style="@style/header_box"
+	              android:layout_width="match_parent"
+	              android:layout_height="wrap_content" >
+	                <TextView
+	                    style="@style/header_text"
+	                    android:layout_width ="wrap_content"
+	                    android:layout_height="wrap_content"
+	                    
+	                    android:layout_alignParentLeft="true"
+	                    
+	                    android:text="Результат" />
+	               </RelativeLayout>
+	          
+	          <LinearLayout
+	              android:layout_width="match_parent"
+	              android:layout_height="wrap_content"
+	            
+	              android:orientation="vertical"
+	              style="@style/pay_box">
+	              
+	              <RelativeLayout 
+	                  android:layout_margin="@dimen/minStdPadding"
+	                  android:gravity="center_horizontal"
+	                  android:layout_gravity="center_horizontal"
+	                  android:layout_width="wrap_content"
+	                  android:layout_height="wrap_content">
+	                  <com.caverock.androidsvg.SVGImageView
+	                      android:id="@+id/paysvgResult"
+	                    
+	                      android:layout_alignParentLeft="true"
+	                      android:layout_centerVertical="true"
+	                    
+	                      android:layout_margin="@dimen/minStdPadding"
+	                    
+	                      android:layout_width="@dimen/quadroStdPadding"
+	                      android:layout_height="@dimen/quadroStdPadding" />
+	                  <TextView 
+	                      android:id="@+id/paydataResult"
+	                      
+	                      android:layout_toRightOf="@id/paysvgResult"
+	                      android:layout_width="wrap_content"
+	                      android:layout_height="wrap_content" 
+	                    
+	                      android:textStyle="bold"
+	                      android:gravity="center_vertical"
+	                      android:layout_centerVertical="true"
+	                      
+	                      android:text="успешно"
+	                    
+	                      android:textSize="@dimen/largerText"/>
+	              </RelativeLayout>
+	              
+	              <TextView
+	                  android:layout_width="match_parent"
+	                  android:layout_height="wrap_content"
+	                  
+	                  android:textSize="@dimen/largerText"
+	                  android:textColor="@color/darkText"
+	                  
+	                  android:gravity="center"
+	                  
+	                  android:text="Транзакция №123456789"
+	                  
+	                  android:id="@+id/resdataTransaction" />
+	              
+	              <RelativeLayout 
+	                  android:layout_width="match_parent"
+	                  android:layout_height="wrap_content"
+	                  android:layout_marginTop="@dimen/minStdPadding"
+	                  
+	                  android:id="@+id/resholderErr">
+	                  <TextView
+	                      android:layout_width ="wrap_content"
+	                  	  android:layout_height="wrap_content"
+	                  	  
+	                  	  android:text="Ошибка"
+	                  	  style="@style/resultCaption" />
+	                  <TextView
+	                      android:layout_width ="wrap_content"
+	                  	  android:layout_height="wrap_content"
+	                  	  
+	                  	  android:id="@+id/resdataErr" 
+	                  	  style="@style/resultField" />
+	              </RelativeLayout>
+	              
+	              <RelativeLayout 
+	                  android:layout_width="match_parent"
+	                  android:layout_height="wrap_content"
+	                  android:layout_marginTop="@dimen/minStdPadding">
+	                  <TextView
+	                      android:layout_width ="wrap_content"
+	                  	  android:layout_height="wrap_content"
+	                  	  
+	                  	  android:layout_centerVertical="true"
+	                  	  
+	                  	  android:text="Использованная карта"
+	                  	  style="@style/resultCaption" />
+	                  <TextView
+	                      android:layout_width ="wrap_content"
+	                  	  android:layout_height="wrap_content"
+	                  	  
+	                  	  android:layout_centerVertical="true"
+	                  	  android:layout_alignParentRight="true"
+	                  	  android:id="@+id/resdataCard" 
+	                  	  style="@style/resultText" />
+	                  
+	                  <ImageView
+	                      android:layout_width ="wrap_content"
+	                  	  android:layout_height="wrap_content"
+	                  	  
+	                  	  android:layout_centerVertical="true"
+	                  	  android:layout_toLeftOf="@id/resdataCard"
+	                  	  android:id="@+id/resdataCardImage" />
+	              </RelativeLayout>
+	              
+	              <RelativeLayout 
+	                  android:layout_width="match_parent"
+	                  android:layout_height="wrap_content"
+	                  android:layout_marginTop="@dimen/minStdPadding">
+	                  <TextView
+	                      android:layout_width ="wrap_content"
+	                  	  android:layout_height="wrap_content"
+	                  	  
+	                  	  android:layout_centerVertical="true"
+	                  	  
+	                  	  android:text="Дата операции"
+	                  	  style="@style/resultCaption" />
+	                  <TextView
+	                      android:layout_width ="wrap_content"
+	                  	  android:layout_height="wrap_content"
+	                  	  
+	                  	  android:id="@+id/resdataDate" 
+	                  	  style="@style/resultField" />
+	              </RelativeLayout>
+	              
+	              <RelativeLayout 
+	                  android:layout_width="match_parent"
+	                  android:layout_height="wrap_content"
+	                  android:layout_marginTop="@dimen/minStdPadding">
+	                  <TextView
+	                      android:layout_width ="wrap_content"
+	                  	  android:layout_height="wrap_content"
+	                  	  
+	                  	  android:layout_centerVertical="true"
+	                  	  
+	                  	  android:text="Сумма"
+	                  	  style="@style/resultCaption" />
+	                  <TextView
+	                      android:layout_width ="wrap_content"
+	                  	  android:layout_height="wrap_content"
+	                  	  
+	                  	  android:id="@+id/resdataSum" 
+	                  	  style="@style/resultField" />
+	              </RelativeLayout>
+	              
+	              <RelativeLayout 
+	                  android:layout_width="match_parent"
+	                  android:layout_height="wrap_content"
+	                  android:layout_marginTop="@dimen/minStdPadding"
+	                  android:id="@+id/resholderFee" >
+	                  <TextView
+	                      android:layout_width ="wrap_content"
+	                  	  android:layout_height="wrap_content"
+	                  	  
+	                  	  android:layout_centerVertical="true"
+	                  	  
+	                  	  android:text="Комиссия"
+	                  	  style="@style/resultCaption" />
+	                  <TextView
+	                      android:layout_width ="wrap_content"
+	                  	  android:layout_height="wrap_content"
+	                  	  
+	                  	  android:id="@+id/resdataFee" 
+	                  	  style="@style/resultField" />
+	              </RelativeLayout>
+	              
+	              <TextView
+	                  android:layout_width="match_parent"
+	                  android:layout_height="wrap_content"
+	                  
+	                  android:textSize="@dimen/largerText"
+	                  android:textColor="@color/darkText"
+	                  
+	                  android:gravity="center"
+	                  
+	                  android:id="@+id/resdataMessage" />
+	          </LinearLayout>
+	      </LinearLayout>
+	          
+	        <View
+	            android:layout_height="@dimen/minStdPadding"
+	            android:layout_width="match_parent" />
+	        
+	        <Button 
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:background="@drawable/button_bg"
+	            
+	            android:layout_margin="@dimen/minStdPadding"
+	            
+	            android:textColor="#FFFFFF"
+	            android:text="Повторить операцию"
+	            
+	            android:id="@+id/paybtn_replay"
+	            />
+	        
+	        <Button 
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:background="@drawable/button_bg"
+	            
+	            android:layout_margin="@dimen/minStdPadding"
+	            
+	            android:textColor="#FFFFFF"
+	            android:text="Продолжить"
+	            
+	            android:id="@+id/paybtn_continue"
+	            />
+	    </LinearLayout>
+	</ScrollView>
     <include layout="@layout/left_drawer"/>
   </android.support.v4.widget.DrawerLayout>
 </LinearLayout>
