@@ -21,6 +21,8 @@ import os.path
 import tempfile
 import shutil
 
+import prettyqr
+
 MESSAGE_MAX_LEN = 100
 
 def generatePayUrl(message, cyphertoken) :
@@ -48,10 +50,8 @@ def generatePayUrl(message, cyphertoken) :
     data = "FESY" + cyphertoken[0] + cyphertoken[1:].decode('hex') + message.encode('utf-8')
     cryptedData = keyForSigning.decrypt(data)
 
-    print "!!! created QR for %s" % cyphertoken
-
     return "https://feeasy.me/a/%s" % base64.b32encode(cryptedData).replace('=','0')
-    
+
 def makeQR(link, tmpfolder, fileprefix) :
     svgFileName = os.path.join(tmpfolder, fileprefix+'.svg')
     pngFileName = os.path.join(tmpfolder, fileprefix+'.png')
@@ -72,10 +72,14 @@ def makeQR(link, tmpfolder, fileprefix) :
     #imgSvg.save(svgFileName)
     
     qr = pyqrcode.create(link, error='Q', mode='alphanumeric')
-    qr.svg(svgFileName, scale=8)
-    qr.png(pngFileName, scale=8)
+    prettyqrObj = prettyqr.PrettyQr()
+    prettyqrObj.qrObj(qr)
+    prettyqrObj.writePng(pngFileName)
+
+    #qr.svg(svgFileName, scale=8)
+    #qr.png(pngFileName, scale=8)
     
-    return [pngFileName, svgFileName]#, pngFileName]
+    return [pngFileName]#, pngFileName]
     
 def mailQR(dstmail, files, card, message) :
     # Open a plain text file for reading.  For this example, assume that
@@ -99,7 +103,7 @@ def mailQR(dstmail, files, card, message) :
 Спасибо, что вы с нами!
 http://feeasy.me""" % {'card': card, 'message': message}
 
-    me = "Feeasy Team <feeasy@xpianotools.com>"
+    me = "Feeasy Team <support@feeasy.me>"
     you = dstmail
     
     msg = MIMEMultipart('mixed')
@@ -134,4 +138,4 @@ def processToken(message, cyphertoken, cardType, cardMask, email) :
     
     shutil.rmtree(tmpFolder)
 
-#processToken("Это сообщение, котороя я написал! Это сообщение!!!", 'tf1f2f3f4f5f6f7f80102030405060708090a0b', 'Maestro', '4444 **** 3333', 'gaosipov@gmail.com')
+# processToken(u"Это сообщение, котороя я написал! Это сообщение!!!", 'tf1f2f3f4f5f6f7f80102030405060708090a0b', 'Maestro', '4444 **** 3333', 'gaosipov@gmail.com')
