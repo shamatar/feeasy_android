@@ -146,7 +146,12 @@ def verifycomplete() :
     if historyId>=0 :
         cursor = feeasyMySQL.getCursor()
         cursor.execute("UPDATE transactionhistory SET "
-                   "confirmDate=NOW(), pares=%(pares)s, success3d=%(success1)s, successBank=%(success2)s, transactionId=%(tid)s WHERE id=%(id)s",
+                   "confirmDate=NOW(), "
+                   "pares=%(pares)s, "
+                   "success3d=%(success1)s, "
+                   "successBank=%(success2)s, "
+                   "transactionId=%(tid)s"
+                   " WHERE id=%(id)s",
                    {'pares': pares, 'success1': success1, 'success2': success2, 'tid': trunsactionId, 'id': historyId})
     
     return gotoVerificationResult(not error, trunsactionId)
@@ -194,6 +199,11 @@ def verification() :
     except :
         return gotoVerificationResult(False)
 
+def createHistId() :
+    cursor = feeasyMySQL.getCursor()
+    cursor.execute("INSERT INTO transactionhistory VALUES ()")
+    return cursor.lastrowid
+
 @app.route("/payapi", methods=['GET', 'POST'])
 def payapi() :
     data = flask.request.form if flask.request.method=='POST' else flask.request.args
@@ -235,17 +245,32 @@ def payapi() :
         result = bankClass.transfer(payData)
         if result['error'] : return flask.jsonify(error = True, reason = result['error-description'])
 
+        historyId = None
+        if 'historyId' in data and 'userId' in data:
+            historyId = data['historyId']
+            cursor = feeasyMySQL.getCursor()
+            cursor.execute("SELECT EXISTS (SELECT * FROM transactionhistory WHERE id=%(id)s AND userId=%(user)s)",
+                           {'id':historyId, 'user' : data['userId']})
+            if not cursor.fetchone()[0] : historyId = None
+
+        if historyId is None :
+            historyId = createHistId()
+
         cursor = feeasyMySQL.getCursor()
-        cursor.execute("INSERT INTO transactionhistory (recipientToken, transferDate, sum, fee, api) VALUES "
-                       "(%(recipientToken)s, NOW(), %(sum)s, %(fee)s, %(api)s)",
+        cursor.execute("UPDATE transactionhistory SET "
+                       "recipientToken = %(recipientToken)s, "
+                       "transferDate = NOW(), "
+                       "sum = %(sum)s, "
+                       "fee = %(fee)s, "
+                       "api = %(api)s"
+                       " WHERE id=%(id)s",
             {
                 'recipientToken' : recipientCard[1:16+1],
                 'sum'   : result['sum'],
                 'fee'   : result['fee'],
-                'api'   : bankClass.ID
+                'api'   : bankClass.ID,
+                'id'    : historyId
             })
-
-        historyId = cursor.lastrowid
 
         queryId = result['queryId']
         cursor = feeasyMySQL.getCursor()
@@ -297,6 +322,22 @@ def payapi() :
                 response['sum2'] = result['sum2']
                 
                 response['bank'] = bankClass.getBankData()
+
+        if 'userId' in data :
+            historyId = createHistId()
+            cursor = feeasyMySQL.getCursor()
+            cursor.execute("UPDATE transactionhistory SET "
+                           "checkDate=NOW(), "
+                           "recipientToken=%(recipientToken)s, "
+                           "userId=%(user)s"
+                           " WHERE id=%(id)s",
+                {
+                    'recipientToken' : recipientCard[1:16+1],
+                    'user': data['userId'],
+                    'id': historyId
+                })
+
+            response['historyId'] = historyId
 
         return flask.jsonify( **response )
 
@@ -393,5 +434,5 @@ def joinPage() :
         return flask.jsonify(error=False, errorMessage='OK')
 
 if __name__ == '__main__':
-    app.run(debug=True, host='37.252.124.233')
-    #app.run(debug=True, host='192.168.157.15')
+    #app.run(debug=True, host='37.252.124.233')
+    app.run(debug=True, host='192.168.157.15')
