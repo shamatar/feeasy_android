@@ -9,8 +9,14 @@ import mysql.connector
 import feeasyMySQL
 
 class PanToken :
+    ERR_SUCCESS = 0
+    ERR_TOKEN_NOT_FOUND = 200010
+    ERR_TOKEN_REMOVED = 200020
+    ERR_BAD_PAN = 200030
+
     def __init__(self, data, isSender) :
         self.error = False
+        self.errCode = PanToken.ERR_SUCCESS
 
         self.token = data
         self.isSender = isSender
@@ -26,6 +32,7 @@ class PanToken :
         else :
             if not isSender :
                 self.error, self.errorMessage = True, "неизвестный формат получателя"
+                self.errCode = PanToken.ERR_TOKEN_NOT_FOUND
                 return
 
             if data.isdigit() :
@@ -36,8 +43,17 @@ class PanToken :
         if self.pan is None :
             self.error = True
             self.errorMessage = "неверный токен"
+            self.errCode = PanToken.ERR_TOKEN_NOT_FOUND
 
-        self.error, self.errorMessage = self.isError()
+        if 'active' in self.data and not self.data['active'] :
+            self.pan = None
+            self.error = True
+            self.errorMessage = "токен удалён"
+            self.errCode = PanToken.ERR_TOKEN_REMOVED
+
+            return
+
+        self.error, self.errorMessage, self.errCode = self.isError()
 
         if not self.error :
             self.cardNumber = CardNumber(self.pan)
@@ -46,14 +62,14 @@ class PanToken :
         return not(self.token is None or len(self.token) == 0 or self.token=='-')
 
     def isError(self) :
-        if not self.isSet() : return False, "Not set"
-        if self.pan is None : return True, self.errorMessage
-        if len(str(self.pan)) == 0 : return True, "номер карты не задан"
-        if not str(self.pan).isdigit()    : return True, "номер карты должен быть числовым"
-        if len(str(self.pan)) > 24 : return True, "номер карты слишком длинный"
-        if len(str(self.pan)) < 9  : return True, "номер карты слишком короткий"
+        if not self.isSet() : return False, "Not set", PanToken.ERR_BAD_PAN
+        if self.pan is None : return True, self.errorMessage, PanToken.ERR_BAD_PAN
+        if len(str(self.pan)) == 0 : return True, "номер карты не задан", PanToken.ERR_BAD_PAN
+        if not str(self.pan).isdigit()    : return True, "номер карты должен быть числовым", PanToken.ERR_BAD_PAN
+        if len(str(self.pan)) > 24 : return True, "номер карты слишком длинный", PanToken.ERR_BAD_PAN
+        if len(str(self.pan)) < 9  : return True, "номер карты слишком короткий", PanToken.ERR_BAD_PAN
 
-        return False, "Ok"
+        return False, "Ok", PanToken.ERR_SUCCESS
 
 def decryptToken(table, cyphertoken) :
     if cyphertoken[0]!='t' : raise Exception('Bad token format')

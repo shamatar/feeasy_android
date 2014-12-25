@@ -28,8 +28,23 @@ import qrmailer
 from datetime import datetime
 app = flaskInit.app
 
+class ErrCode :
+    def __init__(self, name, number):
+        self.name = name
+        self.number = number
+
+ErrCode.success = ErrCode("ERR_SUCCESS", 0)
+ErrCode.dataError = ErrCode("ERR_DATA_ERROR", 100010)
+ErrCode.senderTokenNotFound = ErrCode("ERR_SENDER_TOKEN_NOT_FOUND", 100020)
+ErrCode.receiverTokenNotFound = ErrCode("ERR_RECEIVER_TOKEN_NOT_FOUND", 100030)
+ErrCode.apiId = ErrCode("ERR_API_ID", 100040)
+ErrCode.bankError = ErrCode("ERR_BANK_ERROR", 100050)
+
 class PayData :
-    def __init__(self, senderCardToken, recipientCardToken, senderExpYear, senderExpMonth, senderCSC, sumCents, recipientFee):
+    def __init__(self,
+                 senderCardToken, recipientCardToken,
+                 senderExpYear, senderExpMonth,
+                 senderCSC, sumCents, recipientFee, senderMessage):
         self.senderCard     = feetoken.PanToken(senderCardToken, True)
         self.recipientCard  = feetoken.PanToken(recipientCardToken, False)
 
@@ -40,28 +55,29 @@ class PayData :
         self.sumCents = sumCents
 
         self.recipientFee = recipientFee
+        self.senderMessage = senderMessage
 
     def checkCorrectness(self, needSenderCard = False, needRecipientCard = False, needExpDat = False, needSum = False, needCsc = False):
-        if needSenderCard and not self.senderCard.isSet() : return True, "Карта отправителя не задана"
-        if needRecipientCard and not self.recipientCard.isSet() : return True, "Карта получателя не задана"
-        if needExpDat and not self.isExpDateSet() : return True, "Дата окончания не задана"
-        if needSum and not self.isSumSet() : return True, "Сумма не задана"
-        if needCsc and not self.isCscSet() : return True, "Код CSC не задан"
+        if needSenderCard and not self.senderCard.isSet() : return True, "Карта отправителя не задана", ErrCode.dataError
+        if needRecipientCard and not self.recipientCard.isSet() : return True, "Карта получателя не задана", ErrCode.dataError
+        if needExpDat and not self.isExpDateSet() : return True, "Дата окончания не задана", ErrCode.dataError
+        if needSum and not self.isSumSet() : return True, "Сумма не задана", ErrCode.dataError
+        if needCsc and not self.isCscSet() : return True, "Код CSC не задан", ErrCode.dataError
 
-        if self.senderCard.error    : return True, "Ошибка карты отправителя: %s" % self.senderCard.errorMessage
-        if self.recipientCard.error : return True, "Ошибка карты получателя: %s"  % self.recipientCard.errorMessage
+        if self.senderCard.error    : return True, "Ошибка карты отправителя: %s" % self.senderCard.errorMessage, ErrCode.senderTokenNotFound
+        if self.recipientCard.error : return True, "Ошибка карты получателя: %s"  % self.recipientCard.errorMessage, ErrCode.receiverTokenNotFound
 
-        if self.isExpDateSet() and not str(self.senderExpYear).isdigit()  : return True, "Год должен быть числом"
-        if self.isExpDateSet() and not str(self.senderExpMonth).isdigit() : return True, "Месяц должен быть числом"
-        if self.isCscSet() and not str(self.senderCSC).isdigit()      : return True, "Код CSC должен быть числом"
-        if self.isSumSet() and not str(self.sumCents).isdigit()       : return True, "Сумма перевода должна быть числом"
+        if self.isExpDateSet() and not str(self.senderExpYear).isdigit()  : return True, "Год должен быть числом", ErrCode.dataError
+        if self.isExpDateSet() and not str(self.senderExpMonth).isdigit() : return True, "Месяц должен быть числом", ErrCode.dataError
+        if self.isCscSet() and not str(self.senderCSC).isdigit()      : return True, "Код CSC должен быть числом", ErrCode.dataError
+        if self.isSumSet() and not str(self.sumCents).isdigit()       : return True, "Сумма перевода должна быть числом", ErrCode.dataError
 
         if self.isExpDateSet() : self.senderExpYear  = int(self.senderExpYear)
         if self.isExpDateSet() : self.senderExpMonth = int(self.senderExpMonth)
         if self.isCscSet() : self.senderCSC      = int(self.senderCSC)
         if self.isSumSet() : self.sumCents       = int(self.sumCents)
 
-        return False, "Ok"
+        return False, "Ok", ErrCode.success
 
     @staticmethod
     def valueIsSet(value):
@@ -93,13 +109,13 @@ def verifycomplete() :
         token = flask.request.args.get('token','')
         
         cursor = feeasyMySQL.getCursor()
-        cursor.execute("SELECT termurl, postdata, url, cookies, apiclass, historyId FROM verifications WHERE token=%(token)s", {'token': token})
+        cursor.execute("SELECT termurl, postdata, url, cookies, apiclass, historyId, payerToken FROM verifications WHERE token=%(token)s", {'token': token})
         
         sqlResult = cursor.fetchone()
         if sqlResult is None :
             raise Exception()
 
-        termurl, postdata, ascurl, cookies, apiClassId, historyId = sqlResult
+        termurl, postdata, ascurl, cookies, apiClassId, historyId, payerToken = sqlResult
         
         pares = zlib.decompress(base64.b64decode(flask.request.form['PaRes']))
         
@@ -135,7 +151,13 @@ def verifycomplete() :
 
         error, trunsactionId = apiClass.getTransactionResult(resp)
         success2 = not error
-        print "WebApi: Error 3d: %s, bank %s" % (result!='Y', error)
+
+        if success1 and not success2 and payerToken is not None and payerToken!='' :
+            cursor = feeasyMySQL.getCursor()
+            cursor.execute('UPDATE payertokens SET failAttempts=failAttempts+1, active=failAttempts<4 WHERE token=%(token)s',
+                {'token':payerToken})
+
+        #print "WebApi: Error 3d: %s, bank %s" % (result!='Y', error)
 
     except Exception as e:
         print "WebApi: " + e
@@ -218,7 +240,8 @@ def payapi() :
         data.get('sender_exp_month', ''),
         data.get('sender_csc', ''),
         data.get('sum', '-'),
-        data.get('recipientfee', 'y') == 'y'
+        data.get('recipientfee', 'y') == 'y',
+        data.get('sender_message', '')[0:2000]
     )
 
     method = data.get('method')
@@ -235,23 +258,33 @@ def payapi() :
 
     if method == 'transfer' :
         if not 'api_id' in data :
-            error, message = True, "Необходимо явно указывать api_id"
-        else : error, message = payData.checkCorrectness(
+            error, message, errCode = True, "Необходимо явно указывать api_id", ErrCode.apiId
+        else : error, message, errCode = payData.checkCorrectness(
             needSenderCard = True, needRecipientCard = True, needExpDat = True, needSum = True, needCsc = True
         )
         if error :
-            return flask.jsonify(error = True, reason = message )
+            return flask.jsonify(error = True, reason = message, err_name = errCode.name )
 
         result = bankClass.transfer(payData)
-        if result['error'] : return flask.jsonify(error = True, reason = result['error-description'])
+        if result['error'] :
+            return flask.jsonify(error = True, reason = result['error-description'], err_name = ErrCode.bankError.name)
 
         historyId = None
-        if 'historyId' in data and 'userId' in data:
-            historyId = data['historyId']
+        if 'history_id' in data and 'user_id' in data:
+            historyId = data['history_id']
             cursor = feeasyMySQL.getCursor()
             cursor.execute("SELECT EXISTS (SELECT * FROM transactionhistory WHERE id=%(id)s AND userId=%(user)s)",
-                           {'id':historyId, 'user' : data['userId']})
+                           {'id':historyId, 'user' : data['user_id']})
             if not cursor.fetchone()[0] : historyId = None
+
+        payertoken = ''
+        if senderCard[0]=='t' :
+            cyphertoken = senderCard
+        else :
+            id, cypher, cyphertoken = feetoken.createTokenCypher('payertokens', payData.senderCard.pan)
+
+        if cyphertoken[0]=='t' :
+            payertoken = cyphertoken[1:17]
 
         if historyId is None :
             historyId = createHistId()
@@ -262,10 +295,16 @@ def payapi() :
                        "transferDate = NOW(), "
                        "sum = %(sum)s, "
                        "fee = %(fee)s, "
-                       "api = %(api)s"
+                       "api = %(api)s, "
+                       "payerCardMask = %(payerCardMask)s, "
+                       "payerToken = %(payerToken)s, "
+                       "senderMessage = %(senderMessage)s"
                        " WHERE id=%(id)s",
             {
                 'recipientToken' : recipientCard[1:16+1],
+                'payerToken' : payertoken,
+                'payerCardMask' : cardFormatter.CardNumber(payData.senderCard.pan).prettify(),
+                'senderMessage' : payData.senderMessage,
                 'sum'   : result['sum'],
                 'fee'   : result['fee'],
                 'api'   : bankClass.ID,
@@ -274,8 +313,8 @@ def payapi() :
 
         queryId = result['queryId']
         cursor = feeasyMySQL.getCursor()
-        cursor.execute("INSERT INTO verifications (token, url, postdata, date, termurl, cookies, apiclass, historyId) VALUES "
-                       "(%(token)s, %(url)s, %(postdata)s, NOW(), %(termUrl)s, %(cookies)s, %(api)s, %(historyId)s)",
+        cursor.execute("INSERT INTO verifications (token, url, postdata, date, termurl, cookies, apiclass, historyId, payerToken) VALUES "
+                       "(%(token)s, %(url)s, %(postdata)s, NOW(), %(termUrl)s, %(cookies)s, %(api)s, %(historyId)s, %(payerToken)s)",
             {
                 'token' : queryId.hex,
                 'url'   : result['url'],
@@ -283,23 +322,18 @@ def payapi() :
                 'termUrl' : result['termUrl'],
                 'cookies' : result['cookies'],
                 'api'  : bankClass.ID,
-                'historyId' : historyId
+                'historyId' : historyId,
+                'payerToken' : payertoken
             })
-
-
-        if senderCard[0]=='t' :
-            cyphertoken = senderCard
-        else :
-            id, cypher, cyphertoken = feetoken.createTokenCypher('payertokens', payData.senderCard.pan)
 
         return flask.jsonify(error = False, token=queryId.hex,
                              cyphertoken = cyphertoken,
                              url=flask.url_for('verification', _external=True) + '?' +
                              urllib.urlencode({'token' : queryId.hex}))
     elif method == 'check' :
-        error, message = payData.checkCorrectness(needRecipientCard = True)
+        error, message, errCode = payData.checkCorrectness(needRecipientCard = True)
         if error :
-            return flask.jsonify(error = True, reason = message )
+            return flask.jsonify(error = True, reason = message, err_name = errCode.name)
 
         response = {
             'error': False,
@@ -314,7 +348,7 @@ def payapi() :
             if payData.isSumSet() :
                 result = bankClass.getFee(payData)
                 if result['error'] :
-                    return flask.jsonify(error = True, reason = result['error-description'])
+                    return flask.jsonify(error = True, reason = result['error-description'], err_name = ErrCode.bankError.name)
 
                 response['fee'] = result['fee']
                 response['sum'] = result['sum']
@@ -323,7 +357,7 @@ def payapi() :
                 
                 response['bank'] = bankClass.getBankData()
 
-        if 'userId' in data :
+        if 'user_id' in data :
             historyId = createHistId()
             cursor = feeasyMySQL.getCursor()
             cursor.execute("UPDATE transactionhistory SET "
@@ -333,11 +367,11 @@ def payapi() :
                            " WHERE id=%(id)s",
                 {
                     'recipientToken' : recipientCard[1:16+1],
-                    'user': data['userId'],
+                    'user': data['user_id'],
                     'id': historyId
                 })
 
-            response['historyId'] = historyId
+            response['history_id'] = historyId
 
         return flask.jsonify( **response )
 
@@ -435,4 +469,4 @@ def joinPage() :
 
 if __name__ == '__main__':
     #app.run(debug=True, host='37.252.124.233')
-    app.run(debug=True, host='192.168.157.15')
+    app.run(debug=True, host='192.168.157.17')
