@@ -255,6 +255,17 @@ def payapi() :
         return flask.jsonify(error = True, reason = message )
     
     bankClass = bankapi.BankApi.allApiFunction[api_id]
+    
+    historyId = None
+    if 'history_id' in data and data['history_id'] != '' and data['history_id'].isdigit() and 'user_id' in data:
+        historyId = int(data['history_id'])
+        cursor = feeasyMySQL.getCursor()
+        cursor.execute("SELECT EXISTS (SELECT * FROM transactionhistory WHERE id=%(id)s AND userId=%(user)s)",
+                       {'id':historyId, 'user' : data['user_id']})
+        if not cursor.fetchone()[0] : historyId = None
+
+    if historyId is None :
+        historyId = createHistId()
 
     if method == 'transfer' :
         if not 'api_id' in data :
@@ -268,15 +279,7 @@ def payapi() :
         result = bankClass.transfer(payData)
         if result['error'] :
             return flask.jsonify(error = True, reason = result['error-description'], err_name = ErrCode.bankError.name)
-
-        historyId = None
-        if 'history_id' in data and 'user_id' in data:
-            historyId = data['history_id']
-            cursor = feeasyMySQL.getCursor()
-            cursor.execute("SELECT EXISTS (SELECT * FROM transactionhistory WHERE id=%(id)s AND userId=%(user)s)",
-                           {'id':historyId, 'user' : data['user_id']})
-            if not cursor.fetchone()[0] : historyId = None
-
+            
         payertoken = ''
         if senderCard[0]=='t' :
             cyphertoken = senderCard
@@ -285,9 +288,6 @@ def payapi() :
 
         if cyphertoken[0]=='t' :
             payertoken = cyphertoken[1:17]
-
-        if historyId is None :
-            historyId = createHistId()
 
         cursor = feeasyMySQL.getCursor()
         cursor.execute("UPDATE transactionhistory SET "
@@ -358,7 +358,6 @@ def payapi() :
                 response['bank'] = bankClass.getBankData()
 
         if 'user_id' in data :
-            historyId = createHistId()
             cursor = feeasyMySQL.getCursor()
             cursor.execute("UPDATE transactionhistory SET "
                            "checkDate=NOW(), "
@@ -371,7 +370,7 @@ def payapi() :
                     'id': historyId
                 })
 
-            response['history_id'] = historyId
+        response['history_id'] = historyId
 
         return flask.jsonify( **response )
 
