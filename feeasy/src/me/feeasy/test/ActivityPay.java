@@ -5,6 +5,8 @@ import me.feeasy.test.cardview.CardFormView;
 import me.feeasy.test.cardview.SavedCard;
 import me.feeasy.test.cardview.SumValidator;
 import me.feeasy.test.cardview.CompoundButtonValidator;
+import me.feeasy.test.cardview.TrivialValidator;
+import me.feeasy.test.payapi_access.FeeasyApiSession;
 
 import org.cryptonode.jncryptor.AES256JNCryptor;
 
@@ -47,11 +49,14 @@ public class ActivityPay extends FragmentActivity {
 	
 	CardFormView cardView;
 	EditText sumView;
+	EditText payerMessageView;
 	
 	Switch   switchView;
 	CheckBox checkView;
 	
 	CompoundButton acceptView;
+	
+	FeeasyApiSession apiSession = null;
 	
 	//String recipientId;
 	//String recipientMessage;
@@ -65,6 +70,12 @@ public class ActivityPay extends FragmentActivity {
 		    InputMethodManager inputMethodManager = (InputMethodManager)  getSystemService(Activity.INPUT_METHOD_SERVICE);
 		    inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
 		}
+	}
+	
+	private void updateMessage() {
+		if( payData.message!=null &&!payData.message.equals("")) { 
+        	((TextView)findViewById(R.id.textMessage)).setText(Html.fromHtml("<font color=#A0A0A0>Сообщение получателя:</font> " + TextUtils.htmlEncode(payData.message)));
+        }
 	}
 	
 	@Override public void onCreate(Bundle savedState) {
@@ -115,6 +126,7 @@ public class ActivityPay extends FragmentActivity {
 		
         cardView = (CardFormView)findViewById(R.id.pay_card);
         sumView  = (EditText    )findViewById(R.id.sum_holder);
+        payerMessageView = (EditText)findViewById(R.id.payeditPayerMessage);
         switchView = (Switch    )findViewById(R.id.accept_holder);
         checkView  = (CheckBox  )findViewById(R.id.accept_holder_check);
         
@@ -129,11 +141,13 @@ public class ActivityPay extends FragmentActivity {
         	sumView.setText(Utility.prettySum(payData.sum));
         }
         
+        if( payData.userMessage!=null ) {
+        	payerMessageView.setText(payData.userMessage);
+        }
+        
         FeeasyApp.addViewRurSign(sumView);
         
-        if( payData.message!=null &&!payData.message.equals("")) { 
-        	((TextView)findViewById(R.id.textMessage)).setText(Html.fromHtml("<font color=#A0A0A0>Сообщение получателя:</font> " + TextUtils.htmlEncode(payData.message)));
-        }
+        updateMessage();
         
         acceptView = switchView == null ? checkView : switchView;
 
@@ -142,6 +156,11 @@ public class ActivityPay extends FragmentActivity {
         sumValidator.bindToView(sumView);
         sumValidator.setNextView(acceptView);
         cardView.bindBefore(sumValidator);
+        
+        final TrivialValidator payerMessageValidator = new TrivialValidator();
+        payerMessageValidator.bindToView(payerMessageView);
+        payerMessageValidator.setNextView(acceptView);
+        //sumValidator.setNextValidator(payerMessageValidator);
         
         acceptView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 			@Override public void onFocusChange(View v, boolean hasFocus) {
@@ -178,6 +197,7 @@ public class ActivityPay extends FragmentActivity {
 				payData.expMonth = cardView.getMonth();
 				payData.expYear = cardView.getYear();
 				payData.sum = sumValidator.getCents();
+				payData.userMessage = payerMessageView.getText().toString();
 				
 				Bundle payDataBundle = new Bundle();
 				payData.save(payDataBundle);
@@ -188,6 +208,25 @@ public class ActivityPay extends FragmentActivity {
 			}
 		});
         
+	}
+	
+	@Override public void onStart() {
+		super.onStart();
+		apiSession = new FeeasyApiSession(this, payData) {
+			@Override public void onSuccess() {
+				updateMessage();
+			}
+			@Override public void onRequestComplete() {
+				findViewById(R.id.payprogressLoading).setVisibility(View.INVISIBLE);
+			}
+		};
+		findViewById(R.id.payprogressLoading).setVisibility(View.VISIBLE);
+		apiSession.checkRequest();
+	}
+	
+	@Override public void onStop() {
+		super.onStop();
+		apiSession.stop();
 	}
 	
 	@Override public void onActivityResult(int requestCode, int resultCode, Intent intent) {

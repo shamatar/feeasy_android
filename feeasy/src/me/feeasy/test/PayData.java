@@ -18,6 +18,9 @@ public class PayData {
 	public int fee = 0;
 	public boolean payFee=false;
 	
+	public String historyId;
+	public String userMessage;
+	
 	public static String TAG_SENDER_CARD = "sender_card";
 	public static String TAG_PRECIPIENT_CARD = "recipient_card";
 	public static String TAG_CSC = "csc";
@@ -25,8 +28,10 @@ public class PayData {
 	public static String TAG_EXP_YEAR  = "exp_year";
 	public static String TAG_SUM       = "sum";
 	public static String TAG_FEE       = "fee";
-	public static String TAG_PAY_FEE       = "pay_fee";
+	public static String TAG_PAY_FEE   = "pay_fee";
 	public static String TAG_MESSAGE   = "message";
+	public static String HISTORY_ID    = "history_id";
+	public static String USER_MESSAGE  = "user_message";
 	
 	public PayData(String senderCard, String recipientCard, 
 			int cvc, int expMonth, int expYear, int sum, String message) {
@@ -69,19 +74,23 @@ public class PayData {
 		bundle.putInt(TAG_FEE, fee);
 		bundle.putBoolean(TAG_PAY_FEE, payFee);
 		bundle.putString(TAG_MESSAGE, message);
+		bundle.putString(HISTORY_ID, historyId);
+		bundle.putString(USER_MESSAGE, userMessage);
 	}
 	
 	public void load(Bundle bundle) {
 		senderCard = bundle.getString(TAG_SENDER_CARD);
 		recipientCard = bundle.getString(TAG_PRECIPIENT_CARD);
 		
-		cvc      = bundle.getInt(TAG_CSC);
-		expMonth = bundle.getInt(TAG_EXP_MONTH);
-		expYear  = bundle.getInt(TAG_EXP_YEAR);
-		sum      = bundle.getInt(TAG_SUM);
-		fee      = bundle.getInt(TAG_FEE);
-		payFee   = bundle.getBoolean(TAG_PAY_FEE);
-		message  = bundle.getString(TAG_MESSAGE);
+		cvc         = bundle.getInt(TAG_CSC);
+		expMonth    = bundle.getInt(TAG_EXP_MONTH);
+		expYear     = bundle.getInt(TAG_EXP_YEAR);
+		sum         = bundle.getInt(TAG_SUM);
+		fee         = bundle.getInt(TAG_FEE);
+		payFee      = bundle.getBoolean(TAG_PAY_FEE);
+		message     = bundle.getString(TAG_MESSAGE);
+		historyId   = bundle.getString(HISTORY_ID);
+		userMessage = bundle.getString(USER_MESSAGE);
 	}
 
 	public boolean senderIdentifyedByToken() {
@@ -89,5 +98,9 @@ public class PayData {
 		char first = senderCard.charAt(0);
 		
 		return first < '0' || first > '9';
+	}
+
+	public boolean hasUserMessage() {
+		return userMessage!=null && !userMessage.equals("");
 	}
 }

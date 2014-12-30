@@ -62,6 +62,7 @@ public class CardFormView extends LinearLayout {
 			this.view.setOnLongClickListener(new View.OnLongClickListener() {
 				@Override public boolean onLongClick(View v) {
 					if(!SavedCardWidget.this.savedCard.isExisting() ) return false;
+					if(!SavedCardWidget.this.savedCard.isFromSavedCards() ) return false;
 					
 					showDeleteCardDialog();
 					return true;

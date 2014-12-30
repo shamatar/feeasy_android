@@ -33,6 +33,7 @@ public class SavedCard {
 	
 	protected boolean deleted = false;
 	
+	public boolean fromSavedCards = false;
 	public boolean existing;
 	
 	public String id;
@@ -115,6 +116,7 @@ public class SavedCard {
 		
 		if( foundCard==null ) {
 			foundCard=new SavedCard();
+			foundCard.fromSavedCards = true;
 			savedCards.add(foundCard);
 		}
 		
@@ -135,6 +137,10 @@ public class SavedCard {
 		savedCards.remove(savedCards.indexOf(savedCard));
 		
 		FeeasyApp.instance.saveCards();
+	}
+
+	public boolean isFromSavedCards() {
+		return fromSavedCards;
 	}
 }
 

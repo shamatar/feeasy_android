@@ -206,6 +206,17 @@
 	                  	  style="@style/resultField" />
 	              </RelativeLayout>
 	              
+                  <TextView
+                      android:layout_width ="match_parent"
+                  	  android:layout_height="wrap_content"
+                  	  
+	                  android:layout_marginTop="@dimen/minStdPadding"
+                  	  
+                  	  android:gravity="left"
+                  	  
+                  	  android:id="@+id/resdataUserMessage" 
+                  	  style="@style/resultField" />
+	              
 	              <TextView
 	                  android:layout_width="match_parent"
 	                  android:layout_height="wrap_content"
@@ -244,7 +255,7 @@
 	            android:layout_margin="@dimen/minStdPadding"
 	            
 	            android:textColor="#FFFFFF"
-	            android:text="Продолжить"
+	            android:text="Считать код"
 	            
 	            android:id="@+id/paybtn_continue"
 	            />

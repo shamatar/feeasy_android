@@ -15,6 +15,7 @@ import org.json.JSONObject;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.Uri;
+import android.provider.Settings.Secure;
 import android.util.Log;
 import android.view.View;
 import android.webkit.WebChromeClient;
@@ -39,7 +40,7 @@ public class FeeasyApiSession {
 	//final String apiUrl = "http://192.168.157.15:5000/payapi";
 	
 	Context context;
-	
+	RequestQueue queue;
 	PayData payData;
 	
 	private int fee1 = 0, fee2 = 0, sum1 = 0, sum2 = 0;
@@ -63,6 +64,7 @@ public class FeeasyApiSession {
 	}
 	
 	protected void onSuccess() {}
+	protected void onRequestComplete() {}
 	protected void onError(ErrType err, String reason) {}
 	protected void onVerificationComplete(String transactionId) {}
 	
@@ -89,6 +91,13 @@ public class FeeasyApiSession {
 		try {
 			data = new JSONObject(response);
 	    	if(!data.getBoolean("error") ) {
+	    		if( data.has("history_id") ) {
+	    			payData.historyId = data.getString("history_id");
+	    		}
+	    		if( data.has("message") ) {
+	    			payData.message = data.getString("message");
+	    		}
+	    		
 	    		FeeasyApiSession.this.fee1  = data.getInt("fee");
 	    		FeeasyApiSession.this.sum1  = data.getInt("sum");
 	    		FeeasyApiSession.this.fee2  = data.getInt("fee2");
@@ -104,15 +113,18 @@ public class FeeasyApiSession {
 	    		FeeasyApiSession.this.cardType = CardType.getById(data.getString("sender_card_type"));
 	    		
 	    		onSuccess();
+	    		onRequestComplete();
 	    		return;
 	    	}
 		} catch (JSONException e) {}
 		
 		onError(ErrType.ERR_Data, context.getResources().getString(R.string.err_badresponse));
+		onRequestComplete();
 	}
 	
 	public void checkRequest() {
-		RequestQueue queue = Volley.newRequestQueue(context);
+		if( queue==null )
+			queue = Volley.newRequestQueue(context);
 
 		// Request a string response from the provided URL.
 		StringRequest stringRequest = new StringRequest(Request.Method.POST, apiUrl,
@@ -125,6 +137,7 @@ public class FeeasyApiSession {
 			    @Override
 			    public void onErrorResponse(VolleyError error) {
 					onError(ErrType.ERR_Network, context.getResources().getString(R.string.err_network) + ": " + error.getLocalizedMessage());
+					onRequestComplete();
 			    }
 			}
 		) {
@@ -135,6 +148,7 @@ public class FeeasyApiSession {
 		    }
 		};
 		
+		stringRequest.setTag(FeeasyApiSession.this);
 		stringRequest.setRetryPolicy(new DefaultRetryPolicy(
 				RETRYPOLICY_TIMEOUT_CHECK, 
                 RETRYPOLICY_ATTEMPTS,
@@ -142,10 +156,12 @@ public class FeeasyApiSession {
 		
 		// Add the request to the RequestQueue.
 		queue.add(stringRequest);
+		queue.start();
 	}
 	
 	public void transferRequest(final WebView webView, final String api_id) {
-		RequestQueue queue = Volley.newRequestQueue(context);
+		if( queue==null )
+			queue = Volley.newRequestQueue(context);
 
 		// Request a string response from the provided URL.
 		StringRequest stringRequest = new StringRequest(Request.Method.POST, apiUrl,
@@ -163,11 +179,13 @@ public class FeeasyApiSession {
 					} catch (JSONException e) {}
 					
 					onError(ErrType.ERR_Data, context.getResources().getString(R.string.err_badresponse));
+					onRequestComplete();
 			    }
 			}, new Response.ErrorListener() {
 			    @Override
 			    public void onErrorResponse(VolleyError error) {
 					onError(ErrType.ERR_Network, context.getResources().getString(R.string.err_network) + ": " + error.getLocalizedMessage());
+					onRequestComplete();
 			    }
 			}
 		) {
@@ -185,9 +203,11 @@ public class FeeasyApiSession {
                 RETRYPOLICY_TIMEOUT_TRANSFER, 
                 RETRYPOLICY_ATTEMPTS, 
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT) );
+		stringRequest.setTag(FeeasyApiSession.this);
 		
 		// Add the request to the RequestQueue.
 		queue.add(stringRequest);
+		queue.start();
 	}
 	
 	public void verificationCancel() {
@@ -215,8 +235,12 @@ public class FeeasyApiSession {
 					
 					if( success && transactionId!=null ) {
 						onVerificationComplete(transactionId);
+						onRequestComplete();
 					} else {
-						if(!verificationCanceled ) onError(ErrType.ERR_Verification, context.getResources().getString(R.string.err_verification));
+						if(!verificationCanceled ) {
+							onError(ErrType.ERR_Verification, context.getResources().getString(R.string.err_verification));
+							onRequestComplete();
+						}
 					}
 				}
 		    	
@@ -233,8 +257,10 @@ public class FeeasyApiSession {
 			public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
 				verificationCancel();
 				Log.d("NavigateWebView", "Loading fail: " + description + ", on url " + failingUrl);
-				if(!verificationCanceled ) 
+				if(!verificationCanceled ) { 
 					onError(ErrType.ERR_Network, context.getResources().getString(R.string.err_network) + ": " + description);
+					onRequestComplete();
+				}
 		    }
 		    
 		    @Override
@@ -273,6 +299,20 @@ public class FeeasyApiSession {
         params.put("sender_csc", Integer.toString(payData.cvc));
         params.put("sum", Integer.toString(payData.sum));
         
+        params.put("user_id", 
+        		Secure.getString(context.getContentResolver(), Secure.ANDROID_ID));
+        
+        if( payData.historyId!=null )
+        	params.put("history_id", payData.historyId);
+        
+        if( payData.userMessage!=null )
+        	params.put("sender_message", payData.userMessage);
+        
         return params;
+	}
+	public void stop() {
+		if( queue==null ) return;
+		
+		queue.cancelAll(FeeasyApiSession.this);
 	}
 }

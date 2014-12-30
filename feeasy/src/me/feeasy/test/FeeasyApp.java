@@ -62,6 +62,7 @@ public class FeeasyApp extends Application {
 			SavedCard savedCard = new SavedCard();
 			savedCard.load(bundle);
 			
+			savedCard.fromSavedCards = true;
 			SavedCard.savedCards.add(savedCard);
 		}
 	}

@@ -70,6 +70,7 @@ public class ActivityConfirm extends Activity {
 				final ImageView payimageCard = (ImageView)findViewById(R.id.payimageCard);
 				final TextView  paydataPan   = (TextView) findViewById(R.id.paydataPan);
 				final TextView  paydataMessage = (TextView) findViewById(R.id.paydataMessage);
+				final TextView  paydataUserMessage = (TextView) findViewById(R.id.paydataUserMessage);
 				final TextView  paydataSum   = (TextView) findViewById(R.id.paydataSum);
 				final ImageView payimageBank = (ImageView)findViewById(R.id.payimageBank);
 				final TextView  paydataFee   = (TextView) findViewById(R.id.paydataFee);
@@ -85,6 +86,10 @@ public class ActivityConfirm extends Activity {
 				paydataFee.setText(Utility.prettySum(payData.fee));
 				paydataFullSum.setText(Utility.prettySum(resSum));
 				paydataMessage.setText(getFullMessage());
+				
+				findViewById(R.id.payholderUserMessage).setVisibility(payData.hasUserMessage() ? View.VISIBLE : View.GONE);
+				findViewById(R.id.paycaptionUserMessage).setVisibility(payData.hasUserMessage() ? View.VISIBLE : View.GONE);
+				if( payData.hasUserMessage() ) paydataUserMessage.setText(payData.userMessage);
 				
 				cardName = getCardPattern();
 				if( cardName.length()>4 ) cardName = cardName.substring(cardName.length() - 4);

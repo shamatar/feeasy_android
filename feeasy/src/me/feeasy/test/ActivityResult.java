@@ -5,6 +5,8 @@ import com.caverock.androidsvg.SVGImageView;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Html;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -90,6 +92,15 @@ public class ActivityResult extends Activity {
 		
 		FeeasyApp.addViewRurSign((TextView)findViewById(R.id.resdataFee));
 		
+		TextView userMessageView = (TextView)findViewById(R.id.resdataUserMessage);
+		userMessageView.setVisibility(historyElem.payData.hasUserMessage() ? View.VISIBLE : View.GONE);
+		if( historyElem.payData.hasUserMessage() ) {
+			userMessageView.setText(
+					Html.fromHtml("<b>Ваше сообщение:</b> " + 
+						TextUtils.htmlEncode(historyElem.payData.userMessage))
+				);
+		}
+		
 		((TextView)findViewById(R.id.resdataMessage)).setText(
 				historyElem.payData.message
 			);
@@ -119,12 +130,12 @@ public class ActivityResult extends Activity {
 		});
 	}
 	
-	@Override public void onBackPressed() {
+	/*@Override public void onBackPressed() {
 		setResult(InitialActivity.TAG_KILL_ALL);
 		finish();
 		
 		Intent intent = new Intent(getApplicationContext(),InitialActivity.class);
 		startActivity(intent);
-	}
+	}*/
 }
 

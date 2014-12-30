@@ -139,6 +139,39 @@
 								    
 								    android:text="" />
 						        </LinearLayout>
+						        
+					       	<TextView
+					            android:id="@+id/paycaptionUserMessage"
+					            
+							    android:layout_width ="wrap_content"
+							    android:layout_height="wrap_content"
+							    
+						        style="@style/payCaption"
+							    
+							    android:text="Ваше сообщение" />
+					        
+					        <LinearLayout 
+					            android:id="@+id/payholderUserMessage"
+					            
+							    android:layout_width ="match_parent"
+							    android:layout_height="wrap_content"
+					            android:orientation="horizontal">
+						        <View
+					       		    android:id="@+id/paypaddingUserMessage"
+					       		    
+					       		    android:layout_width ="@dimen/tripleStdPadding"
+					       		    android:layout_height="@dimen/largerText" />
+						        
+						        <TextView
+					       		    android:id="@+id/paydataUserMessage"
+					       		    
+								    android:layout_width ="wrap_content"
+								    android:layout_height="wrap_content"
+								    
+							        style="@style/payData"
+								    
+								    android:text="" />
+						        </LinearLayout>
 					        
 					        <TextView
 							    android:layout_width ="wrap_content"

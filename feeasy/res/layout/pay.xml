@@ -56,7 +56,18 @@
 	                     
 	                     android:layout_alignParentLeft="true"
 	                     
-	                  android:text="Данные перевода" />
+	                     android:text="Данные перевода" />
+	                 
+					 <ProgressBar
+					     android:id="@+id/payprogressLoading"
+					     
+					     android:layout_width="@dimen/stdText"
+				    	 android:layout_height="@dimen/stdText"
+				    	
+				    	 android:layout_alignParentRight="true"
+				    	 android:layout_centerVertical="true"
+				    	 
+					     android:indeterminate="true"/>
 	               </RelativeLayout>
 	          
 	          <LinearLayout
@@ -70,55 +81,74 @@
 	              <RelativeLayout
 	                android:layout_width="match_parent"
 	                android:layout_height="wrap_content" >
-	            <TextView
-	                android:layout_width ="wrap_content"
-	                android:layout_height="wrap_content"
-	                
-	                style="@style/payCaption"
-	                
-	                android:text="Сумма от 100 до 500 р." />
-	            <EditText
-	                android:id="@+id/sum_holder"
-	                
-	                android:layout_width ="wrap_content"
-	                android:layout_height="wrap_content"
-	                
-	                android:hint="500.00"
-	                
-	                android:digits="0123456789."
-	                android:inputType="number"
-	                
-	                android:maxLength="6" 
-	                
-	                android:imeOptions="actionDone"
-	                android:singleLine="true"
-	              
-	                android:layout_alignParentRight="true"
-	                
-	                style="@style/payEdit"
-	                />
-	          </RelativeLayout>
-	          <TextView
-	              android:id="@+id/textMessage"
-	              android:text=""
-	              android:layout_width ="match_parent"
-	              android:layout_height="wrap_content" />
+		            <TextView
+		                android:layout_width ="wrap_content"
+		                android:layout_height="wrap_content"
+		                
+		                style="@style/payCaption"
+		                
+		                android:text="Сумма от 100 до 500 р." />
+		            <EditText
+		                android:id="@+id/sum_holder"
+		                
+		                android:layout_width ="wrap_content"
+		                android:layout_height="wrap_content"
+		                
+		                android:hint="500.00"
+		                
+		                android:digits="0123456789."
+		                android:inputType="number"
+		                
+		                android:maxLength="6" 
+		                
+		                android:imeOptions="actionDone"
+		                android:singleLine="true"
+		              
+		                android:layout_alignParentRight="true"
+		                
+		                style="@style/payEdit"
+		                />
+		          </RelativeLayout>
+		          <TextView
+		              android:id="@+id/textMessage"
+		              android:text=""
+		              android:layout_width ="match_parent"
+		              android:layout_height="wrap_content" />
+		          
+		          <EditText
+		              android:id="@+id/payeditPayerMessage"
+		                
+		              android:layout_width ="match_parent"
+		              android:layout_height="wrap_content"
+		                
+		              android:hint="ваше сообщение (необязательно)"
+		                
+					  android:inputType="textCapSentences|textMultiLine"
+					  android:maxLength="1000"
+		                
+		              android:imeOptions="actionDone"
+		              
+				      android:scrollbarStyle="insideInset"
+					  android:scrollbars="vertical" 
+					  android:overScrollMode="always"
+		                
+		              style="@style/payEdit" />
 	          </LinearLayout>
 	      
 	          <RelativeLayout
 	              style="@style/header_box"
 	              android:layout_width="match_parent"
 	              android:layout_height="wrap_content" >
-	                 <TextView
-	                     style="@style/header_text"
-	                     android:layout_width ="wrap_content"
-	                     android:layout_height="wrap_content"
-	                     
-	                     android:layout_alignParentLeft="true"
-	                     android:text="Я принимаю соглашение" />
-	                 
-	            <include layout="@layout/compound_button_accept" />
-	               </RelativeLayout>
+                  <TextView
+                     style="@style/header_text"
+                     android:layout_width ="wrap_content"
+                     android:layout_height="wrap_content"
+                     
+                     android:layout_alignParentLeft="true"
+                     android:text="Я принимаю соглашение" />
+                 
+            		 <include layout="@layout/compound_button_accept" />
+               </RelativeLayout>
 	          </LinearLayout>
 	        <View
 	            android:layout_height="@dimen/minStdPadding"
